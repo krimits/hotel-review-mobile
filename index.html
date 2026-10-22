@@ -1,0 +1,4100 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#174e46" />
+    <meta
+      name="description"
+      content="HostPulse: διαδραστικό mobile mockup για κριτικές επισκεπτών, συστάσεις ενεργειών και ανάθεση εργασιών."
+    />
+    <title>HostPulse — Guest care, in your hands</title>
+    <style>
+      :root {
+        --bg: #f3f5f2;
+        --paper: #fff;
+        --ink: #1c302c;
+        --muted: #667771;
+        --brand: #174e46;
+        --accent: #d6ee95;
+        --line: #e1e7df;
+        --red: #b34536;
+        --redbg: #fbeee9;
+        --amber: #8b641d;
+        --amberbg: #faf2df;
+        --green: #35725c;
+        --greenbg: #eaf4ed;
+        --shadow: 0 5px 20px #243c2910;
+        --radius: 20px;
+        font-family:
+          Inter,
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: var(--ink);
+        font-synthesis: none;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #e8ece5;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        touch-action: manipulation;
+      }
+      button {
+        color: inherit;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      select:focus-visible,
+      a:focus-visible {
+        outline: 3px solid #689b5e;
+        outline-offset: 3px;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      svg {
+        display: block;
+        flex-shrink: 0;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+      button svg {
+        pointer-events: none;
+      }
+      .sr-only {
+        position: absolute !important;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+      a {
+        color: var(--brand);
+      }
+      .desk {
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 80px;
+        padding: 40px;
+      }
+      .desk-note {
+        max-width: 310px;
+      }
+      .wordmark {
+        font-size: 31px;
+        font-weight: 800;
+        letter-spacing: -1.2px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .wordmark .mark {
+        background: var(--brand);
+        color: var(--accent);
+        width: 43px;
+        height: 43px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+      }
+      .desk-note h1 {
+        font-size: 37px;
+        line-height: 1.16;
+        letter-spacing: -1.3px;
+        margin: 30px 0 18px;
+        font-weight: 650;
+      }
+      .desk-note p {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      .desk-note .tag {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-top: 34px;
+      }
+      .device {
+        width: 410px;
+        height: min(880px, calc(100svh - 64px));
+        min-height: 600px;
+        background: #172b26;
+        padding: 9px;
+        border-radius: 43px;
+        box-shadow: 0 30px 80px #1d342a25;
+        flex-shrink: 0;
+      }
+      .app {
+        height: 100%;
+        background: var(--bg);
+        border-radius: 35px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .app-top {
+        padding: 18px 20px 12px;
+        flex: none;
+        border-bottom: 1px solid var(--line);
+        background: var(--bg);
+      }
+      .topline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .brand-small {
+        font-size: 22px;
+        letter-spacing: -0.7px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .brand-small svg {
+        color: var(--brand);
+      }
+      .demo-chip {
+        border: 0;
+        cursor: pointer;
+        min-height: 44px;
+        background: #e4eadf;
+        color: #53664d;
+        padding: 5px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.7px;
+      }
+      .property-wrap {
+        position: relative;
+      }
+      .property-wrap select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid #d6dfd2;
+        border-radius: 12px;
+        background: #fff;
+        padding: 10px 32px 10px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .app-main {
+        flex: 1;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 20px 18px 28px;
+        scrollbar-width: thin;
+        scrollbar-color: #d4ddd0 transparent;
+        min-height: 0;
+      }
+      .screen-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        gap: 8px;
+      }
+      .eyebrow {
+        font-size: 10px;
+        letter-spacing: 1.1px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 750;
+        margin-bottom: 5px;
+      }
+      .screen-head h1 {
+        font-size: 25px;
+        letter-spacing: -0.8px;
+        line-height: 1.2;
+      }
+      .sub {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.65;
+        margin-top: 7px;
+      }
+      .avatar {
+        border: 0;
+        background: #e2e9dd;
+        border-radius: 14px;
+        min-width: 44px;
+        height: 44px;
+        font-size: 12px;
+        font-weight: 750;
+        color: #56754d;
+        display: grid;
+        place-items: center;
+      }
+      .hero {
+        padding: 21px;
+        border-radius: 23px;
+        background: var(--brand);
+        color: white;
+        overflow: hidden;
+        position: relative;
+      }
+      .hero-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        position: relative;
+      }
+      .hero .eyebrow {
+        color: #b9d0c0;
+      }
+      .hero .score {
+        font-size: 45px;
+        font-weight: 650;
+        letter-spacing: -2px;
+        line-height: 1.15;
+      }
+      .hero .score small {
+        font-size: 16px;
+        letter-spacing: 0;
+        font-weight: 400;
+        color: #c3d8c8;
+      }
+      .hero .trend {
+        font-size: 11px;
+        color: var(--accent);
+        margin-top: 11px;
+        line-height: 1.5;
+      }
+      .spark {
+        width: 113px;
+        align-self: center;
+      }
+      .hero-foot {
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid #ffffff25;
+        margin-top: 18px;
+        padding-top: 12px;
+        gap: 10px;
+        font-size: 10px;
+        color: #c5d7c9;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 12px 0 22px;
+      }
+      .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        border: 1px solid var(--line);
+        padding: 15px;
+        background: var(--paper);
+        border-radius: 17px;
+        text-align: left;
+        min-height: 90px;
+      }
+      .stat .num {
+        font-size: 25px;
+        line-height: 1;
+        font-weight: 700;
+        letter-spacing: -0.8px;
+      }
+      .stat .label {
+        font-size: 11px;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+      .stat .num.red {
+        color: var(--red);
+      }
+      .section-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 22px 0 12px;
+      }
+      .section-row h2 {
+        font-size: 15px;
+        letter-spacing: -0.3px;
+      }
+      .text-btn {
+        background: none;
+        border: none;
+        min-height: 44px;
+        font-size: 11px;
+        font-weight: 750;
+        color: var(--brand);
+        padding: 8px 0;
+      }
+      .card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        padding: 16px;
+        margin-bottom: 11px;
+        box-shadow: var(--shadow);
+      }
+      .review-card {
+        width: 100%;
+        text-align: left;
+        display: block;
+        transition: border-color 0.15s;
+      }
+      .review-card:hover {
+        border-color: #8eab83;
+      }
+      .card-top {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .guest-icon {
+        width: 37px;
+        height: 37px;
+        border-radius: 12px;
+        background: #edf0e8;
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 750;
+        flex-shrink: 0;
+      }
+      .card-name {
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.45;
+      }
+      .card-meta {
+        font-size: 10px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-top: 2px;
+      }
+      .right {
+        margin-left: auto;
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .rating {
+        font-size: 12px;
+        color: #865b12;
+        font-weight: 750;
+      }
+      .review-text {
+        font-size: 12px;
+        line-height: 1.7;
+        margin-top: 12px;
+        color: #4b5d55;
+      }
+      .clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        padding: 5px 8px;
+        line-height: 1.4;
+        border-radius: 7px;
+        font-weight: 650;
+        background: #edf0e9;
+        color: #61705a;
+      }
+      .chip.red {
+        color: var(--red);
+        background: var(--redbg);
+      }
+      .chip.amber {
+        color: var(--amber);
+        background: var(--amberbg);
+      }
+      .chip.green {
+        color: var(--green);
+        background: var(--greenbg);
+      }
+      .chip.blue {
+        background: #eaf0f6;
+        color: #3e6487;
+      }
+      .chip.dark {
+        background: #e8ede5;
+        color: var(--brand);
+      }
+      .notice {
+        background: #e9efe2;
+        border: 1px solid #dce6d1;
+        color: #526448;
+        border-radius: 14px;
+        padding: 13px;
+        font-size: 11px;
+        line-height: 1.7;
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+      }
+      .notice svg {
+        margin-top: 2px;
+      }
+      .notice.muted {
+        background: #f8faf6;
+        border-color: var(--line);
+        color: var(--muted);
+      }
+      .primary,
+      .secondary,
+      .danger {
+        min-height: 45px;
+        border-radius: 12px;
+        padding: 12px 15px;
+        font-size: 12px;
+        font-weight: 750;
+        border: 1px solid transparent;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+      }
+      .primary {
+        background: var(--brand);
+        color: #fff;
+      }
+      .primary.accent {
+        background: var(--accent);
+        color: var(--brand);
+      }
+      .secondary {
+        background: #fff;
+        color: var(--brand);
+        border-color: #d9e2d4;
+      }
+      .danger {
+        background: var(--redbg);
+        color: var(--red);
+        border-color: #eed0c6;
+      }
+      .full {
+        width: 100%;
+      }
+      .button-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+      .button-row > * {
+        flex: 1;
+      }
+      .bottom-nav {
+        display: flex;
+        flex-shrink: 0;
+        padding: 7px 7px max(9px, env(safe-area-inset-bottom));
+        background: #fff;
+        border-top: 1px solid var(--line);
+        z-index: 10;
+        gap: 3px;
+      }
+      .nav-btn {
+        flex: 1;
+        min-width: 0;
+        min-height: 54px;
+        border: 0;
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+        font-size: 9px;
+        color: #7a877e;
+        position: relative;
+        border-radius: 12px;
+      }
+      .nav-btn.active {
+        background: #eef3e8;
+        color: var(--brand);
+        font-weight: 750;
+      }
+      .nav-btn.active:before {
+        content: "";
+        width: 16px;
+        height: 3px;
+        border-radius: 3px;
+        background: var(--brand);
+        position: absolute;
+        top: -8px;
+      }
+      .searchbox {
+        position: relative;
+        margin-bottom: 11px;
+      }
+      .searchbox svg {
+        position: absolute;
+        left: 12px;
+        top: 14px;
+        color: #82907f;
+      }
+      .searchbox input {
+        width: 100%;
+        height: 46px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        padding: 10px 38px;
+        font-size: 12px;
+      }
+      .searchbox .clear {
+        position: absolute;
+        right: 2px;
+        top: 1px;
+        height: 44px;
+        width: 36px;
+        background: transparent;
+        border: 0;
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .filter-row {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 2px 1px 6px;
+        margin-bottom: 7px;
+      }
+      .filter-btn {
+        white-space: nowrap;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        min-height: 44px;
+        padding: 10px 12px;
+        background: #fff;
+        font-size: 11px;
+        color: #64745d;
+      }
+      .filter-btn.active {
+        background: var(--brand);
+        color: #fff;
+        border-color: var(--brand);
+      }
+      .filter-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 4px 0 10px;
+      }
+      .field-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #576b52;
+        margin-bottom: 7px;
+      }
+      .select {
+        width: 100%;
+        min-height: 44px;
+        font-size: 11px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 9px;
+        background: #fff;
+        color: var(--ink);
+      }
+      .result-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10px;
+        color: var(--muted);
+        margin: 10px 0 12px;
+        gap: 8px;
+      }
+      .empty {
+        text-align: center;
+        padding: 32px 12px;
+        border: 1px dashed #ccd8c5;
+        border-radius: 17px;
+        color: var(--muted);
+        background: #f9fbf7;
+      }
+      .empty svg {
+        margin: 0 auto 12px;
+        color: #7b9b6b;
+      }
+      .empty h2,
+      .empty h3 {
+        font-size: 14px;
+        color: var(--ink);
+        margin-bottom: 8px;
+      }
+      .empty p {
+        font-size: 11px;
+        line-height: 1.7;
+      }
+      .empty button {
+        margin-top: 14px;
+      }
+      .task-title {
+        font-size: 13px;
+        line-height: 1.6;
+        font-weight: 750;
+        margin-top: 9px;
+      }
+      .evidence {
+        font-size: 11px;
+        line-height: 1.8;
+        color: #566951;
+        border-left: 3px solid #bbd58d;
+        padding: 7px 11px;
+        margin: 12px 0;
+        background: #f5f8ef;
+        border-radius: 0 8px 8px 0;
+        overflow-wrap: anywhere;
+      }
+      .task-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin: 11px 0;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .task-meta span {
+        border: 1px solid var(--line);
+        padding: 5px 7px;
+        border-radius: 7px;
+      }
+      .action-reason {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.7;
+        margin-top: 9px;
+      }
+      .task-top {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .task-top .category {
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        font-weight: 750;
+        color: var(--brand);
+      }
+      .budget-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 13px;
+      }
+      .range-row {
+        margin: 17px 0;
+      }
+      .range-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        margin-bottom: 9px;
+        color: #53684e;
+      }
+      .range-label output {
+        font-weight: 750;
+        color: var(--brand);
+      }
+      input[type="range"] {
+        width: 100%;
+        min-height: 28px;
+        accent-color: var(--brand);
+        cursor: pointer;
+      }
+      .plan-total {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        background: #eef4e6;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--brand);
+        margin: 10px 0 12px;
+      }
+      .tabs-inline {
+        display: flex;
+        border: 1px solid var(--line);
+        background: #e8ede4;
+        border-radius: 13px;
+        padding: 4px;
+        margin-bottom: 16px;
+        gap: 4px;
+      }
+      .tabs-inline button {
+        flex: 1;
+        border: 0;
+        border-radius: 9px;
+        background: none;
+        min-height: 43px;
+        font-size: 11px;
+        color: #687761;
+      }
+      .tabs-inline button.active {
+        background: #fff;
+        color: var(--brand);
+        font-weight: 750;
+        box-shadow: 0 2px 6px #273e2510;
+      }
+      .form-text {
+        width: 100%;
+        min-height: 125px;
+        resize: vertical;
+        border: 1px solid #ccd8c5;
+        border-radius: 13px;
+        padding: 13px;
+        font-size: 12px;
+        line-height: 1.8;
+        color: var(--ink);
+        background: #fff;
+      }
+      .sample-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin: 12px 0 16px;
+      }
+      .sample-btn {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        min-height: 44px;
+        padding: 10px;
+        font-size: 10px;
+        color: #576f4d;
+      }
+      .analysis-heading {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin: 15px 0 9px;
+      }
+      .analysis-heading h2 {
+        font-size: 14px;
+      }
+      .analysis-heading .chip {
+        margin-left: auto;
+      }
+      .aspect-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+      }
+      .aspect-row:last-child {
+        border-bottom: 0;
+      }
+      .aspect-row .chip {
+        max-width: 55%;
+      }
+      .profile-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .profile-row .avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 18px;
+        border-radius: 19px;
+      }
+      .profile-row h2 {
+        font-size: 16px;
+      }
+      .settings-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .settings-label:last-child {
+        border-bottom: 0;
+      }
+      .settings-label input {
+        width: 22px;
+        height: 22px;
+        accent-color: var(--brand);
+      }
+      .small-title {
+        font-size: 13px;
+        font-weight: 750;
+        margin-bottom: 10px;
+      }
+      .body-text {
+        font-size: 11px;
+        line-height: 1.8;
+        color: var(--muted);
+      }
+      .divider {
+        height: 1px;
+        background: var(--line);
+        margin: 18px 0;
+      }
+      .bar-chart {
+        display: flex;
+        gap: 6px;
+        align-items: flex-end;
+        height: 65px;
+        margin: 15px 0 5px;
+      }
+      .bar-chart .col {
+        flex: 1;
+        text-align: center;
+        font-size: 9px;
+        color: #7c8d74;
+      }
+      .bar-chart .bar {
+        margin: 0 auto 5px;
+        width: 100%;
+        max-width: 25px;
+        background: #b8d091;
+        border-radius: 5px 5px 2px 2px;
+        min-height: 2px;
+      }
+      .bar-chart .bar.missing {
+        background: #e5ebdf;
+        height: 2px !important;
+      }
+      .toast {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 88px;
+        background: #223b32;
+        color: white;
+        border-radius: 12px;
+        padding: 13px 15px;
+        font-size: 12px;
+        line-height: 1.5;
+        box-shadow: 0 7px 25px #0002;
+        z-index: 70;
+        pointer-events: none;
+      }
+      .toast:empty {
+        display: none;
+      }
+      .error {
+        font-size: 11px;
+        color: var(--red);
+        line-height: 1.7;
+        margin-top: 8px;
+      }
+      .lab-form .button-row {
+        margin-top: 12px;
+      }
+      .lab-result:empty {
+        display: none;
+      }
+      .hint {
+        font-size: 10px;
+        line-height: 1.7;
+        color: var(--muted);
+        margin: 12px 0;
+      }
+      .view-enter {
+        animation: enter 0.16s ease-out;
+      }
+      @keyframes enter {
+        from {
+          opacity: 0.4;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      dialog {
+        border: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        width: min(410px, 100vw - 24px);
+        max-height: min(810px, 92svh);
+        border-radius: 24px;
+        box-shadow: 0 25px 100px #14282045;
+        overflow: hidden;
+      }
+      dialog::backdrop {
+        background: #172c2466;
+        backdrop-filter: blur(4px);
+      }
+      .sheet {
+        display: flex;
+        flex-direction: column;
+        max-height: min(810px, 92svh);
+      }
+      .sheet-head {
+        padding: 17px 19px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background: #fff;
+        flex: none;
+      }
+      .sheet-head h2 {
+        font-size: 16px;
+        letter-spacing: -0.3px;
+      }
+      .close-btn {
+        min-width: 44px;
+        min-height: 44px;
+        background: #f0f3eb;
+        border: 0;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+      }
+      .sheet-body {
+        overflow-y: auto;
+        min-height: 0;
+        padding: 18px;
+      }
+      .sheet-body .review-text {
+        font-size: 13px;
+        margin-top: 14px;
+      }
+      .sheet-body .card {
+        box-shadow: none;
+      }
+      .sheet-body h3 {
+        font-size: 13px;
+        margin: 19px 0 11px;
+      }
+      .sheet-body .review-card {
+        margin-bottom: 0;
+      }
+      .token {
+        font-size: 10px;
+        display: inline-block;
+        padding: 4px 7px;
+        background: var(--greenbg);
+        color: var(--green);
+        border-radius: 6px;
+        margin: 3px 3px 3px 0;
+      }
+      .token.neg {
+        color: var(--red);
+        background: var(--redbg);
+      }
+      .feedback {
+        font-size: 11px;
+        line-height: 1.6;
+        color: var(--green);
+        margin-top: 9px;
+      }
+      .status-strip {
+        font-size: 11px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+        padding: 8px 18px;
+        color: var(--amber);
+        line-height: 1.5;
+      }
+      .status-strip[hidden] {
+        display: none;
+      }
+      .step-line {
+        font-size: 10px;
+        line-height: 1.7;
+        color: #6e7f65;
+        margin: 13px 0;
+      }
+      .scene-note {
+        font-size: 10px;
+        line-height: 1.7;
+        color: #65775c;
+        background: #edf2e6;
+        border-radius: 10px;
+        padding: 10px 12px;
+        margin-top: 10px;
+      }
+      @media (max-width: 850px) {
+        .desk-note {
+          display: none;
+        }
+        .desk {
+          padding: 20px;
+          gap: 0;
+        }
+        .device {
+          height: calc(100svh - 40px);
+          min-height: 580px;
+        }
+      }
+      @media (max-width: 480px) {
+        body {
+          background: var(--bg);
+        }
+        .desk {
+          padding: 0;
+          min-height: 100svh;
+          display: block;
+        }
+        .device {
+          width: 100%;
+          height: 100svh;
+          min-height: 0;
+          padding: 0;
+          border-radius: 0;
+          box-shadow: none;
+          background: var(--bg);
+        }
+        .app {
+          border-radius: 0;
+        }
+        .app-top {
+          padding-top: max(15px, env(safe-area-inset-top));
+        }
+        .app-main {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+        .bottom-nav {
+          padding-bottom: max(10px, env(safe-area-inset-bottom));
+        }
+        dialog {
+          width: 100vw;
+          max-width: 100vw;
+          margin: auto 0 0;
+          max-height: 94svh;
+          border-radius: 24px 24px 0 0;
+        }
+        .sheet {
+          max-height: 94svh;
+        }
+        .screen-head h1 {
+          font-size: 24px;
+        }
+      }
+      @media (max-width: 345px) {
+        .app-main {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .card {
+          padding: 13px;
+        }
+        .hero {
+          padding: 17px;
+        }
+        .hero .score {
+          font-size: 39px;
+        }
+        .spark {
+          width: 96px;
+        }
+        .card-meta {
+          font-size: 9px;
+        }
+        .filter-grid {
+          gap: 6px;
+        }
+        .nav-btn {
+          font-size: 8px;
+        }
+        .hero-foot {
+          font-size: 9px;
+        }
+        .button-row > * {
+          flex-basis: 100%;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="desk">
+      <aside class="desk-note" aria-label="Πληροφορίες πρωτοτύπου">
+        <div class="wordmark">
+          <span class="mark" aria-hidden="true">⌁</span>HostPulse<span
+            style="font-weight: 400; color: #6f8664"
+            >.</span
+          >
+        </div>
+        <h1>Κάθε κριτική,<br />ένα επόμενο βήμα.</h1>
+        <p>
+          Ένα mobile εργαλείο για να εντοπίζεις παράπονα από όλες τις πηγές, να
+          ελέγχεις επαναλήψεις και να οργανώνεις την επίλυσή τους.
+        </p>
+        <p class="tag">Interactive mockup · v0.3</p>
+        <p style="margin-top: 12px; font-size: 11px">
+          Συνθετικά δεδομένα. Τοπικές προσομοιώσεις ανάλυσης και συστάσεων. Δεν
+          γίνεται αποστολή μηνυμάτων.
+        </p>
+      </aside>
+      <div class="device">
+        <div class="app" id="app">
+          <header class="app-top">
+            <div class="topline">
+              <div class="brand-small">
+                <svg
+                  width="23"
+                  height="23"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 12h5l3-8 4 16 3-8h5"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                  /></svg
+                >HostPulse<span style="color: #91a67c">.</span>
+              </div>
+              <button
+                class="demo-chip"
+                type="button"
+                data-action="nav"
+                data-view="lab"
+                aria-label="Δοκιμή κριτικής"
+              >
+                ΔΟΚΙΜΗ · 0.3
+              </button>
+            </div>
+            <div class="property-wrap">
+              <label class="sr-only" for="property-select">Κατάλυμα</label
+              ><select id="property-select"></select>
+            </div>
+          </header>
+          <div class="status-strip" id="storage-notice" role="status" hidden>
+            Η αποθήκευση σε αυτόν τον browser δεν είναι διαθέσιμη. Οι αλλαγές
+            διατηρούνται όσο μένει ανοικτή η σελίδα.
+          </div>
+          <main class="app-main" id="main" tabindex="-1"></main>
+          <nav class="bottom-nav" id="nav" aria-label="Κύρια πλοήγηση"></nav>
+          <div
+            class="toast"
+            id="toast"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <dialog id="detail-dialog" aria-labelledby="dialog-title"></dialog>
+    <noscript
+      ><p style="padding: 25px">
+        Ενεργοποίησε τη JavaScript για να χρησιμοποιήσεις το διαδραστικό
+        πρωτότυπο.
+      </p></noscript
+    >
+    <script>
+      (() => {
+        "use strict";
+
+        const PROPS = [
+          {
+            id: "p1",
+            name: "Aegean Blue Suites",
+            loc: "Μύκονος",
+            emo: "🏝️",
+            g: "linear-gradient(135deg,#7fd4ff,#4facfe)",
+            price: 3,
+            r: {
+              clean: 4.9,
+              service: 4.7,
+              room: 4.8,
+              amenities: 4.6,
+              location: 4.9,
+              value: 4.2,
+            },
+          },
+          {
+            id: "p2",
+            name: "Sunlit Lofts Athens",
+            loc: "Αθήνα",
+            emo: "🏛️",
+            g: "linear-gradient(135deg,#ffd9a0,#ff9d6c)",
+            price: 2,
+            r: {
+              clean: 4.2,
+              service: 3.9,
+              room: 4.1,
+              amenities: 3.7,
+              location: 4.8,
+              value: 4.3,
+            },
+          },
+          {
+            id: "p3",
+            name: "Olive Grove Villas",
+            loc: "Λέσβος",
+            emo: "🫒",
+            g: "linear-gradient(135deg,#c7e59a,#8ec463)",
+            price: 2,
+            r: {
+              clean: 4.7,
+              service: 4.8,
+              room: 4.6,
+              amenities: 3.8,
+              location: 4.1,
+              value: 4.5,
+            },
+          },
+          {
+            id: "p4",
+            name: "Meteora View Hotel",
+            loc: "Καλαμπάκα",
+            emo: "⛰️",
+            g: "linear-gradient(135deg,#c9b8ff,#9a86f5)",
+            price: 2,
+            r: {
+              clean: 4.5,
+              service: 4.4,
+              room: 4.5,
+              amenities: 4.2,
+              location: 4.7,
+              value: 4.4,
+            },
+          },
+          {
+            id: "p5",
+            name: "Portside Rooms",
+            loc: "Θεσσαλονίκη",
+            emo: "⚓",
+            g: "linear-gradient(135deg,#a8e0ff,#6fb6f5)",
+            price: 1,
+            r: {
+              clean: 4.3,
+              service: 3.8,
+              room: 4.2,
+              amenities: 4.0,
+              location: 4.9,
+              value: 4.5,
+            },
+          },
+          {
+            id: "p6",
+            name: "Crete Palm Resort",
+            loc: "Χανιά",
+            emo: "🌴",
+            g: "linear-gradient(135deg,#ffe0a3,#ffb86c)",
+            price: 3,
+            r: {
+              clean: 4.8,
+              service: 4.9,
+              room: 4.5,
+              amenities: 4.7,
+              location: 4.6,
+              value: 4.0,
+            },
+          },
+          {
+            id: "p7",
+            name: "Ionian Breeze Apts",
+            loc: "Κέρκυρα",
+            emo: "🌊",
+            g: "linear-gradient(135deg,#a5f0e0,#5cd6c0)",
+            price: 2,
+            r: {
+              clean: 4.6,
+              service: 4.5,
+              room: 4.4,
+              amenities: 3.9,
+              location: 4.3,
+              value: 4.6,
+            },
+          },
+          {
+            id: "p8",
+            name: "Acropolis Steps Rooms",
+            loc: "Αθήνα",
+            emo: "🏺",
+            g: "linear-gradient(135deg,#ffd6c2,#ff9a8b)",
+            price: 2,
+            r: {
+              clean: 4.4,
+              service: 4.3,
+              room: 3.9,
+              amenities: 3.6,
+              location: 5.0,
+              value: 4.1,
+            },
+          },
+          {
+            id: "p9",
+            name: "Nest Studios Rhodes",
+            loc: "Ρόδος",
+            emo: "🌞",
+            g: "linear-gradient(135deg,#ffe29a,#ffc75f)",
+            price: 1,
+            r: {
+              clean: 4.9,
+              service: 4.6,
+              room: 4.3,
+              amenities: 3.8,
+              location: 4.4,
+              value: 4.7,
+            },
+          },
+          {
+            id: "p10",
+            name: "Pine Ridge Chalet",
+            loc: "Αράχωβα",
+            emo: "🌲",
+            g: "linear-gradient(135deg,#bfe3c0,#7cc58a)",
+            price: 2,
+            r: {
+              clean: 4.7,
+              service: 4.5,
+              room: 4.4,
+              amenities: 4.1,
+              location: 4.2,
+              value: 4.3,
+            },
+          },
+        ];
+        const REVIEWS = [
+          {
+            id: 1,
+            p: "p1",
+            guest: "Ελένη Μ.",
+            date: "2026-10-21",
+            stars: 5,
+            reply: false,
+            text: "Φανταστικές διακοπές! Το δωμάτιο ήταν πεντακάθαρο, η θέα μαγευτική και το προσωπικό εξυπηρετικότατο. Το πρωινό πλούσιο με τοπικά προϊόντα.",
+          },
+          {
+            id: 2,
+            p: "p1",
+            guest: "Δημήτρης Κ.",
+            date: "2026-10-12",
+            stars: 4,
+            reply: true,
+            text: "Ωραία διαμονή. Η πισίνα υπέροχη και το δωμάτιο άνετο. Το check-in είχε καθυστέρηση, αλλά συνολικά πολύ καλό.",
+          },
+          {
+            id: 3,
+            p: "p1",
+            guest: "Μαρία Π.",
+            date: "2026-09-28",
+            stars: 2,
+            reply: false,
+            text: "Το δωμάτιο θορυβώδες και η τιμή ακριβή για αυτά που προσφέρει. Ο κλιματισμός ήταν χαλασμένος.",
+          },
+          {
+            id: 4,
+            p: "p2",
+            guest: "Κώστας Α.",
+            date: "2026-10-20",
+            stars: 5,
+            reply: false,
+            text: "Όπως στις φωτογραφίες! Προσεγμένος χώρος, βολική τοποθεσία δίπλα στο μετρό και φιλικότατο προσωπικό.",
+          },
+          {
+            id: 5,
+            p: "p2",
+            guest: "Γιώτα Λ.",
+            date: "2026-10-05",
+            stars: 3,
+            reply: true,
+            text: "Καλό για σύντομη διαμονή. Το κρεβάτι άνετο, αλλά το μπάνιο μικρό και παλιό. Η τιμή λογική για το κέντρο.",
+          },
+          {
+            id: 6,
+            p: "p2",
+            guest: "Νίκος Σ.",
+            date: "2026-09-14",
+            stars: 1,
+            reply: true,
+            text: "Απαράδεκτη καθαριότητα. Βρώμικες πετσέτες και μούχλα στο μπάνιο. Το προσωπικό δεν απαντούσε στα τηλεφωνήματα.",
+          },
+          {
+            id: 7,
+            p: "p3",
+            guest: "Αναστασία Β.",
+            date: "2026-10-19",
+            stars: 5,
+            reply: false,
+            text: "Υπέροχη βίλα! Πισίνα τέλεια, ησυχία και φανταστική θέα στο Αιγαίο. Οι ιδιοκτήτες φιλόξενοι και μας βοήθησαν σε όλα.",
+          },
+          {
+            id: 8,
+            p: "p3",
+            guest: "Πέτρος Δ.",
+            date: "2026-10-02",
+            stars: 4,
+            reply: true,
+            text: "Πολύ όμορφη βίλα με πλήρως εξοπλισμένη κουζίνα. Απαιτεί αυτοκίνητο, γιατί είναι μακριά από το κέντρο. Ωραία θέα στους ελαιώνες. Μόνο το wifi ήταν αδύναμο.",
+          },
+          {
+            id: 9,
+            p: "p3",
+            guest: "Σοφία Γ.",
+            date: "2026-09-08",
+            stars: 3,
+            reply: true,
+            text: "Όμορφο περιβάλλον αλλά αρκετά βασικές παροχές. Το πρωινό μέτριο. Καθαριότητα οκ.",
+          },
+          {
+            id: 10,
+            p: "p4",
+            guest: "Τάσης Ε.",
+            date: "2026-10-18",
+            stars: 5,
+            reply: false,
+            text: "Απίστευτη θέα στα Μετέωρα από το μπαλκόνι. Ευρύχωρο δωμάτιο, εξαιρετικό πρωινό και ευγενικό προσωπικό.",
+          },
+          {
+            id: 11,
+            p: "p4",
+            guest: "Λένα Ζ.",
+            date: "2026-10-06",
+            stars: 4,
+            reply: true,
+            text: "Ωραίο ξενοδοχείο, άνετο κρεβάτι και ζεστή ατμόσφαιρα. Δίπλα στον σταθμό του τρένου. Μόνο το parking λίγο περιορισμένο.",
+          },
+          {
+            id: 12,
+            p: "p4",
+            guest: "Χάρης Ν.",
+            date: "2026-09-25",
+            stars: 2,
+            reply: false,
+            text: "Το πρωινό λιγοστά και το δωμάτιο άβολο. Αργό check-in με καθυστέρηση μία ώρα.",
+          },
+          {
+            id: 13,
+            p: "p5",
+            guest: "Ραφαέλα Μ.",
+            date: "2026-10-17",
+            stars: 5,
+            reply: false,
+            text: "Εξαιρετική τοποθεσία δίπλα στο λιμάνι, πεντακάθαρα δωμάτια και πλούσιο πρωινό με χειροποίητα γλυκά.",
+          },
+          {
+            id: 14,
+            p: "p5",
+            guest: "Αντώνης Η.",
+            date: "2026-10-03",
+            stars: 3,
+            reply: true,
+            text: "Λογική τιμή για το κέντρο, αλλά ο δρόμος θορυβώδης τα βράδια. Το δωμάτιο καθαρό.",
+          },
+          {
+            id: 15,
+            p: "p5",
+            guest: "Ειρήνη Τ.",
+            date: "2026-09-11",
+            stars: 1,
+            reply: false,
+            text: "Αγενές προσωπικό, ακατάστατο δωμάτιο και πανάκριβο για ό,τι προσφέρει. Απογοήτευση.",
+          },
+          {
+            id: 16,
+            p: "p6",
+            guest: "Βασίλης Θ.",
+            date: "2026-10-16",
+            stars: 5,
+            reply: false,
+            text: "Τέλειο για οικογένειες. Μεγάλη πισίνα, πλούσιο πρωινό και ευγενικότατο προσωπικό. Παντού καθαριότητα.",
+          },
+          {
+            id: 17,
+            p: "p6",
+            guest: "Κατερίνα Ρ.",
+            date: "2026-10-01",
+            stars: 4,
+            reply: true,
+            text: "Υπέροχες διακοπές, αν και το μπαλκόνι μας ήταν μικρό. Πρώτη γραμμή παραλία και φανταστικό πρωινό. Το check-out ήταν αργό.",
+          },
+          {
+            id: 18,
+            p: "p6",
+            guest: "Στέλιος Υ.",
+            date: "2026-09-20",
+            stars: 2,
+            reply: false,
+            text: "Το φαγητό μέτριο και το μπαρ του ξενοδοχείου πανάκριβο. Η πισίνα θολή ένα απόγευμα.",
+          },
+          {
+            id: 19,
+            p: "p7",
+            guest: "Δανάη Φ.",
+            date: "2026-10-15",
+            stars: 5,
+            reply: false,
+            text: "Πολύ προσεγμένα διαμερίσματα με καινούργια επίπλωση. Η παραλία σε δύο λεπτά και ο ιδιοκτήτης φιλόξενος.",
+          },
+          {
+            id: 20,
+            p: "p7",
+            guest: "Λάμπρος Χ.",
+            date: "2026-10-04",
+            stars: 4,
+            reply: true,
+            text: "Καλή σχέση τιμής-ποιότητας και ήσυχη γειτονιά. Θα προτιμούσα μεγαλύτερο ψυγείο, αλλά όχι κάτι σοβαρό.",
+          },
+          {
+            id: 21,
+            p: "p7",
+            guest: "Ουρανία Ψ.",
+            date: "2026-09-16",
+            stars: 3,
+            reply: true,
+            text: "Ωραία θέα από το μπαλκόνι, αλλά η κουζίνα είχε λίγα σκεύη. Για σύντομη διαμονή οκ.",
+          },
+          {
+            id: 22,
+            p: "p8",
+            guest: "Αργύρης Ω.",
+            date: "2026-10-14",
+            stars: 4,
+            reply: true,
+            text: "Δύο λεπτά με τα πόδια από την Ακρόπολη. Καθαρά δωμάτια και ευγενικό προσωπικό. Το πρωινό βασικό αλλά φρέσκο.",
+          },
+          {
+            id: 23,
+            p: "p8",
+            guest: "Τούλα Κ.",
+            date: "2026-09-30",
+            stars: 3,
+            reply: true,
+            text: "Καλή τοποθεσία για εξερεύνηση της πόλης, αλλά το δωμάτιο μύριζε κλεισούρα. Το κλιματιστικό θορυβώδες. Η τοποθεσία όμως αποζημιώνει.",
+          },
+          {
+            id: 24,
+            p: "p9",
+            guest: "Διονύσης Α.",
+            date: "2026-10-13",
+            stars: 5,
+            reply: false,
+            text: "Πανέμορφα νεόδμητα studios, πεντακάθαρα με υπέροχη θέα. Οι οικοδεσπότες εξυπηρετικότατοι σε κάθε λεπτομέρεια.",
+          },
+          {
+            id: 25,
+            p: "p9",
+            guest: "Εύα Ι.",
+            date: "2026-09-29",
+            stars: 4,
+            reply: true,
+            text: "Πολύ καθαρό και ήσυχο studio. Το μπάνιο μικρό, αλλά η τιμή πολύ λογική για την περιοχή.",
+          },
+          {
+            id: 26,
+            p: "p9",
+            guest: "Μάριος Β.",
+            date: "2026-09-05",
+            stars: 2,
+            reply: false,
+            text: "Σοβαρή καθυστέρηση στο check-in και το δωμάτιο δεν ήταν έτοιμο. Κρύο νερό στο ντους και ο κλιματισμός αδύναμος.",
+          },
+          {
+            id: 27,
+            p: "p10",
+            guest: "Ζέττα Γ.",
+            date: "2026-10-12",
+            stars: 5,
+            reply: false,
+            text: "Τζάκι, θέα στο βουνό, ζεστή φιλοξενία. Το πρωινό με τοπικά προϊόντα υπέροχο. Θα επιστρέψουμε σίγουρα!",
+          },
+          {
+            id: 28,
+            p: "p10",
+            guest: "Πάρις Δ.",
+            date: "2026-09-27",
+            stars: 4,
+            reply: true,
+            text: "Καταπληκτική θέα στο βουνό και ζεστό τζάκι. Η πρόσβαση λίγο δύσκολη, αλλά αξίζει.",
+          },
+          {
+            id: 29,
+            p: "p8",
+            guest: "Σάββας Η.",
+            date: "2026-10-10",
+            stars: 5,
+            reply: true,
+            text: "Καλύτερη τοποθεσία δεν γίνεται, με θέα την Ακρόπολη από το μπαλκόνι. Το δωμάτιο πεντακάθαρο και το προσωπικό εξυπηρετικό.",
+          },
+          {
+            id: 30,
+            p: "p8",
+            guest: "Νένα Στ.",
+            date: "2026-09-21",
+            stars: 2,
+            reply: false,
+            text: "Το πρωινό επαναλαμβανόμενο κάθε μέρα και ο καθαρισμός στα κοινόχρηστα αργεί. Ακριβό για την Αθήνα.",
+          },
+          {
+            id: 31,
+            p: "p5",
+            guest: "Φίλιππος Κ.",
+            date: "2026-08-29",
+            stars: 4,
+            reply: true,
+            text: "Καλό για επαγγελματική διαμονή — γρήγορο wifi, ήσυχο δωμάτιο και κοντά στο κέντρο. Το πρωινό όμως λιτό.",
+          },
+          {
+            id: 32,
+            p: "p6",
+            guest: "Άννα Ντ.",
+            date: "2026-08-21",
+            stars: 3,
+            reply: true,
+            text: "Καλό ξενοδοχείο συνολικά. Το φαγητό νόστιμο, αλλά οι ουρές στο μπουφέ κουράζουν.",
+          },
+          {
+            id: 33,
+            p: "p7",
+            guest: "Βαγγέλης Ομ.",
+            date: "2026-08-15",
+            stars: 4,
+            reply: true,
+            text: "Πολύ καθαρό διαμέρισμα και ευγενικοί οικοδεσπότες. Η θάλασσα σε τρία λεπτά. Μόνο το parking δύσκολο τον Αύγουστο.",
+          },
+          {
+            id: 34,
+            p: "p9",
+            guest: "Καλλιόπη Π.",
+            date: "2026-08-10",
+            stars: 4,
+            reply: true,
+            text: "Σούπερ καθαρό studio, άνετο κρεβάτι και πλούσιο πρωινό. Μόνο ο ήχος από τον δρόμο ενοχλούσε.",
+          },
+          {
+            id: 35,
+            p: "p10",
+            guest: "Ζαχαρίας Λ.",
+            date: "2026-08-05",
+            stars: 3,
+            reply: true,
+            text: "Όμορφο χειμερινό καταφύγιο με τζάκι, αλλά το δωμάτιο ψυχρό το πρωί και το πρωινό βασικό.",
+          },
+          {
+            id: 36,
+            p: "p2",
+            guest: "Ηλίας Π.",
+            date: "2026-08-03",
+            stars: 4,
+            reply: true,
+            text: "Άνετα lofts κοντά στο Μοναστηράκι. Το check-in ψηφιακό και γρήγορο. Το δωμάτιο λίγο σκοτεινό, αλλά καθαρό.",
+          },
+        ];
+
+        /* The mock is deterministic and entirely local. No model/API is connected. */
+        const DEMO_DATE = "2026-10-22";
+        const SCHEMA = 2;
+        const STORAGE_KEY = "hostpulse.mock.v2";
+        const mean = (values) =>
+          values.length
+            ? values.reduce((a, b) => a + b, 0) / values.length
+            : null;
+        const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+        const norm = (text) =>
+          String(text)
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/ς/g, "σ")
+            .replace(/[’']/g, "'")
+            .replace(
+              /\b(?:wasn't|isn't|aren't|weren't|doesn't|didn't|don't|can't)\b/g,
+              " not ",
+            );
+        const escapeHTML = (value) =>
+          String(value).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              })[c],
+          );
+        const CATEGORIES = {
+          clean: {
+            label: "Καθαριότητα",
+            department: "Καθαριότητα",
+            keys: [
+              "πεντακαθ",
+              "καθαρ",
+              "βρωμ",
+              "μουχλ",
+              "μοχλ",
+              "πετσετ",
+              "σεντον",
+              "σκον",
+              "clean",
+              "dirty",
+              "filthy",
+              "mold",
+              "towel",
+            ],
+            title: "Έλεγξε την καθαριότητα του χώρου και των λευκών ειδών",
+            effort: 35,
+            cost: 15,
+          },
+          maintenance: {
+            label: "Συντήρηση",
+            department: "Συντήρηση",
+            keys: [
+              "κλιματισ",
+              "χαλασ",
+              "σπασ",
+              "ψυγει",
+              "θερμαν",
+              "διαρρο",
+              "ζεστο νερο",
+              "wifi",
+              "wi-fi",
+              "air condition",
+              "aircon",
+              "broken",
+              "hot water",
+              "heating",
+              "leak",
+              "not working",
+            ],
+            title: "Έλεγξε και αποκατάστησε τον εξοπλισμό που αναφέρεται",
+            effort: 45,
+            cost: 40,
+          },
+          staff: {
+            label: "Εξυπηρέτηση",
+            department: "Υποδοχή",
+            keys: [
+              "προσωπικ",
+              "ρεσεψιον",
+              "υποδοχ",
+              "αγεν",
+              "ευγεν",
+              "φιλικ",
+              "φιλοξεν",
+              "οικοδεσποτ",
+              "ιδιοκτητ",
+              "check-in",
+              "check in",
+              "check-out",
+              "check out",
+              "staff",
+              "reception",
+              "host",
+              "rude",
+              "service",
+            ],
+            title:
+              "Επικοινώνησε με τον επισκέπτη και έλεγξε το περιστατικό εξυπηρέτησης",
+            effort: 20,
+            cost: 0,
+          },
+          food: {
+            label: "Πρωινό & φαγητό",
+            department: "Εστίαση",
+            keys: [
+              "πρωιν",
+              "φαγητ",
+              "μπουφε",
+              "μπαρ",
+              "εστιατ",
+              "breakfast",
+              "food",
+              "buffet",
+              "restaurant",
+            ],
+            title: "Έλεγξε την ποιότητα και τη διαθεσιμότητα του πρωινού",
+            effort: 25,
+            cost: 20,
+          },
+          noise: {
+            label: "Θόρυβος",
+            department: "Υποδοχή",
+            keys: [
+              "θορυβ",
+              "ησυχ",
+              "ηχο",
+              "φασαρι",
+              "noise",
+              "noisy",
+              "quiet",
+              "loud",
+            ],
+            title:
+              "Διερεύνησε την πηγή θορύβου και πρότεινε λύση στον επισκέπτη",
+            effort: 20,
+            cost: 0,
+          },
+          room: {
+            label: "Δωμάτιο",
+            department: "Συντήρηση",
+            keys: [
+              "δωματι",
+              "κρεβατ",
+              "μπανι",
+              "ντουσ",
+              "χωρο",
+              "στρωμα",
+              "ανετ",
+              "room",
+              "bed",
+              "bathroom",
+              "shower",
+              "mattress",
+            ],
+            title: "Επιθεώρησε τον χώρο και τον εξοπλισμό του δωματίου",
+            effort: 30,
+            cost: 20,
+          },
+          value: {
+            label: "Τιμή / αξία",
+            department: "Διεύθυνση",
+            keys: [
+              "τιμ",
+              "κοστ",
+              "ακριβ",
+              "πανακριβ",
+              "οικονομικ",
+              "αξια",
+              "αξιζ",
+              "price",
+              "expensive",
+              "value",
+              "overpriced",
+            ],
+            title: "Έλεγξε τη σχέση τιμής και παρεχόμενων υπηρεσιών",
+            effort: 25,
+            cost: 0,
+          },
+          location: {
+            label: "Τοποθεσία",
+            department: "Υποδοχή",
+            keys: [
+              "τοποθεσ",
+              "κεντρ",
+              "παραλι",
+              "μετρο",
+              "σταθμ",
+              "μακρια",
+              "γειτον",
+              "location",
+              "beach",
+              "station",
+              "far away",
+            ],
+            title:
+              "Βελτίωσε τις οδηγίες πρόσβασης και την περιγραφή της τοποθεσίας",
+            effort: 15,
+            cost: 0,
+          },
+          amenities: {
+            label: "Παροχές",
+            department: "Συντήρηση",
+            keys: [
+              "πισιν",
+              "παρκιν",
+              "parking",
+              "κουζιν",
+              "σαουνα",
+              "γυμναστ",
+              "pool",
+              "kitchen",
+              "facilit",
+            ],
+            title: "Έλεγξε τη διαθεσιμότητα και την κατάσταση των παροχών",
+            effort: 30,
+            cost: 25,
+          },
+        };
+        const DEPARTMENTS = [
+          ...new Set(Object.values(CATEGORIES).map((c) => c.department)),
+        ];
+        const POS = [
+          ["πεντακαθ", 3],
+          ["φανταστικ", 3],
+          ["υπεροχ", 3],
+          ["τελει", 3],
+          ["εξαιρετικ", 3],
+          ["μαγευτικ", 3],
+          ["αψογ", 3],
+          ["καταπληκτ", 3],
+          ["πανεμορφ", 3],
+          ["απιστευτ", 2.5],
+          ["καθαρ", 2],
+          ["ανετ", 2],
+          ["ευγεν", 2],
+          ["εξυπηρετικ", 2],
+          ["φιλικ", 2],
+          ["φιλοξεν", 2],
+          ["ομορφ", 2],
+          ["ωραι", 2],
+          ["βολικ", 2],
+          ["ευρυχωρ", 2],
+          ["προσεγμεν", 2],
+          ["ησυχ", 2],
+          ["πλουσι", 1.5],
+          ["νοστιμ", 1.5],
+          ["φρεσκ", 1.5],
+          ["λογικ", 1],
+          ["εξοπλισμεν", 1.5],
+          ["καλ", 1.3],
+          ["ζεστ", 1],
+          ["γρηγορ", 1.5],
+          ["οκ", 0.5],
+          ["excellent", 3],
+          ["perfect", 3],
+          ["spotless", 3],
+          ["clean", 2],
+          ["comfortable", 2],
+          ["helpful", 2],
+          ["friendly", 2],
+          ["great", 2.5],
+          ["amazing", 3],
+          ["quiet", 2],
+          ["good", 1.5],
+          ["delicious", 2],
+        ];
+        const NEG = [
+          ["απαραδεκτ", -3],
+          ["βρωμ", -3],
+          ["μουχλ", -3],
+          ["μοχλ", -3],
+          ["αγεν", -2.5],
+          ["αθλι", -3],
+          ["χαλασ", -2.5],
+          ["σπασ", -2.5],
+          ["δυσλειτουργ", -2.5],
+          ["θορυβ", -2],
+          ["ακαταστατ", -2.5],
+          ["καθυστερ", -2],
+          ["πανακριβ", -2.5],
+          ["ακριβ", -1.5],
+          ["μετρι", -1],
+          ["αδυναμ", -1.5],
+          ["αβολ", -2],
+          ["απογοητευ", -2.5],
+          ["παλι", -1],
+          ["κρυ", -1.5],
+          ["ψυχρ", -1.5],
+          ["αργ", -1.5],
+          ["μικρ", -1],
+          ["βασικ", -1],
+          ["λιγοστ", -1],
+          ["λιτ", -1],
+          ["θολ", -1.5],
+          ["σκοτειν", -1.5],
+          ["περιορισμεν", -1],
+          ["ελειπ", -1.5],
+          ["ενοχλ", -2],
+          ["επαναλαμβανομεν", -1],
+          ["κουραζ", -1],
+          ["κακ", -2],
+          ["dirty", -3],
+          ["filthy", -3],
+          ["mold", -3],
+          ["broken", -2.5],
+          ["rude", -2.5],
+          ["terrible", -3],
+          ["awful", -3],
+          ["noisy", -2],
+          ["noise", -2],
+          ["expensive", -1.5],
+          ["overpriced", -2],
+          ["cold", -1.5],
+          ["slow", -1.5],
+          ["bad", -2],
+          ["poor", -2],
+        ];
+        const NEGATORS = new Set([
+          "δεν",
+          "οχι",
+          "μη",
+          "not",
+          "no",
+          "never",
+          "χωρισ",
+        ]);
+        const INTENSIFIERS = {
+          πολυ: 1.4,
+          υπερβολικα: 1.6,
+          τελειωσ: 1.5,
+          λιγο: 0.7,
+          very: 1.4,
+          extremely: 1.6,
+        };
+        const TOKEN_PATTERN = /[a-zα-ω]+/g;
+        function findCategories(text) {
+          const t = norm(text),
+            words = t.match(TOKEN_PATTERN) || [];
+          return Object.keys(CATEGORIES).filter((key) =>
+            CATEGORIES[key].keys.some((k) =>
+              /[ -]/.test(k)
+                ? t.includes(k)
+                : words.some((w) => w.startsWith(k)),
+            ),
+          );
+        }
+        function scoreClause(text) {
+          const words = norm(text).match(TOKEN_PATTERN) || [],
+            hits = [];
+          for (let i = 0; i < words.length; i++) {
+            const word = words[i],
+              entry =
+                NEG.find(([stem]) => word.startsWith(stem)) ||
+                POS.find(([stem]) => word.startsWith(stem));
+            if (!entry) continue;
+            const previous = words.slice(Math.max(0, i - 3), i);
+            const negated = previous.some((w) => NEGATORS.has(w));
+            const intensity =
+              previous
+                .map((w) => INTENSIFIERS[w])
+                .filter(Boolean)
+                .at(-1) || 1;
+            hits.push({
+              word,
+              value: entry[1] * intensity * (negated ? -0.9 : 1),
+            });
+          }
+          const t = norm(text);
+          if (
+            /(?:δεν λειτουργ|δεν δουλευ|not working|does not work|no hot water|χωρισ ζεστο νερο)/.test(
+              t,
+            )
+          )
+            hits.push({ word: "μη λειτουργικός εξοπλισμός", value: -2.5 });
+          return hits;
+        }
+        function analyze(text) {
+          const input = String(text).trim().slice(0, 5000),
+            sentences = input.match(/[^.!?;\n]+[.!?;]?/g) || [],
+            clauses = [];
+          for (const sentence of sentences) {
+            const start = clauses.length;
+            const chunks = sentence
+              .split(/,|\s+(?:αλλά|αλλα|όμως|ομως|και|but|however|and)\s+/i)
+              .map((s) => s.trim())
+              .filter(Boolean);
+            for (const quote of chunks) {
+              const t = norm(quote),
+                cats = findCategories(quote),
+                hits = scoreClause(quote);
+              const hypothetical =
+                /(?:θα (?:ηθελα|προτιμουσα|μπορουσε)|would (?:like|prefer)|if .* (?:break|fail)|αν (?:χαλασει|σπασει)|υποθετικ)/.test(
+                  t,
+                );
+              const resolved =
+                /(?:διορθωθηκε|επισκευαστηκε|αποκατασταθηκε|λυθηκε|το εφτιαξαν|resolved|was fixed|was repaired)/.test(
+                  t,
+                ) &&
+                !/(?:δεν|not|χωρισ).{0,18}(?:διορθω|επισκευ|λυθη|fixed|resolved)/.test(
+                  t,
+                );
+              const clause = {
+                quote,
+                categories: cats,
+                hits,
+                hypothetical,
+                resolved,
+              };
+              if (resolved) {
+                for (let j = start; j < clauses.length; j++)
+                  if (
+                    !cats.length ||
+                    clauses[j].categories.some((c) => cats.includes(c))
+                  )
+                    clauses[j].resolved = true;
+                if (
+                  !cats.length &&
+                  start === clauses.length &&
+                  start > 0 &&
+                  /(?:το προβλημα|το θεμα|the issue|the problem)/.test(t)
+                )
+                  clauses[start - 1].resolved = true;
+              }
+              clauses.push(clause);
+            }
+          }
+          const hits = clauses.flatMap((c) => c.hits),
+            average = mean(hits.map((h) => h.value));
+          const rating =
+            average === null
+              ? null
+              : Math.round(clamp(3 + average * 0.8, 1, 5) * 10) / 10;
+          const label =
+            rating === null
+              ? "unknown"
+              : rating >= 3.7
+                ? "positive"
+                : rating <= 2.7
+                  ? "negative"
+                  : "neutral";
+          const aspects = [];
+          for (const [key, category] of Object.entries(CATEGORIES)) {
+            const related = clauses.filter((c) => c.categories.includes(key)),
+              values = related.flatMap((c) => c.hits.map((h) => h.value));
+            if (!related.length) continue;
+            const positive = values.some((v) => v > 0),
+              negative = values.some((v) => v < 0);
+            aspects.push({
+              key,
+              label: category.label,
+              sentiment:
+                positive && negative
+                  ? "mixed"
+                  : negative
+                    ? "negative"
+                    : positive
+                      ? "positive"
+                      : "unknown",
+              quotes: related.map((c) => c.quote),
+            });
+          }
+          const issues = [];
+          for (const clause of clauses) {
+            if (!clause.hits.some((h) => h.value < 0)) continue;
+            let cats = clause.categories;
+            if (cats.includes("maintenance"))
+              cats = cats.filter((c) => c !== "room");
+            if (cats.includes("clean")) cats = cats.filter((c) => c !== "room");
+            if (!cats.length) cats = ["staff"];
+            for (const category of cats) {
+              if (
+                issues.some(
+                  (x) =>
+                    x.category === category &&
+                    x.resolved === clause.resolved &&
+                    x.hypothetical === clause.hypothetical,
+                )
+              )
+                continue;
+              const urgent =
+                /(?:μουχλ|μοχλ|filthy|mold|ζεστο νερο|hot water|κλιματισ|air condition|διαρρο|leak)/.test(
+                  norm(clause.quote),
+                );
+              issues.push({
+                category,
+                quote: clause.quote,
+                resolved: clause.resolved,
+                hypothetical: clause.hypothetical,
+                severity: urgent ? 3 : 2,
+              });
+            }
+          }
+          const pending = issues.filter((i) => !i.resolved && !i.hypothetical);
+          const triage = pending.length
+            ? "real_pending"
+            : issues.some((i) => i.resolved)
+              ? "real_resolved"
+              : clauses.some((c) => c.hypothetical)
+                ? "hypothetical"
+                : label === "unknown"
+                  ? "insufficient"
+                  : "positive_comment";
+          return {
+            rating,
+            label,
+            binaryLabel:
+              average === null
+                ? "unknown"
+                : average >= 0
+                  ? "positive"
+                  : "negative",
+            aspects,
+            issues,
+            pending,
+            triage,
+            hits,
+            signalCount: hits.length,
+            coverage:
+              hits.length > 5
+                ? "Πολλές λεξικές ενδείξεις"
+                : hits.length > 2
+                  ? "Μέτριες λεξικές ενδείξεις"
+                  : hits.length
+                    ? "Περιορισμένες λεξικές ενδείξεις"
+                    : "Χωρίς αναγνωρίσιμες ενδείξεις",
+          };
+        }
+        function dayDifference(iso) {
+          return Math.round(
+            (Date.parse(DEMO_DATE + "T12:00:00Z") -
+              Date.parse(iso + "T12:00:00Z")) /
+              86400000,
+          );
+        }
+        function filteredReviews(data, property = "all") {
+          return data.reviews.filter(
+            (r) => property === "all" || r.p === property,
+          );
+        }
+        function portfolioStats(data, property = "all") {
+          const reviews = filteredReviews(data, property),
+            current = reviews.filter((r) =>
+              r.date.startsWith(DEMO_DATE.slice(0, 7)),
+            ),
+            previous = reviews.filter((r) => r.date.startsWith("2026-09"));
+          const currentAvg = mean(current.map((r) => r.stars)),
+            previousAvg = mean(previous.map((r) => r.stars));
+          return {
+            overall: mean(reviews.map((r) => r.stars)),
+            currentMonth: current.length,
+            total: reviews.length,
+            delta:
+              currentAvg !== null && previousAvg !== null
+                ? currentAvg - previousAvg
+                : null,
+            pendingReplies: reviews.filter((r) => !data.replies[r.id]).length,
+            urgent: reviews.filter(
+              (r) =>
+                analyze(r.text).pending.some((i) => i.severity === 3) &&
+                reviewStatus(data, r) !== "done",
+            ).length,
+            openTasks: data.tasks.filter(
+              (t) =>
+                t.status !== "done" &&
+                (property === "all" || t.property === property),
+            ).length,
+          };
+        }
+        function weeklySeries(data, property = "all") {
+          return Array.from({ length: 8 }, (_, i) => {
+            const min = (7 - i) * 7,
+              max = min + 7;
+            const reviews = filteredReviews(data, property).filter(
+              (r) =>
+                dayDifference(r.date) >= min && dayDifference(r.date) < max,
+            );
+            return {
+              value: mean(reviews.map((r) => r.stars)),
+              count: reviews.length,
+            };
+          });
+        }
+        function actionKey(reviewId, category) {
+          return reviewId + ":" + category;
+        }
+        function reviewStatus(data, review) {
+          const pending = analyze(review.text).pending;
+          if (!pending.length) return "no_action";
+          const tasks = pending.map((i) =>
+            data.tasks.find((t) => t.key === actionKey(review.id, i.category)),
+          );
+          if (tasks.every((t) => t && t.status === "done")) return "done";
+          if (tasks.some((t) => t && t.status === "in_progress"))
+            return "in_progress";
+          if (tasks.some((t) => t && t.status === "open")) return "assigned";
+          return "awaiting";
+        }
+        function recommendationFor(review, issue, recurrence = 1) {
+          const category = CATEGORIES[issue.category],
+            t = norm(issue.quote);
+          let title = category.title;
+          if (
+            issue.category === "maintenance" &&
+            /(?:κλιματισ|air condition|aircon)/.test(t)
+          )
+            title =
+              "Έλεγξε τη λειτουργία του κλιματισμού και ενημέρωσε τον επισκέπτη";
+          if (issue.category === "maintenance" && /(?:wifi|wi-fi)/.test(t))
+            title = "Έλεγξε τη σύνδεση WiFi και επιβεβαίωσε ότι αποκαταστάθηκε";
+          return {
+            key: actionKey(review.id, issue.category),
+            reviewId: review.id,
+            property: review.p,
+            category: issue.category,
+            department: category.department,
+            title,
+            quote: issue.quote,
+            severity: issue.severity,
+            effort: category.effort,
+            cost: category.cost,
+            recurrence,
+            date: review.date,
+            deadline: issue.severity === 3 ? "Σήμερα" : "Εντός 48 ωρών",
+          };
+        }
+        function recommendations(
+          data,
+          property = "all",
+          weights = { severity: 4, recurrence: 3 },
+          limits = { minutes: 120, budget: 150 },
+        ) {
+          const rows = filteredReviews(data, property),
+            candidates = [];
+          for (const review of rows) {
+            for (const issue of analyze(review.text).pending) {
+              const key = actionKey(review.id, issue.category);
+              if (data.tasks.some((t) => t.key === key)) continue;
+              const recurrence = rows.filter(
+                (r) =>
+                  r.p === review.p &&
+                  dayDifference(r.date) <= 30 &&
+                  analyze(r.text).pending.some(
+                    (i) => i.category === issue.category,
+                  ),
+              ).length;
+              const action = recommendationFor(review, issue, recurrence);
+              action.score =
+                Math.round(
+                  (issue.severity * weights.severity +
+                    Math.min(recurrence, 5) * weights.recurrence +
+                    Math.max(0, 5 - dayDifference(review.date) / 7)) *
+                    10,
+                ) / 10;
+              action.feasible =
+                action.effort <= limits.minutes && action.cost <= limits.budget;
+              candidates.push(action);
+            }
+          }
+          return candidates.sort(
+            (a, b) =>
+              b.score - a.score ||
+              b.date.localeCompare(a.date) ||
+              a.key.localeCompare(b.key),
+          );
+        }
+        function buildPlan(candidates, limits) {
+          let minutes = 0,
+            budget = 0;
+          const selected = [];
+          for (const action of candidates) {
+            if (
+              selected.length < 3 &&
+              minutes + action.effort <= limits.minutes &&
+              budget + action.cost <= limits.budget
+            ) {
+              selected.push(action);
+              minutes += action.effort;
+              budget += action.cost;
+            }
+          }
+          return { selected, minutes, budget };
+        }
+        function approveAction(data, action) {
+          if (
+            !data.checked?.[action.reviewId] ||
+            data.tasks.some((t) => t.key === action.key)
+          )
+            return false;
+          data.tasks.push({
+            ...action,
+            id: "task-" + action.key,
+            status: "open",
+            createdAt: DEMO_DATE,
+          });
+          return true;
+        }
+        function transitionTask(data, id, status) {
+          const task = data.tasks.find((t) => t.id === id);
+          if (
+            !task ||
+            !{ open: ["in_progress", "done"], in_progress: ["done"], done: [] }[
+              task.status
+            ].includes(status)
+          )
+            return false;
+          task.status = status;
+          return true;
+        }
+        const EXTRA_REVIEWS = [
+          {
+            id: 37,
+            p: "p1",
+            guest: "Άννα Δ.",
+            date: DEMO_DATE,
+            stars: 4,
+            reply: true,
+            text: "Ο κλιματισμός ήταν χαλασμένος, αλλά διορθώθηκε την ίδια μέρα. Το προσωπικό ήταν ευγενικό.",
+          },
+          {
+            id: 38,
+            p: "p2",
+            guest: "Νεφέλη Κ.",
+            date: DEMO_DATE,
+            stars: 4,
+            reply: false,
+            text: "Θα προτιμούσα μεγαλύτερο ψυγείο. Κατά τα άλλα η διαμονή ήταν υπέροχη.",
+          },
+          {
+            id: 39,
+            p: "p8",
+            guest: "Πέτρος Λ.",
+            date: DEMO_DATE,
+            stars: 3,
+            reply: false,
+            text: "Το δωμάτιο ήταν πεντακάθαρο, αλλά το WiFi δεν λειτουργεί.",
+          },
+        ];
+        function seedState() {
+          const data = {
+            schema: SCHEMA,
+            reviews: [...REVIEWS, ...EXTRA_REVIEWS].map((r) => ({
+              ...r,
+              source: sourceOf(r),
+              language: languageOf(r),
+              externalId: externalIdOf(r),
+            })),
+            checked: { 3: true, 6: true },
+            tasks: [],
+            replies: {},
+            settings: { newReview: true, ratingDrop: true, weekly: false },
+          };
+          data.reviews.forEach((r) => {
+            if (r.reply)
+              data.replies[r.id] =
+                "Ευχαριστούμε που μοιραστήκατε την εμπειρία σας. Τα σχόλιά σας βοηθούν την ομάδα μας να βελτιώνεται.";
+          });
+          for (const [id, category] of [
+            [3, "maintenance"],
+            [6, "clean"],
+          ]) {
+            const review = data.reviews.find((r) => r.id === id),
+              issue = analyze(review.text).pending.find(
+                (i) => i.category === category,
+              );
+            if (issue) approveAction(data, recommendationFor(review, issue));
+          }
+          if (data.tasks[0]) data.tasks[0].status = "in_progress";
+          return data;
+        }
+        function validStoredState(value) {
+          if (
+            !value ||
+            value.schema !== SCHEMA ||
+            !Array.isArray(value.reviews) ||
+            value.reviews.length > 200 ||
+            !Array.isArray(value.tasks) ||
+            value.tasks.length > 500 ||
+            !value.replies ||
+            typeof value.replies !== "object" ||
+            Array.isArray(value.replies)
+          )
+            return false;
+          if (
+            value.checked !== undefined &&
+            (!value.checked ||
+              typeof value.checked !== "object" ||
+              Array.isArray(value.checked) ||
+              !Object.values(value.checked).every(
+                (v) => typeof v === "boolean",
+              ))
+          )
+            return false;
+          const ids = new Set();
+          if (
+            !value.reviews.every(
+              (r) =>
+                Number.isInteger(r.id) &&
+                !ids.has(r.id) &&
+                ids.add(r.id) &&
+                PROPS.some((p) => p.id === r.p) &&
+                typeof r.guest === "string" &&
+                r.guest.length <= 80 &&
+                typeof r.text === "string" &&
+                r.text.length <= 5000 &&
+                Number.isFinite(r.stars) &&
+                r.stars >= 1 &&
+                r.stars <= 5 &&
+                /^\d{4}-\d{2}-\d{2}$/.test(r.date) &&
+                (r.source === undefined || Object.hasOwn(SOURCES, r.source)),
+            )
+          )
+            return false;
+          if (
+            !value.tasks.every(
+              (t) =>
+                typeof t.id === "string" &&
+                typeof t.key === "string" &&
+                ids.has(t.reviewId) &&
+                PROPS.some((p) => p.id === t.property) &&
+                CATEGORIES[t.category] &&
+                DEPARTMENTS.includes(t.department) &&
+                ["open", "in_progress", "done"].includes(t.status) &&
+                typeof t.quote === "string" &&
+                typeof t.title === "string" &&
+                Number.isFinite(t.effort) &&
+                t.effort >= 0 &&
+                Number.isFinite(t.cost) &&
+                t.cost >= 0,
+            )
+          )
+            return false;
+          if (
+            !Object.values(value.replies).every(
+              (r) => typeof r === "string" && r.length <= 5000,
+            )
+          )
+            return false;
+          return (
+            value.settings &&
+            ["newReview", "ratingDrop", "weekly"].every(
+              (k) => typeof value.settings[k] === "boolean",
+            )
+          );
+        }
+        // Product-facing mock metadata; no connection to the named review platforms.
+        const SOURCES = Object.freeze({
+          booking: "Booking.com",
+          tripadvisor: "Tripadvisor",
+          google: "Google",
+          internal: "Εσωτερική φόρμα",
+        });
+        const SOURCE_IDS = Object.keys(SOURCES);
+        const API_ASPECT_MAP = Object.freeze({
+          clean: "cleanliness",
+          maintenance: "facilities",
+          staff: "staff",
+          food: "food",
+          noise: "noise",
+          room: "room",
+          value: "value",
+          location: "location",
+          amenities: "facilities",
+        });
+        const ASPECT_LABELS = Object.freeze({
+          cleanliness: "Καθαριότητα",
+          staff: "Εξυπηρέτηση",
+          location: "Τοποθεσία",
+          room: "Δωμάτιο",
+          food: "Πρωινό & φαγητό",
+          noise: "Θόρυβος",
+          value: "Τιμή / αξία",
+          facilities: "Παροχές & συντήρηση",
+        });
+        function sourceOf(review) {
+          return Object.hasOwn(SOURCES, review.source)
+            ? review.source
+            : SOURCE_IDS[(review.id - 1) % SOURCE_IDS.length] || "internal";
+        }
+        function languageOf(review) {
+          return /[α-ωάέήίόύώ]/i.test(review.text)
+            ? "el"
+            : /[a-z]/i.test(review.text)
+              ? "en"
+              : "und";
+        }
+        function externalIdOf(review) {
+          return (
+            review.externalId ||
+            `${sourceOf(review)}-demo-${String(review.id).padStart(4, "0")}`
+          );
+        }
+        function markReviewed(data, reviewId) {
+          if (!data.reviews.some((r) => r.id === reviewId)) return false;
+          data.checked ||= {};
+          data.checked[reviewId] = true;
+          return true;
+        }
+        function sourceCounts(data, property = "all") {
+          const rows = filteredReviews(data, property);
+          return SOURCE_IDS.map((source) => ({
+            source,
+            label: SOURCES[source],
+            count: rows.filter((r) => sourceOf(r) === source).length,
+          }));
+        }
+        function aspectMentions(review) {
+          const result = analyze(review.text);
+          const negative = new Set(
+            result.issues
+              .filter((i) => !i.hypothetical)
+              .map((i) => API_ASPECT_MAP[i.category]),
+          );
+          const mentioned = new Set([
+            ...result.aspects.map((a) => API_ASPECT_MAP[a.key]),
+            ...negative,
+          ]);
+          return { mentioned, negative };
+        }
+        function topicSignals(
+          data,
+          property = "all",
+          days = 30,
+          source = "all",
+        ) {
+          const windowDays = Number(days);
+          if (![7, 14, 30, 60].includes(windowDays)) return [];
+          const rows = filteredReviews(data, property).filter(
+            (r) => source === "all" || sourceOf(r) === source,
+          );
+          const windowRows = rows.filter(
+            (r) =>
+              dayDifference(r.date) >= 0 && dayDifference(r.date) < windowDays,
+          );
+          const previousRows = rows.filter(
+            (r) =>
+              dayDifference(r.date) >= windowDays &&
+              dayDifference(r.date) < 2 * windowDays,
+          );
+          const snapshots = new Map(rows.map((r) => [r.id, aspectMentions(r)]));
+          const summarize = (items, aspect) => {
+            const mentions = items.filter((r) =>
+              snapshots.get(r.id).mentioned.has(aspect),
+            );
+            const negative = mentions.filter((r) =>
+              snapshots.get(r.id).negative.has(aspect),
+            );
+            return {
+              total: mentions.length,
+              negative,
+              rate: mentions.length ? negative.length / mentions.length : null,
+            };
+          };
+          return Object.keys(ASPECT_LABELS)
+            .map((aspect) => {
+              const current = summarize(windowRows, aspect),
+                previous = summarize(previousRows, aspect);
+              return {
+                aspect,
+                label: ASPECT_LABELS[aspect],
+                totalMentions: current.total,
+                negativeCount: current.negative.length,
+                negativeRate: current.rate,
+                previousMentions: previous.total,
+                previousRate: previous.rate,
+                rateChange:
+                  current.rate === null || previous.rate === null
+                    ? null
+                    : current.rate - previous.rate,
+                hotelCount: new Set(current.negative.map((r) => r.p)).size,
+                reviewIds: current.negative.map((r) => r.id),
+                evidence: current.negative.flatMap((r) =>
+                  analyze(r.text)
+                    .issues.filter(
+                      (i) =>
+                        !i.hypothetical &&
+                        API_ASPECT_MAP[i.category] === aspect,
+                    )
+                    .map((i) => ({
+                      reviewId: r.id,
+                      property: r.p,
+                      source: sourceOf(r),
+                      quote: i.quote,
+                    })),
+                ),
+              };
+            })
+            .filter((s) => s.negativeCount > 0)
+            .sort(
+              (a, b) =>
+                b.negativeCount - a.negativeCount ||
+                b.hotelCount - a.hotelCount ||
+                a.aspect.localeCompare(b.aspect),
+            );
+        }
+
+        globalThis.HostPulseCore = Object.freeze({
+          analyze,
+          mean,
+          portfolioStats,
+          weeklySeries,
+          recommendations,
+          buildPlan,
+          reviewStatus,
+          approveAction,
+          transitionTask,
+          seedState,
+          validStoredState,
+          PROPS,
+          CATEGORIES,
+          DEMO_DATE,
+          STORAGE_KEY,
+          SOURCES,
+          API_ASPECT_MAP,
+          ASPECT_LABELS,
+          sourceOf,
+          languageOf,
+          externalIdOf,
+          sourceCounts,
+          topicSignals,
+          markReviewed,
+        });
+
+        if (typeof document === "undefined") return;
+        const $ = (id) => document.getElementById(id);
+        const e = escapeHTML;
+        const ICONS = {
+          insights: '<path d="M4 21V11h4v10M10 21V4h4v17M16 21V8h4v13"/>',
+          home: '<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',
+          reviews:
+            '<path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 10 10 0 0 1-4-.8L3 21l1.5-4.7A8 8 0 0 1 3 11.5C3 6.8 7 3 12 3s9 3.8 9 8.5Z"/><path d="M8 9h8M8 13h5"/>',
+          tasks:
+            '<rect x="5" y="4" width="15" height="17" rx="3"/><path d="M9 4V2h7v2M9 10h7M9 15l2 2 5-5"/>',
+          lab: '<path d="m9 3 1 6-6 9a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-6-9 1-6M8 3h8M8 14h8"/>',
+          profile:
+            '<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
+          arrow: '<path d="m9 5 7 7-7 7"/>',
+          search: '<circle cx="10" cy="10" r="7"/><path d="m15 15 6 6"/>',
+          close: '<path d="m6 6 12 12M18 6 6 18"/>',
+          spark:
+            '<path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4Z"/>',
+          check: '<path d="m5 12 4 4L19 6"/>',
+          info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.2"/>',
+          clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+          empty: '<path d="M4 7h16v14H4zM2 3h20v4H2zM9 12h6"/>',
+          reset: '<path d="M3 10a9 9 0 1 1 1 7M3 3v7h7"/>',
+          bell: '<path d="M18 8a6 6 0 0 0-12 0c0 8-3 8-3 10h18c0-2-3-2-3-10M10 22h4"/>',
+        };
+        const icon = (name, size = 20) =>
+          '<svg width="' +
+          size +
+          '" height="' +
+          size +
+          '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          (ICONS[name] || ICONS.info) +
+          "</svg>";
+        const LABELS = {
+          positive: "Θετική",
+          negative: "Αρνητική",
+          neutral: "Ουδέτερη",
+          mixed: "Μικτό",
+          unknown: "Ανεπαρκείς ενδείξεις",
+          real_pending: "Εκκρεμές πρόβλημα",
+          real_resolved: "Λυμένο περιστατικό",
+          hypothetical: "Επιθυμία / υπόθεση",
+          positive_comment: "Χωρίς εκκρεμές πρόβλημα",
+          insufficient: "Χρειάζεται έλεγχος",
+          awaiting: "Προς αξιολόγηση",
+          assigned: "Ανατέθηκε",
+          in_progress: "Σε εξέλιξη",
+          done: "Ολοκληρώθηκε",
+          no_action: "Χωρίς ενέργεια",
+          open: "Ανατέθηκε",
+        };
+        const tone = (value) =>
+          ["negative", "real_pending", "urgent"].includes(value)
+            ? "red"
+            : ["positive", "done", "real_resolved"].includes(value)
+              ? "green"
+              : ["neutral", "mixed", "hypothetical", "awaiting"].includes(value)
+                ? "amber"
+                : "dark";
+        const chip = (text, kind = "dark") =>
+          '<span class="chip ' + kind + '">' + e(text) + "</span>";
+        const propName = (id) =>
+          PROPS.find((p) => p.id === id)?.name || "Κατάλυμα";
+        const dateLabel = (iso) => {
+          const d = dayDifference(iso);
+          return d === 0
+            ? "Σήμερα"
+            : d === 1
+              ? "Χθες"
+              : new Date(iso + "T12:00:00Z").toLocaleDateString("el-GR", {
+                  day: "numeric",
+                  month: "short",
+                  timeZone: "UTC",
+                });
+        };
+        let storageAvailable = true;
+        function load() {
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              if (validStoredState(parsed)) return parsed;
+            }
+          } catch {
+            storageAvailable = false;
+          }
+          return seedState();
+        }
+        let data = load();
+        data.checked ||= Object.fromEntries(
+          data.tasks.map((t) => [t.reviewId, true]),
+        );
+        const ui = {
+          view: "home",
+          property: "all",
+          query: "",
+          sentiment: "all",
+          source: "all",
+          aspect: "all",
+          insightDays: 30,
+          insightSource: "all",
+          department: "all",
+          status: "all",
+          taskTab: "suggested",
+          taskStatus: "active",
+          weights: { severity: 4, recurrence: 3 },
+          limits: { minutes: 120, budget: 150 },
+          labText: "",
+          labResult: null,
+          labAddedId: null,
+          detailId: null,
+        };
+        let toastTimer;
+        function save() {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          } catch {
+            storageAvailable = false;
+          }
+          $("storage-notice").hidden = storageAvailable;
+        }
+        function toast(message) {
+          $("toast").textContent = message;
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => ($("toast").textContent = ""), 3000);
+        }
+        function head(eyebrow, title, subtitle = "") {
+          return (
+            '<div class="screen-head"><div><div class="eyebrow">' +
+            e(eyebrow) +
+            '</div><h1 id="screen-title">' +
+            e(title) +
+            "</h1>" +
+            (subtitle ? '<p class="sub">' + e(subtitle) + "</p>" : "") +
+            "</div>" +
+            (ui.view === "home"
+              ? '<button class="avatar" data-action="nav" data-view="profile" aria-label="Άνοιγμα προφίλ">ΑΓ</button>'
+              : "") +
+            "</div>"
+          );
+        }
+        function empty(title, text, button = "") {
+          return (
+            '<div class="empty">' +
+            icon("empty", 31) +
+            "<h3>" +
+            e(title) +
+            "</h3><p>" +
+            e(text) +
+            "</p>" +
+            button +
+            "</div>"
+          );
+        }
+        function notice(text, muted = false) {
+          return (
+            '<div class="notice ' +
+            (muted ? "muted" : "") +
+            '">' +
+            icon("info", 16) +
+            "<span>" +
+            text +
+            "</span></div>"
+          );
+        }
+        function renderNav() {
+          const tabs = [
+            ["home", "Σήμερα"],
+            ["reviews", "Κριτικές"],
+            ["tasks", "Ενέργειες"],
+            ["insights", "Μοτίβα"],
+            ["profile", "Προφίλ"],
+          ];
+          $("nav").innerHTML = tabs
+            .map(
+              ([id, title]) =>
+                '<button class="nav-btn ' +
+                (ui.view === id ? "active" : "") +
+                '" data-action="nav" data-view="' +
+                id +
+                '"' +
+                (ui.view === id ? ' aria-current="page"' : "") +
+                ">" +
+                icon(id, 21) +
+                "<span>" +
+                title +
+                "</span></button>",
+            )
+            .join("");
+        }
+        function navigate(view, focus = true) {
+          if (
+            ![
+              "home",
+              "reviews",
+              "insights",
+              "tasks",
+              "lab",
+              "profile",
+            ].includes(view)
+          )
+            return;
+          ui.view = view;
+          render();
+          $("main").scrollTop = 0;
+          if (focus) $("main").focus({ preventScroll: true });
+        }
+        function legacyHome() {
+          const stats = portfolioStats(data, ui.property),
+            series = weeklySeries(data, ui.property),
+            count = ui.property === "all" ? PROPS.length : 1;
+          const points = series.map((s, i) =>
+            s.value === null ? null : [6 + i * 14.3, 52 - s.value * 8],
+          );
+          const spark =
+            '<svg class="spark" viewBox="0 0 113 60" role="img" aria-label="Μέσες βαθμολογίες οκτώ εβδομάδων. Οι εβδομάδες χωρίς κριτικές παραλείπονται.">' +
+            points
+              .map((p, i) =>
+                p
+                  ? (i && points[i - 1]
+                      ? '<path d="M' +
+                        points[i - 1].join(" ") +
+                        " " +
+                        p.join(" ") +
+                        '" stroke="#d6ee95" stroke-width="2" fill="none"/>'
+                      : "") +
+                    '<circle cx="' +
+                    p[0] +
+                    '" cy="' +
+                    p[1] +
+                    '" r="2.5" fill="#d6ee95"/>'
+                  : "",
+              )
+              .join("") +
+            "</svg>";
+          const alerts = filteredReviews(data, ui.property)
+            .filter(
+              (r) =>
+                analyze(r.text).pending.length &&
+                reviewStatus(data, r) !== "done",
+            )
+            .sort((a, b) => {
+              const sa = Math.max(
+                  ...analyze(a.text).pending.map((i) => i.severity),
+                ),
+                sb = Math.max(
+                  ...analyze(b.text).pending.map((i) => i.severity),
+                );
+              return sb - sa || b.date.localeCompare(a.date);
+            })
+            .slice(0, 3);
+          const plan = buildPlan(
+            recommendations(data, ui.property, ui.weights, ui.limits),
+            ui.limits,
+          );
+          return (
+            head(
+              "Πέμπτη, 22 Οκτωβρίου · Δεδομένα δείγματος",
+              "Η εικόνα σου σήμερα",
+            ) +
+            '<section class="hero" aria-label="Συνολική εικόνα κριτικών"><div class="hero-top"><div><div class="eyebrow">Βαθμολογία επισκεπτών · συνολική εικόνα</div><div class="score">' +
+            (stats.overall === null ? "—" : stats.overall.toFixed(1)) +
+            ' <small>/ 5</small></div><div class="trend">' +
+            (stats.delta === null
+              ? "Δεν υπάρχουν αρκετά δεδομένα σύγκρισης"
+              : (stats.delta >= 0 ? "↗ +" : "↘ ") +
+                stats.delta.toFixed(1) +
+                " έναντι Σεπτεμβρίου") +
+            "</div></div>" +
+            spark +
+            '</div><div class="hero-foot"><span>' +
+            stats.total +
+            " κριτικές · " +
+            count +
+            " " +
+            (count === 1 ? "κατάλυμα" : "καταλύματα") +
+            "</span><span>Τάση 8 εβδομάδων</span></div></section>" +
+            '<div class="stats"><button class="stat" data-action="inbox" data-kind="urgent"><span class="num red">' +
+            stats.urgent +
+            '</span><span class="label">κριτικές υψηλής προτεραιότητας →</span></button><button class="stat" data-action="inbox" data-kind="unanswered"><span class="num">' +
+            stats.pendingReplies +
+            '</span><span class="label">περιμένουν απάντηση →</span></button><button class="stat" data-action="inbox" data-kind="month"><span class="num">' +
+            stats.currentMonth +
+            '</span><span class="label">κριτικές τον Οκτώβριο →</span></button><button class="stat" data-action="my-tasks"><span class="num">' +
+            stats.openTasks +
+            '</span><span class="label">ανοικτές αναθέσεις →</span></button></div>' +
+            '<div class="section-row"><h2>Πρώτα αυτά</h2><button class="text-btn" data-action="inbox" data-kind="pending">Όλα τα εκκρεμή →</button></div>' +
+            (alerts.length
+              ? alerts.map(reviewCard).join("")
+              : empty(
+                  "Δεν υπάρχουν εκκρεμή περιστατικά",
+                  "Μπορείς να δεις όλες τις κριτικές ή να δοκιμάσεις μία νέα.",
+                )) +
+            '<div class="section-row"><h2>Το επόμενο βήμα σου</h2>' +
+            icon("spark", 19) +
+            '</div><div class="card"><p class="small-title">' +
+            (plan.selected.length
+              ? plan.selected.length + " προτεινόμενες παρεμβάσεις"
+              : "Ρύθμισε το πλάνο σου") +
+            '</p><p class="body-text">' +
+            (plan.selected.length
+              ? "Ένα μικρό πλάνο για την ομάδα σου, με " +
+                plan.minutes +
+                " λεπτά εκτιμώμενου χρόνου και " +
+                plan.budget +
+                "€ ενδεικτικού κόστους."
+              : "Έλεγξε τις συστάσεις και διάλεξε πόσο χρόνο και προϋπολογισμό διαθέτεις.") +
+            '</p><button class="primary full" style="margin-top:14px" data-action="suggestions">' +
+            icon("tasks", 16) +
+            "Δες τις προτεινόμενες ενέργειες</button></div>"
+          );
+        }
+        function resetFilters() {
+          ui.query = "";
+          ui.sentiment = "all";
+          ui.department = "all";
+          ui.status = "all";
+          ui.source = "all";
+          ui.aspect = "all";
+        }
+        function inboxRows() {
+          const query = norm(ui.query);
+          return filteredReviews(data, ui.property)
+            .filter((r) => {
+              const a = analyze(r.text),
+                status = reviewStatus(data, r);
+              if (
+                query &&
+                !norm(r.text + " " + r.guest + " " + propName(r.p)).includes(
+                  query,
+                )
+              )
+                return false;
+              if (ui.source !== "all" && sourceOf(r) !== ui.source)
+                return false;
+              if (
+                ui.aspect !== "all" &&
+                !aspectMentions(r).mentioned.has(ui.aspect)
+              )
+                return false;
+              if (ui.status === "needs-review" && data.checked[r.id])
+                return false;
+              if (ui.sentiment !== "all" && a.binaryLabel !== ui.sentiment)
+                return false;
+              if (
+                ui.department !== "all" &&
+                !a.pending.some(
+                  (i) => CATEGORIES[i.category].department === ui.department,
+                )
+              )
+                return false;
+              if (ui.status === "unanswered" && data.replies[r.id])
+                return false;
+              if (
+                ui.status === "pending" &&
+                (!a.pending.length || status === "done")
+              )
+                return false;
+              if (
+                ui.status === "urgent" &&
+                (!a.pending.some((i) => i.severity === 3) || status === "done")
+              )
+                return false;
+              if (ui.status === "done" && status !== "done") return false;
+              if (
+                ui.status === "month" &&
+                !r.date.startsWith(DEMO_DATE.slice(0, 7))
+              )
+                return false;
+              return true;
+            })
+            .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+        }
+        function inboxList() {
+          const rows = inboxRows();
+          $("review-results").innerHTML =
+            '<div class="result-row"><span role="status">' +
+            rows.length +
+            " " +
+            (rows.length === 1 ? "κριτική" : "κριτικές") +
+            "</span><span>Νεότερες πρώτα</span></div>" +
+            (rows.length
+              ? rows.map(reviewCard).join("")
+              : empty(
+                  "Δεν βρέθηκαν κριτικές",
+                  "Άλλαξε τα φίλτρα ή καθάρισε την αναζήτηση.",
+                  '<button class="secondary" data-action="clear-filters">Καθαρισμός φίλτρων</button>',
+                ));
+        }
+        function actionCard(
+          action,
+          { suggested = true, compact = false, selected = false } = {},
+        ) {
+          return (
+            '<article class="card" data-task-key="' +
+            e(action.key) +
+            '"><div class="task-top"><span class="category">' +
+            e(CATEGORIES[action.category].label.toUpperCase()) +
+            "</span>" +
+            chip(
+              suggested
+                ? action.severity === 3
+                  ? "Υψηλή προτεραιότητα"
+                  : "Κανονική προτεραιότητα"
+                : LABELS[action.status],
+              suggested
+                ? action.severity === 3
+                  ? "red"
+                  : "amber"
+                : tone(action.status),
+            ) +
+            "</div>" +
+            '<h3 class="task-title">' +
+            e(action.title) +
+            '</h3><div class="card-meta" style="margin-top:5px">' +
+            e(propName(action.property)) +
+            " · " +
+            e(action.department) +
+            "</div>" +
+            '<blockquote class="evidence">«' +
+            e(action.quote) +
+            "»</blockquote>" +
+            (!compact
+              ? '<div class="task-meta"><span>' +
+                e(action.department) +
+                "</span><span>" +
+                action.effort +
+                " λεπτά*</span><span>" +
+                action.cost +
+                "€*</span><span>" +
+                e(action.deadline) +
+                "</span></div>"
+              : "") +
+            (suggested
+              ? '<p class="action-reason">Γιατί προτείνεται: ' +
+                (action.severity === 3
+                  ? "σοβαρή ένδειξη προβλήματος"
+                  : "εκκρεμές αρνητικό σχόλιο") +
+                ", " +
+                action.recurrence +
+                " σχετικές " +
+                (action.recurrence === 1 ? "αναφορά" : "αναφορές") +
+                " τις τελευταίες 30 μέρες στο ίδιο κατάλυμα." +
+                (selected ? " <b>Χωρά στο πλάνο σου.</b>" : "") +
+                "</p>"
+              : "") +
+            '<div class="button-row">' +
+            (suggested
+              ? '<button class="primary" data-action="approve" data-key="' +
+                e(action.key) +
+                '">' +
+                icon("check", 15) +
+                "Έγκριση & ανάθεση</button>"
+              : action.status === "open"
+                ? '<button class="primary" data-action="start-task" data-id="' +
+                  e(action.id) +
+                  '">Ξεκίνησε</button>'
+                : action.status === "in_progress"
+                  ? '<button class="primary" data-action="complete-task" data-id="' +
+                    e(action.id) +
+                    '">' +
+                    icon("check", 15) +
+                    "Ολοκλήρωση</button>"
+                  : chip("✓ Το περιστατικό αντιμετωπίστηκε", "green")) +
+            '<button class="secondary" data-action="review" data-id="' +
+            action.reviewId +
+            '">Κριτική</button></div></article>'
+          );
+        }
+        function renderTaskResults() {
+          if (ui.taskTab === "mine") {
+            const tasks = data.tasks.filter(
+              (t) =>
+                (ui.property === "all" || t.property === ui.property) &&
+                (ui.taskStatus === "all" || ui.taskStatus === "done"
+                  ? ui.taskStatus === "all" || t.status === "done"
+                  : t.status !== "done"),
+            );
+            $("task-results").innerHTML =
+              '<div class="filter-row">' +
+              [
+                ["active", "Ανοικτές"],
+                ["done", "Ολοκληρωμένες"],
+                ["all", "Όλες"],
+              ]
+                .map(
+                  ([v, t]) =>
+                    '<button class="filter-btn ' +
+                    (ui.taskStatus === v ? "active" : "") +
+                    '" data-action="task-status" data-value="' +
+                    v +
+                    '" aria-pressed="' +
+                    (ui.taskStatus === v) +
+                    '">' +
+                    t +
+                    "</button>",
+                )
+                .join("") +
+              "</div>" +
+              (tasks.length
+                ? tasks.map((t) => actionCard(t, { suggested: false })).join("")
+                : empty(
+                    "Δεν υπάρχουν εργασίες εδώ",
+                    "Επίλεξε «Προτάσεις» για να εγκρίνεις μία ενέργεια.",
+                  ));
+            return;
+          }
+          const candidates = recommendations(
+              data,
+              ui.property,
+              ui.weights,
+              ui.limits,
+            ),
+            plan = buildPlan(candidates, ui.limits),
+            selectedKeys = new Set(plan.selected.map((a) => a.key));
+          $("task-results").innerHTML =
+            '<div class="section-row"><h2>Πλάνο έως 3 παρεμβάσεων</h2><span class="card-meta">' +
+            plan.selected.length +
+            " επιλεγμένες</span></div>" +
+            '<div class="plan-total"><span>' +
+            plan.minutes +
+            " / " +
+            ui.limits.minutes +
+            " λεπτά*</span><span>" +
+            plan.budget +
+            " / " +
+            ui.limits.budget +
+            "€*</span></div>" +
+            (plan.selected.length
+              ? plan.selected
+                  .map((a) => actionCard(a, { selected: true }))
+                  .join("")
+              : empty(
+                  candidates.length
+                    ? "Δεν χωρά κάποια παρέμβαση"
+                    : "Δεν υπάρχουν νέες συστάσεις",
+                  candidates.length
+                    ? "Αύξησε τον διαθέσιμο χρόνο ή τον προϋπολογισμό. Μπορείς επίσης να εξετάσεις τις υπόλοιπες ενέργειες."
+                    : "Όλα τα εντοπισμένα περιστατικά έχουν ανατεθεί ή δεν απαιτούν παρέμβαση.",
+                )) +
+            (candidates.some((a) => !selectedKeys.has(a.key))
+              ? '<div class="section-row"><h2>Υπόλοιπες προτάσεις</h2><span class="card-meta">Εκτός πλάνου</span></div>' +
+                candidates
+                  .filter((a) => !selectedKeys.has(a.key))
+                  .slice(0, 8)
+                  .map((a) => actionCard(a))
+                  .join("")
+              : "") +
+            '<p class="hint">* Ο χρόνος και το κόστος είναι ενδεικτικές τιμές του σεναρίου, όχι προβλέψεις πραγματικού μοντέλου. Η κατάταξη χρησιμοποιεί βαρύτητα, επανάληψη και πρόσφατη εμφάνιση.</p>';
+        }
+        function tasks() {
+          return (
+            head(
+              "Από το σχόλιο στην πράξη",
+              "Ενέργειες",
+              "Συστάσεις για την ομάδα σου. Η ανάθεση γίνεται με δική σου έγκριση.",
+            ) +
+            '<div class="tabs-inline" aria-label="Προβολή ενεργειών"><button data-action="task-tab" data-value="suggested" aria-pressed="' +
+            (ui.taskTab === "suggested") +
+            '" class="' +
+            (ui.taskTab === "suggested" ? "active" : "") +
+            '">Προτάσεις</button><button data-action="task-tab" data-value="mine" aria-pressed="' +
+            (ui.taskTab === "mine") +
+            '" class="' +
+            (ui.taskTab === "mine" ? "active" : "") +
+            '">Αναθέσεις (' +
+            data.tasks.filter(
+              (t) =>
+                t.status !== "done" &&
+                (ui.property === "all" || t.property === ui.property),
+            ).length +
+            ")</button></div>" +
+            (ui.taskTab === "suggested"
+              ? '<section class="card"><h2 class="small-title">Τι διαθέτει σήμερα η ομάδα;</h2><div class="budget-grid"><div><label for="plan-time" class="field-label">Χρόνος</label><select class="select" id="plan-time">' +
+                [15, 30, 60, 120, 240]
+                  .map(
+                    (v) =>
+                      '<option value="' +
+                      v +
+                      '"' +
+                      (ui.limits.minutes === v ? " selected" : "") +
+                      ">" +
+                      v +
+                      " λεπτά</option>",
+                  )
+                  .join("") +
+                '</select></div><div><label for="plan-budget" class="field-label">Προϋπολογισμός</label><select class="select" id="plan-budget">' +
+                [0, 25, 50, 100, 150, 300]
+                  .map(
+                    (v) =>
+                      '<option value="' +
+                      v +
+                      '"' +
+                      (ui.limits.budget === v ? " selected" : "") +
+                      ">" +
+                      v +
+                      "€</option>",
+                  )
+                  .join("") +
+                '</select></div></div><div class="range-row"><label class="range-label" for="weight-severity"><span>Βαρύτητα προβλήματος</span><output id="weight-severity-value">' +
+                ui.weights.severity +
+                '/5</output></label><input id="weight-severity" type="range" min="1" max="5" value="' +
+                ui.weights.severity +
+                '"></div><div class="range-row" style="margin-bottom:0"><label class="range-label" for="weight-recurrence"><span>Συχνότητα επανάληψης</span><output id="weight-recurrence-value">' +
+                ui.weights.recurrence +
+                '/5</output></label><input id="weight-recurrence" type="range" min="1" max="5" value="' +
+                ui.weights.recurrence +
+                '"></div></section>'
+              : "") +
+            '<div id="task-results"></div>'
+          );
+        }
+        const LAB_SAMPLES = {
+          pending:
+            "The room was clean but the air conditioning was broken. The staff were friendly.",
+          resolved:
+            "The air conditioning was broken but was fixed the same day. The staff were friendly.",
+          wish: "I would prefer a larger fridge. The stay was great.",
+          english:
+            "The room was clean but the WiFi is not working. The staff were friendly.",
+        };
+        function legacyLabResult() {
+          if (!ui.labResult) {
+            $("lab-result").innerHTML = "";
+            return;
+          }
+          const analysis = ui.labResult,
+            review = {
+              id: -1,
+              p: ui.property === "all" ? "p1" : ui.property,
+              date: DEMO_DATE,
+              text: ui.labText,
+            };
+          $("lab-result").innerHTML =
+            analysisHTML(analysis) +
+            (analysis.pending.length
+              ? '<div class="analysis-heading"><h2>Προτεινόμενες παρεμβάσεις</h2></div>' +
+                analysis.pending
+                  .map((i) => {
+                    const a = recommendationFor(review, i);
+                    return (
+                      '<div class="card"><div class="card-meta">' +
+                      e(a.department) +
+                      '</div><h3 class="task-title">' +
+                      e(a.title) +
+                      '</h3><blockquote class="evidence">«' +
+                      e(a.quote) +
+                      "»</blockquote></div>"
+                    );
+                  })
+                  .join("")
+              : notice(
+                  analysis.triage === "real_resolved"
+                    ? "Το περιστατικό αναφέρεται ως λυμένο. Δεν δημιουργείται νέα εργασία."
+                    : analysis.triage === "hypothetical"
+                      ? "Πρόκειται για επιθυμία ή υπόθεση. Χρειάζεται αξιολόγηση και δεν προτείνεται αυτόματα διορθωτική εργασία."
+                      : analysis.label === "unknown"
+                        ? "Χρειάζεται ανθρώπινος έλεγχος. Η απουσία ενδείξεων δεν σημαίνει ουδέτερη εμπειρία."
+                        : "Δεν εντοπίστηκε εκκρεμές πρόβλημα στο συγκεκριμένο κείμενο.",
+                )) +
+            '<div class="card"><h2 class="small-title">Δες το και στην κανονική ροή</h2><p class="body-text">Η εισαγωγή προσθέτει μία κριτική δείγματος στο επιλεγμένο κατάλυμα. Δεν αποστέλλεται τίποτα σε άλλη υπηρεσία.</p><div style="margin-top:12px"><label class="field-label" for="lab-property">Κατάλυμα εισαγωγής</label><select id="lab-property" class="select">' +
+            PROPS.map(
+              (p) =>
+                '<option value="' +
+                p.id +
+                '"' +
+                (review.p === p.id ? " selected" : "") +
+                ">" +
+                e(p.name) +
+                "</option>",
+            ).join("") +
+            '</select></div><div style="margin-top:12px"><label class="field-label" for="lab-rating">Βαθμολογία δείγματος · την ορίζεις εσύ</label><select id="lab-rating" class="select">' +
+            [1, 2, 3, 4, 5]
+              .map(
+                (v) =>
+                  '<option value="' +
+                  v +
+                  '"' +
+                  (v ===
+                  (analysis.rating === null ? 3 : Math.round(analysis.rating))
+                    ? " selected"
+                    : "") +
+                  ">" +
+                  v +
+                  " / 5</option>",
+              )
+              .join("") +
+            '</select></div><button class="primary full" style="margin-top:13px" data-action="add-lab"' +
+            (ui.labAddedId ? " disabled" : "") +
+            ">" +
+            (ui.labAddedId
+              ? "✓ Προστέθηκε στα δείγματα"
+              : "Προσθήκη ως κριτική δείγματος") +
+            "</button></div>";
+        }
+        function lab() {
+          return (
+            head(
+              "Ασφαλής χώρος δοκιμής",
+              "Δοκίμασε μία κριτική",
+              "Δες πώς ένα κείμενο γίνεται ανάλυση και πρόταση ενέργειας.",
+            ) +
+            notice(
+              "Οι αναλύσεις είναι <b>τοπικές προσομοιώσεις</b> με ελληνικό και αγγλικό λεξικό. Δεν χρησιμοποιείται εκπαιδευμένο μοντέλο ή εξωτερικό API.",
+            ) +
+            '<form id="lab-form" class="lab-form" style="margin-top:18px"><label for="lab-input" class="field-label">Κείμενο κριτικής</label><textarea class="form-text" id="lab-input" maxlength="5000" placeholder="Γράψε ή επικόλλησε την κριτική σου…" required>' +
+            e(ui.labText) +
+            '</textarea><div class="sample-row" aria-label="Έτοιμα παραδείγματα">' +
+            [
+              ["pending", "Εκκρεμές"],
+              ["resolved", "Λυμένο"],
+              ["wish", "Επιθυμία"],
+              ["english", "English"],
+            ]
+              .map(
+                ([v, t]) =>
+                  '<button type="button" class="sample-btn" data-action="sample" data-value="' +
+                  v +
+                  '">' +
+                  t +
+                  "</button>",
+              )
+              .join("") +
+            '</div><button type="submit" class="primary full">' +
+            icon("spark", 16) +
+            'Ανάλυση & συστάσεις</button><p id="lab-error" class="error" role="status"></p></form><div class="lab-result" id="lab-result"></div>'
+          );
+        }
+        function legacyProfile() {
+          const stats = portfolioStats(data),
+            cities = new Set(PROPS.map((p) => p.loc)).size;
+          return (
+            head("Ο χώρος εργασίας σου", "Προφίλ & demo") +
+            '<div class="profile-row"><div class="avatar" aria-hidden="true">ΑΓ</div><div><h2>Άννα Γεωργίου</h2><p class="sub" style="margin-top:2px">Υπεύθυνη λειτουργίας · Λογαριασμός δείγματος</p></div></div>' +
+            '<div class="card"><h2 class="small-title">Το χαρτοφυλάκιο του demo</h2><p class="body-text">' +
+            PROPS.length +
+            " καταλύματα · " +
+            cities +
+            " περιοχές · " +
+            stats.total +
+            " κριτικές.<br>Απαντήσεις σε " +
+            (stats.total
+              ? Math.round(
+                  ((stats.total - stats.pendingReplies) / stats.total) * 100,
+                )
+              : 0) +
+            '% των κριτικών.</p><div class="divider"></div><h2 class="small-title">Προτιμήσεις ειδοποιήσεων</h2><p class="body-text">Αποθηκεύονται για την προεπισκόπηση. Δεν δημιουργούνται πραγματικές ειδοποιήσεις.</p>' +
+            [
+              ["newReview", "Νέα κριτική"],
+              ["ratingDrop", "Πτώση βαθμολογίας"],
+              ["weekly", "Εβδομαδιαία σύνοψη"],
+            ]
+              .map(
+                ([k, t]) =>
+                  '<label class="settings-label" for="setting-' +
+                  k +
+                  '"><span>' +
+                  t +
+                  '</span><input id="setting-' +
+                  k +
+                  '" data-setting="' +
+                  k +
+                  '" type="checkbox"' +
+                  (data.settings[k] ? " checked" : "") +
+                  "></label>",
+              )
+              .join("") +
+            "</div>" +
+            '<div class="card"><h2 class="small-title">Τι λειτουργεί σε αυτή τη φάση</h2><p class="body-text">Πλοήγηση, φίλτρα, ανάλυση με κανόνες, συστάσεις ενεργειών, ανάθεση ανά τμήμα, παρακολούθηση εργασιών και αποθήκευση απαντήσεων στο demo.</p><p class="scene-note">Τα στοιχεία είναι συνθετικά. Δεν υπάρχει σύνδεση με Booking, Google, PMS ή πραγματικά μοντέλα. Η ημερομηνία του σεναρίου είναι 22/10/2026.</p></div>' +
+            '<div class="card"><h2 class="small-title">Τα δεδομένα μένουν εδώ</h2><p class="body-text">Οι αλλαγές αποθηκεύονται στον συγκεκριμένο browser. Με διαφορετικό αρχείο, browser ή καθαρισμό δεδομένων μπορεί να ξεκινήσει νέο demo. Στο file:// η διατήρηση εξαρτάται από τον browser.</p><button class="danger full" data-action="reset-dialog" style="margin-top:15px">' +
+            icon("reset", 16) +
+            "Επαναφορά δείγματος</button></div>"
+          );
+        }
+        function render() {
+          $("main").innerHTML =
+            '<div class="view-enter">' +
+            { home, reviews: inbox, insights, tasks, lab, profile }[ui.view]() +
+            "</div>";
+          renderNav();
+          if (ui.view === "reviews") inboxList();
+          if (ui.view === "tasks") renderTaskResults();
+          if (ui.view === "lab") labResult();
+        }
+        function openReview(id, preserveScroll = false) {
+          const review = data.reviews.find((r) => r.id === Number(id));
+          if (!review) return;
+          ui.detailId = review.id;
+          const dialog = $("detail-dialog"),
+            previousScroll =
+              dialog.querySelector(".sheet-body")?.scrollTop || 0,
+            analysis = analyze(review.text),
+            status = reviewStatus(data, review);
+          const actions = analysis.pending.map((issue) => {
+            const key = actionKey(review.id, issue.category);
+            return (
+              data.tasks.find((t) => t.key === key) ||
+              recommendationFor(review, issue)
+            );
+          });
+          dialog.innerHTML =
+            '<div class="sheet"><header class="sheet-head"><div><div class="eyebrow">' +
+            e(propName(review.p)) +
+            '</div><h2 id="dialog-title">Κριτική επισκέπτη</h2></div><button class="close-btn" data-action="close-dialog" aria-label="Κλείσιμο κριτικής">' +
+            icon("close", 19) +
+            '</button></header><div class="sheet-body"><div class="card-top"><span class="guest-icon">' +
+            e(review.guest.slice(0, 1)) +
+            '</span><div><div class="card-name">' +
+            e(review.guest) +
+            '</div><div class="card-meta">' +
+            e(dateLabel(review.date)) +
+            '</div></div><div class="right"><span class="rating">★ ' +
+            review.stars +
+            '/5</span></div></div><p class="review-text">' +
+            e(review.text) +
+            '</p><div class="chips">' +
+            chip(LABELS[status], tone(status)) +
+            chip(LABELS[analysis.triage], tone(analysis.triage)) +
+            "</div>" +
+            reviewCheckHTML(review) +
+            "<h3>Τι δείχνει η προσομοίωση</h3>" +
+            analysisHTML(analysis) +
+            "<h3>Επόμενες ενέργειες</h3>" +
+            (actions.length
+              ? actions
+                  .map((a) =>
+                    actionCard(a, { suggested: !a.status, compact: true }),
+                  )
+                  .join("")
+              : notice(
+                  analysis.triage === "real_resolved"
+                    ? "Το κείμενο αναφέρει ότι το πρόβλημα λύθηκε. Δεν προτείνεται νέα εργασία."
+                    : analysis.triage === "hypothetical"
+                      ? "Η επιθυμία καταγράφεται για αξιολόγηση. Δεν δημιουργείται εργασία ως πραγματικό παράπονο."
+                      : "Δεν εντοπίστηκε συγκεκριμένο εκκρεμές πρόβλημα. Μπορείς να απαντήσεις στον επισκέπτη.",
+                )) +
+            '<h3>Απάντηση στον επισκέπτη</h3><form id="reply-form"><label class="field-label" for="reply-input">' +
+            (data.replies[review.id]
+              ? "Αποθηκευμένη απάντηση demo"
+              : "Κείμενο απάντησης") +
+            '</label><textarea class="form-text" id="reply-input" maxlength="5000" required placeholder="Ευχαρίστησε τον επισκέπτη και εξήγησε το επόμενο βήμα…">' +
+            e(data.replies[review.id] || "") +
+            '</textarea><div class="button-row"><button type="button" class="secondary" data-action="draft-reply" data-id="' +
+            review.id +
+            '">Προσχέδιο demo</button><button type="submit" class="primary">Αποθήκευση στο demo</button></div><p class="hint">Η απάντηση αποθηκεύεται μόνο εδώ. Δεν δημοσιεύεται και δεν αποστέλλεται στον επισκέπτη.</p><p id="reply-feedback" class="feedback" role="status"></p></form></div></div>';
+          if (!dialog.open) dialog.showModal();
+          if (preserveScroll)
+            dialog.querySelector(".sheet-body").scrollTop = previousScroll;
+        }
+        function refreshAfterMutation() {
+          save();
+          render();
+          if ($("detail-dialog").open && ui.detailId)
+            openReview(ui.detailId, true);
+        }
+        function findAction(key) {
+          const direct = recommendations(
+            data,
+            ui.property,
+            ui.weights,
+            ui.limits,
+          ).find((a) => a.key === key);
+          if (direct) return direct;
+          const [id, category] = key.split(":"),
+            review = data.reviews.find((r) => r.id === Number(id)),
+            issue =
+              review &&
+              analyze(review.text).pending.find((i) => i.category === category);
+          return issue ? recommendationFor(review, issue) : null;
+        }
+        function reviewCard(review) {
+          const analysis = analyze(review.text),
+            status = reviewStatus(data, review);
+          const urgent =
+            analysis.pending.some((i) => i.severity === 3) && status !== "done";
+          return `<button class="card review-card" data-action="review" data-id="${review.id}" aria-label="Κριτική ${e(review.guest)} για ${e(propName(review.p))}">
+ <div class="card-top"><span class="guest-icon" aria-hidden="true">${e(review.guest.slice(0, 1))}</span><div><div class="card-name">${e(propName(review.p))}</div><div class="card-meta">${e(review.guest)} · ${e(dateLabel(review.date))}</div><div class="card-meta">${e(SOURCES[sourceOf(review)])} · ${languageOf(review).toUpperCase()} · demo</div></div><div class="right"><div class="rating">★ ${review.stars}/5</div><div class="card-meta">${data.replies[review.id] ? "Απαντήθηκε" : "Χωρίς απάντηση"}</div></div></div>
+ <p class="review-text clamp">${e(review.text)}</p><div class="chips">${urgent ? chip("Υψηλή προτεραιότητα", "red") : chip(LABELS[analysis.binaryLabel], tone(analysis.binaryLabel))}${chip(LABELS[status], tone(status))}${data.checked[review.id] ? chip("Ελέγχθηκε", "green") : chip("Προς έλεγχο", "amber")}</div></button>`;
+        }
+        function sourceOverview() {
+          const sources = sourceCounts(data, ui.property);
+          return `<div class="section-row"><h2>Ένα inbox, όλες οι πηγές</h2><button class="text-btn" data-action="inbox" data-kind="all">Άνοιγμα →</button></div><div class="card"><div class="chips" style="margin-top:0">${sources.map((s) => chip(`${s.label} · ${s.count}`)).join("")}</div><p class="hint">Σενάριο πολλαπλών πηγών με συνθετικά δεδομένα. Οι λογαριασμοί των πλατφορμών δεν είναι συνδεδεμένοι.</p><button class="secondary full" data-action="inbox" data-kind="needs-review">Δες όσα χρειάζονται ανθρώπινο έλεγχο</button></div>`;
+        }
+        function patternSummary() {
+          const signals = topicSignals(data, ui.property, 30).slice(0, 3);
+          return `<div class="section-row"><h2>Θέματα που επαναλαμβάνονται</h2><button class="text-btn" data-action="nav" data-view="insights">Δες μοτίβα →</button></div>${signals.length ? signals.map((s) => `<button class="card review-card" data-action="topic" data-aspect="${s.aspect}"><div class="task-top"><strong class="card-name">${e(s.label)}</strong>${chip(`${s.negativeCount} αρνητικές αναφορές`, "amber")}</div><p class="sub">Σε ${s.hotelCount} ${s.hotelCount === 1 ? "κατάλυμα" : "καταλύματα"} · τελευταίες 30 μέρες</p></button>`).join("") : empty("Δεν υπάρχουν σήματα στο δείγμα", "Οι επαναλήψεις θα εμφανίζονται όταν υπάρχουν σχετικές αναφορές.")}`;
+        }
+        function home() {
+          return legacyHome() + sourceOverview() + patternSummary();
+        }
+        function inbox() {
+          const options = (items, selected) =>
+            items
+              .map(
+                ([value, label]) =>
+                  `<option value="${e(value)}"${value === selected ? " selected" : ""}>${e(label)}</option>`,
+              )
+              .join("");
+          return (
+            head(
+              "Όλες οι πηγές, κοινή προτεραιότητα",
+              "Κριτικές",
+              "Έλεγξε το συγκεκριμένο πρόβλημα και ανάθεσε το επόμενο βήμα.",
+            ) +
+            `<div class="searchbox">${icon("search", 17)}<label for="review-search" class="sr-only">Αναζήτηση κριτικών</label><input id="review-search" type="search" maxlength="150" placeholder="Κείμενο, επισκέπτης ή κατάλυμα…" value="${e(ui.query)}" autocomplete="off"><button class="clear" data-action="clear-search" aria-label="Καθαρισμός αναζήτησης">×</button></div>
+ <div class="filter-row" aria-label="Συνολικό συναίσθημα">${[
+   ["all", "Όλες"],
+   ["positive", "Θετικές"],
+   ["negative", "Αρνητικές"],
+   ["unknown", "Χωρίς ένδειξη"],
+ ]
+   .map(
+     ([v, t]) =>
+       `<button class="filter-btn ${ui.sentiment === v ? "active" : ""}" data-action="sentiment" data-value="${v}" aria-pressed="${ui.sentiment === v}">${t}</button>`,
+   )
+   .join("")}</div>
+ <div class="filter-grid"><div><label for="source-filter" class="field-label">Πηγή</label><select id="source-filter" class="select">${options([["all", "Όλες οι πηγές"], ...Object.entries(SOURCES)], ui.source)}</select></div><div><label for="aspect-filter" class="field-label">Θέμα</label><select id="aspect-filter" class="select">${options([["all", "Όλα τα θέματα"], ...Object.entries(ASPECT_LABELS)], ui.aspect)}</select></div><div><label for="department-filter" class="field-label">Αρμόδιο τμήμα</label><select id="department-filter" class="select">${options([["all", "Όλα τα τμήματα"], ...DEPARTMENTS.map((d) => [d, d])], ui.department)}</select></div><div><label for="status-filter" class="field-label">Κατάσταση</label><select id="status-filter" class="select">${options(
+   [
+     ["all", "Όλες οι καταστάσεις"],
+     ["needs-review", "Χρειάζονται έλεγχο"],
+     ["pending", "Εκκρεμή περιστατικά"],
+     ["urgent", "Υψηλή προτεραιότητα"],
+     ["unanswered", "Χωρίς απάντηση"],
+     ["done", "Ολοκληρωμένα"],
+     ["month", "Κριτικές Οκτωβρίου"],
+   ],
+   ui.status,
+ )}</select></div></div><div id="review-results"></div>`
+          );
+        }
+        function signalChange(signal) {
+          if (signal.rateChange === null)
+            return "Χωρίς συγκρίσιμο προηγούμενο δείγμα";
+          const difference = signal.rateChange * 100;
+          return `${difference > 0 ? "+" : ""}${difference.toFixed(1)} ποσοστιαίες μονάδες · προηγούμενο δείγμα ${signal.previousMentions} αναφορών`;
+        }
+        function insights() {
+          const signals = topicSignals(
+            data,
+            ui.property,
+            ui.insightDays,
+            ui.insightSource,
+          );
+          return (
+            head(
+              "Από μεμονωμένο σχόλιο σε επανάληψη",
+              "Μοτίβα παραπόνων",
+              "Δες ποια θέματα εμφανίζονται ξανά και σε ποια καταλύματα.",
+            ) +
+            `<div class="filter-grid"><div><label for="insight-days" class="field-label">Χρονικό διάστημα</label><select id="insight-days" class="select">${[7, 14, 30, 60].map((d) => `<option value="${d}"${ui.insightDays === d ? " selected" : ""}>Τελευταίες ${d} μέρες</option>`).join("")}</select></div><div><label for="insight-source" class="field-label">Πηγή</label><select id="insight-source" class="select"><option value="all">Όλες οι πηγές</option>${Object.entries(
+              SOURCES,
+            )
+              .map(
+                ([v, t]) =>
+                  `<option value="${v}"${ui.insightSource === v ? " selected" : ""}>${e(t)}</option>`,
+              )
+              .join("")}</select></div></div>` +
+            notice(
+              "Οι επαναλήψεις είναι <b>ενδείξεις για διερεύνηση</b>. Έλεγξε τα αποσπάσματα και το μέγεθος του δείγματος πριν αποφασίσεις.",
+            ) +
+            `<div class="section-row"><h2>${signals.length} θέματα με αρνητικές αναφορές</h2></div>` +
+            (signals.length
+              ? signals
+                  .map(
+                    (s) =>
+                      `<article class="card"><div class="task-top"><h2 class="small-title" style="margin:0">${e(s.label)}</h2>${chip(`${s.hotelCount} καταλύματα`)}</div><p class="task-title">${s.negativeCount} / ${s.totalMentions} σχετικές αναφορές αρνητικές</p><p class="sub">Ποσοστό ${Math.round(s.negativeRate * 100)}% στο συγκεκριμένο δείγμα.</p><p class="hint">${e(signalChange(s))}</p>${s.totalMentions < 5 ? chip("Μικρό δείγμα · έλεγξε με προσοχή", "amber") : ""}<button class="secondary full" style="margin-top:13px" data-action="topic" data-aspect="${s.aspect}">Δες αποσπάσματα & καταλύματα</button></article>`,
+                  )
+                  .join("")
+              : empty(
+                  "Δεν υπάρχουν αρνητικές αναφορές εδώ",
+                  "Δοκίμασε μεγαλύτερο χρονικό διάστημα ή άλλη πηγή.",
+                )) +
+            `<p class="hint">Κάθε κριτική μετρά έως μία φορά ανά θέμα. Το ποσοστό είναι αρνητικές κριτικές για το θέμα / κριτικές που αναφέρουν το ίδιο θέμα. Τα λυμένα περιστατικά παραμένουν στο ιστορικό. Δεν υπολογίζεται πρόβλεψη κρατήσεων ή εσόδων.</p>`
+          );
+        }
+        function openTopic(aspect) {
+          const days = ui.view === "insights" ? ui.insightDays : 30,
+            source = ui.view === "insights" ? ui.insightSource : "all";
+          const signal = topicSignals(data, ui.property, days, source).find(
+            (s) => s.aspect === aspect,
+          );
+          if (!signal) return;
+          ui.detailId = null;
+          $("detail-dialog").innerHTML =
+            `<div class="sheet"><header class="sheet-head"><div><div class="eyebrow">${days} μέρες · δείγμα</div><h2 id="dialog-title">${e(signal.label)}</h2></div><button class="close-btn" data-action="close-dialog" aria-label="Κλείσιμο θέματος">${icon("close")}</button></header><div class="sheet-body"><p class="body-text">${signal.negativeCount} αρνητικές αναφορές από ${signal.hotelCount} καταλύματα. Κάθε απόσπασμα οδηγεί στην αντίστοιχη κριτική.</p><p class="hint">${e(signalChange(signal))}</p>${signal.evidence.map((item) => `<div class="card"><div class="card-name">${e(propName(item.property))}</div><div class="card-meta">${e(SOURCES[item.source])} · ${e(externalIdOf(data.reviews.find((r) => r.id === item.reviewId)))}</div><blockquote class="evidence">«${e(item.quote)}»</blockquote><button class="secondary full" data-action="review" data-id="${item.reviewId}">Άνοιγμα κριτικής</button></div>`).join("")}<button class="primary full" data-action="topic-inbox" data-aspect="${aspect}" data-source="${source}">Δες όλες τις κριτικές αυτού του θέματος</button></div></div>`;
+          if (!$("detail-dialog").open) $("detail-dialog").showModal();
+        }
+        function analysisHTML(analysis) {
+          return `<div class="card"><div class="task-top"><h2 class="small-title" style="margin:0">Συνολικό συναίσθημα</h2>${chip(LABELS[analysis.binaryLabel], tone(analysis.binaryLabel))}</div><p class="hint">Ετικέτα θετικής / αρνητικής εμπειρίας · τοπική προσομοίωση. Έλεγξε και τα επιμέρους θέματα.</p><div class="chips">${chip(LABELS[analysis.triage], tone(analysis.triage))}${chip("Πειραματική διαλογή", "amber")}</div><div class="divider"></div><h3 class="small-title">Συγκεκριμένα θέματα</h3>${analysis.aspects.length ? analysis.aspects.map((a) => `<div class="aspect-row"><span>${e(a.label)}</span>${chip(LABELS[a.sentiment], tone(a.sentiment))}</div>`).join("") : '<p class="body-text">Δεν εντοπίστηκαν θέματα με αρκετές ενδείξεις.</p>'}<p class="hint">Τα παραπάνω δεν είναι έξοδοι του DistilBERT ή του ABSA API. Η επιβεβαίωση του υπευθύνου απαιτείται πριν από την ανάθεση.</p></div>`;
+        }
+        function labResult() {
+          legacyLabResult();
+          const button = document.querySelector(
+            '#lab-result [data-action="add-lab"]',
+          );
+          if (button)
+            button.insertAdjacentHTML(
+              "beforebegin",
+              `<div style="margin-top:12px"><label class="field-label" for="lab-source">Πηγή δείγματος</label><select id="lab-source" class="select">${Object.entries(
+                SOURCES,
+              )
+                .map(
+                  ([v, t]) =>
+                    `<option value="${v}"${v === "internal" ? " selected" : ""}>${e(t)}</option>`,
+                )
+                .join("")}</select></div>`,
+            );
+        }
+        function profile() {
+          return (
+            legacyProfile() +
+            `<div class="card"><h2 class="small-title">Από το μοντέλο στην καθημερινή λειτουργία</h2><p class="body-text">Το mobile app σχεδιάζεται πάνω στο έργο hotel-review-nlp: συνολικό συναίσθημα, θέματα με τεκμήρια, συστάσεις και ανθρώπινη απόφαση. Στο τρέχον mock χρησιμοποιούνται τοπικές προσομοιώσεις.</p><p class="scene-note">Η αξιολόγηση του δυαδικού ταξινομητή αφορά αγγλικά δεδομένα Booking.com. Δεν αποδεικνύει ακρίβεια ελληνικών, ανάλυσης ανά θέμα ή επιχειρησιακής διαλογής. Το πραγματικό triage παραμένει πειραματικό.</p></div>`
+          );
+        }
+        function reviewCheckHTML(review) {
+          return `<div class="card" id="analysis-check"><div class="card-meta">${e(SOURCES[sourceOf(review)])} · ${e(externalIdOf(review))} · ${languageOf(review).toUpperCase()}</div><h3 class="small-title">Έλεγχος από τον υπεύθυνο</h3><p class="body-text">Επιβεβαίωσε ότι το απόσπασμα, το θέμα και η προτεινόμενη ενέργεια ανταποκρίνονται στην κριτική. Οι ενδείξεις δεν δημιουργούν αυτόματες αναθέσεις.</p>${data.checked[review.id] ? '<p class="feedback">✓ Η ανάλυση ελέγχθηκε στο demo.</p>' : `<button class="secondary full" style="margin-top:12px" data-action="confirm-analysis" data-id="${review.id}">Επιβεβαίωση ανάλυσης</button>`}</div>`;
+        }
+
+        document.addEventListener("click", (event) => {
+          const target = event.target.closest("button[data-action]");
+          if (!target) return;
+          const action = target.dataset.action,
+            id = target.dataset.id,
+            value = target.dataset.value;
+          if (action === "nav") navigate(target.dataset.view);
+          if (action === "topic") openTopic(target.dataset.aspect);
+          if (action === "topic-inbox") {
+            $("detail-dialog").close();
+            resetFilters();
+            ui.aspect = target.dataset.aspect;
+            ui.source = target.dataset.source;
+            navigate("reviews");
+          }
+          if (action === "confirm-analysis") {
+            if (markReviewed(data, Number(id))) {
+              refreshAfterMutation();
+              toast(
+                "Η ανάλυση επιβεβαιώθηκε. Μπορείς να εγκρίνεις την ανάθεση.",
+              );
+            }
+          }
+          if (action === "review") openReview(id);
+          if (action === "close-dialog") {
+            $("detail-dialog").close();
+            ui.detailId = null;
+          }
+          if (action === "inbox") {
+            resetFilters();
+            ui.status = target.dataset.kind;
+            navigate("reviews");
+          }
+          if (action === "my-tasks") {
+            ui.taskTab = "mine";
+            ui.taskStatus = "active";
+            navigate("tasks");
+          }
+          if (action === "suggestions") {
+            ui.taskTab = "suggested";
+            navigate("tasks");
+          }
+          if (action === "clear-filters") {
+            resetFilters();
+            render();
+            $("review-search").focus();
+          }
+          if (action === "clear-search") {
+            ui.query = "";
+            $("review-search").value = "";
+            inboxList();
+            $("review-search").focus();
+          }
+          if (action === "sentiment") {
+            ui.sentiment = value;
+            render();
+            document
+              .querySelector(
+                '[data-action="sentiment"][data-value="' + value + '"]',
+              )
+              .focus();
+          }
+          if (action === "task-tab") {
+            ui.taskTab = value;
+            render();
+          }
+          if (action === "task-status") {
+            ui.taskStatus = value;
+            renderTaskResults();
+          }
+          if (action === "approve") {
+            const candidate = findAction(target.dataset.key);
+            if (candidate && !data.checked[candidate.reviewId]) {
+              openReview(candidate.reviewId);
+              toast(
+                "Έλεγξε την ανάλυση και επιβεβαίωσέ την πριν από την ανάθεση.",
+              );
+            }
+            if (candidate && approveAction(data, candidate)) {
+              refreshAfterMutation();
+              toast(
+                "Ανατέθηκε στο τμήμα «" +
+                  candidate.department +
+                  "» — μέσα στο demo.",
+              );
+            }
+          }
+          if (action === "start-task" || action === "complete-task") {
+            if (
+              transitionTask(
+                data,
+                id,
+                action === "start-task" ? "in_progress" : "done",
+              )
+            ) {
+              refreshAfterMutation();
+              toast(
+                action === "start-task"
+                  ? "Η εργασία είναι σε εξέλιξη."
+                  : "Η εργασία ολοκληρώθηκε.",
+              );
+            }
+          }
+          if (action === "sample") {
+            ui.labText = LAB_SAMPLES[value] || "";
+            ui.labAddedId = null;
+            ui.labResult = analyze(ui.labText);
+            $("lab-input").value = ui.labText;
+            labResult();
+            $("lab-error").textContent = "";
+          }
+          if (action === "add-lab") {
+            if (ui.labAddedId) return;
+            const property = $("lab-property").value;
+            if (data.reviews.length >= 200) {
+              toast(
+                "Το demo υποστηρίζει έως 200 κριτικές. Μπορείς να επαναφέρεις το δείγμα.",
+              );
+              return;
+            }
+            const review = {
+              id: Math.max(...data.reviews.map((r) => r.id)) + 1,
+              p: property,
+              guest: "Επισκέπτης δοκιμής",
+              source: $("lab-source").value,
+              language: languageOf({ text: ui.labText }),
+              date: DEMO_DATE,
+              stars: Number($("lab-rating").value),
+              reply: false,
+              text: ui.labText,
+            };
+            data.reviews.push(review);
+            ui.labAddedId = review.id;
+            save();
+            labResult();
+            toast(
+              "Προστέθηκε κριτική δείγματος στο " + propName(property) + ".",
+            );
+            openReview(review.id);
+          }
+          if (action === "draft-reply") {
+            const review = data.reviews.find((r) => r.id === Number(id)),
+              analysis = analyze(review.text);
+            $("reply-input").value =
+              "Σας ευχαριστούμε που μοιραστήκατε την εμπειρία σας. " +
+              (analysis.pending.length
+                ? "Λυπούμαστε για το ζήτημα που περιγράφετε. Θα ελέγξουμε τις επισημάνσεις σας με το αρμόδιο τμήμα και θα σας ενημερώσουμε για την αντιμετώπισή τους."
+                : analysis.triage === "real_resolved"
+                  ? "Χαιρόμαστε που το ζήτημα αντιμετωπίστηκε. Σας ευχαριστούμε για την υπομονή και τα σχόλιά σας."
+                  : "Τα σχόλιά σας βοηθούν την ομάδα μας να βελτιώνει τη φιλοξενία της.");
+            $("reply-feedback").textContent =
+              "Ενδεικτικό προσχέδιο από πρότυπο. Έλεγξέ το πριν από την αποθήκευση.";
+            $("reply-input").focus();
+          }
+          if (action === "reset-dialog") {
+            ui.detailId = null;
+            $("detail-dialog").innerHTML =
+              '<div class="sheet"><div class="sheet-head"><h2 id="dialog-title">Επαναφορά του demo;</h2><button class="close-btn" data-action="close-dialog" aria-label="Ακύρωση επαναφοράς">' +
+              icon("close") +
+              '</button></div><div class="sheet-body"><p class="body-text">Θα αφαιρεθούν οι δικές σου κριτικές δοκιμής, απαντήσεις και αλλαγές στις αναθέσεις. Θα επανέλθει το αρχικό δείγμα.</p><div class="button-row"><button class="secondary" data-action="close-dialog" autofocus>Ακύρωση</button><button class="danger" data-action="reset-confirm">Επαναφορά</button></div></div></div>';
+            $("detail-dialog").showModal();
+          }
+          if (action === "reset-confirm") {
+            data = seedState();
+            ui.labText = "";
+            ui.labResult = null;
+            ui.labAddedId = null;
+            ui.detailId = null;
+            ui.property = "all";
+            resetFilters();
+            $("property-select").value = "all";
+            $("detail-dialog").close();
+            save();
+            navigate("home");
+            toast("Επαναφέρθηκε το αρχικό δείγμα.");
+          }
+        });
+        document.addEventListener("input", (event) => {
+          const target = event.target;
+          if (target.id === "review-search") {
+            ui.query = target.value;
+            inboxList();
+          }
+          if (target.id === "lab-input") {
+            ui.labText = target.value;
+            ui.labResult = null;
+            ui.labAddedId = null;
+            $("lab-result").innerHTML = "";
+            $("lab-error").textContent = "";
+          }
+          if (
+            target.id === "weight-severity" ||
+            target.id === "weight-recurrence"
+          ) {
+            const name = target.id.replace("weight-", "");
+            ui.weights[name] = Number(target.value);
+            $(target.id + "-value").value = target.value + "/5";
+            renderTaskResults();
+          }
+        });
+        document.addEventListener("change", (event) => {
+          const target = event.target;
+          if (target.id === "property-select") {
+            ui.property = target.value;
+            render();
+            $("main").scrollTop = 0;
+          }
+          if (target.id === "source-filter") {
+            ui.source = target.value;
+            inboxList();
+          }
+          if (target.id === "aspect-filter") {
+            ui.aspect = target.value;
+            inboxList();
+          }
+          if (target.id === "insight-days") {
+            ui.insightDays = Number(target.value);
+            render();
+          }
+          if (target.id === "insight-source") {
+            ui.insightSource = target.value;
+            render();
+          }
+          if (target.id === "department-filter") {
+            ui.department = target.value;
+            inboxList();
+          }
+          if (target.id === "status-filter") {
+            ui.status = target.value;
+            inboxList();
+          }
+          if (target.id === "plan-time") {
+            ui.limits.minutes = Number(target.value);
+            renderTaskResults();
+          }
+          if (target.id === "plan-budget") {
+            ui.limits.budget = Number(target.value);
+            renderTaskResults();
+          }
+          if (target.dataset.setting) {
+            data.settings[target.dataset.setting] = target.checked;
+            save();
+            toast("Αποθηκεύτηκε η προτίμηση του demo.");
+          }
+        });
+        document.addEventListener("submit", (event) => {
+          if (event.target.id === "lab-form") {
+            event.preventDefault();
+            ui.labText = $("lab-input").value.trim();
+            if (ui.labText.length < 5) {
+              $("lab-error").textContent =
+                "Γράψε τουλάχιστον 5 χαρακτήρες ή διάλεξε ένα παράδειγμα.";
+              return;
+            }
+            ui.labResult = analyze(ui.labText);
+            ui.labAddedId = null;
+            $("lab-error").textContent = "";
+            labResult();
+            $("lab-result").scrollIntoView({
+              block: "start",
+              behavior: "smooth",
+            });
+          }
+          if (event.target.id === "reply-form") {
+            event.preventDefault();
+            const text = $("reply-input").value.trim();
+            if (!text) {
+              $("reply-feedback").textContent =
+                "Γράψε μία απάντηση πριν από την αποθήκευση.";
+              return;
+            }
+            const id = ui.detailId;
+            data.replies[id] = text;
+            save();
+            render();
+            openReview(id, true);
+            $("reply-feedback").textContent =
+              "Αποθηκεύτηκε στο demo. Δεν έγινε αποστολή στον επισκέπτη.";
+          }
+        });
+        $("detail-dialog").addEventListener("close", () => {
+          ui.detailId = null;
+        });
+        $("detail-dialog").addEventListener("click", (event) => {
+          if (event.target === $("detail-dialog")) $("detail-dialog").close();
+        });
+        $("property-select").innerHTML =
+          '<option value="all">Όλα τα καταλύματα · ' +
+          PROPS.length +
+          "</option>" +
+          PROPS.map(
+            (p) =>
+              '<option value="' +
+              p.id +
+              '">' +
+              e(p.name) +
+              " · " +
+              e(p.loc) +
+              "</option>",
+          ).join("");
+        $("storage-notice").hidden = storageAvailable;
+        render();
+        save();
+      })();
+    </script>
+  </body>
+</html>

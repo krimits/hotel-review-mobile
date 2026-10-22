@@ -1,0 +1,18 @@
+{
+  "name": "hostpulse-mobile-mockup",
+  "version": "0.3.0",
+  "private": true,
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
+  "description": "Offline mobile prototype for hotel guest review operations and evidence-backed action recommendations",
+  "scripts": {
+    "test": "node --test tests/core.test.cjs",
+    "test:ui": "node tests/ui-smoke.cjs",
+    "test:dom": "node --test tests/dom.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "jsdom": "30.1.3"
+  }
+}
