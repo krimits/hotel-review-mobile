@@ -1070,6 +1070,66 @@
         padding: 10px 12px;
         margin-top: 10px;
       }
+      .help-btn {
+        min-width: 32px;
+        min-height: 32px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--brand);
+        font-weight: 700;
+      }
+      .topline-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .welcome-body {
+        text-align: center;
+        padding: 26px 22px 20px;
+      }
+      .welcome-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px;
+        border-radius: 20px;
+        display: grid;
+        place-items: center;
+        background: var(--accent);
+        color: var(--brand);
+      }
+      .welcome-body h2 {
+        font-size: 19px;
+        letter-spacing: -0.4px;
+        margin: 0 0 10px;
+      }
+      .welcome-body .body-text {
+        text-align: left;
+      }
+      .welcome-points {
+        text-align: left;
+        margin: 14px 0 0;
+        padding-left: 18px;
+        font-size: 12px;
+        line-height: 1.7;
+      }
+      .welcome-dots {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin: 18px 0 4px;
+      }
+      .welcome-dots span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--line);
+      }
+      .welcome-dots span.on {
+        width: 20px;
+        border-radius: 4px;
+        background: var(--brand);
+      }
       @media (max-width: 850px) {
         .desk-note {
           display: none;
@@ -1213,15 +1273,26 @@
                   /></svg
                 >HostPulse<span style="color: #91a67c">.</span>
               </div>
-              <button
-                class="demo-chip"
-                type="button"
-                data-action="nav"
-                data-view="lab"
-                aria-label="Δοκιμή κριτικής"
-              >
-                ΔΟΚΙΜΗ · 0.3
-              </button>
+              <div class="topline-actions">
+                <button
+                  class="demo-chip"
+                  type="button"
+                  data-action="nav"
+                  data-view="lab"
+                  aria-label="Δοκιμή κριτικής"
+                >
+                  ΔΟΚΙΜΗ · 0.3
+                </button>
+                <button
+                  class="help-btn"
+                  type="button"
+                  data-action="welcome-open"
+                  aria-label="Οδηγός χρήσης"
+                  title="Οδηγός χρήσης"
+                >
+                  ?
+                </button>
+              </div>
             </div>
             <div class="property-wrap">
               <label class="sr-only" for="property-select">Κατάλυμα</label
@@ -2884,6 +2955,7 @@
           labResult: null,
           labAddedId: null,
           detailId: null,
+          welcome: false,
         };
         let toastTimer;
         function save() {
@@ -3784,8 +3856,116 @@
         function profile() {
           return (
             legacyProfile() +
+            `<div class="card"><h2 class="small-title">Πρώτη φορά εδώ;</h2><p class="body-text">Ο οδηγός εξηγεί σε τέσσερα βήματα τι κάνει η εφαρμογή και πού βρίσκονται οι συστάσεις.</p><button class="secondary full" style="margin-top:12px" data-action="welcome-open">Άνοιγμα οδηγού χρήσης</button></div>` +
             `<div class="card"><h2 class="small-title">Από το μοντέλο στην καθημερινή λειτουργία</h2><p class="body-text">Το mobile app σχεδιάζεται πάνω στο έργο hotel-review-nlp: συνολικό συναίσθημα, θέματα με τεκμήρια, συστάσεις και ανθρώπινη απόφαση. Στο τρέχον mock χρησιμοποιούνται τοπικές προσομοιώσεις.</p><p class="scene-note">Η αξιολόγηση του δυαδικού ταξινομητή αφορά αγγλικά δεδομένα Booking.com. Δεν αποδεικνύει ακρίβεια ελληνικών, ανάλυσης ανά θέμα ή επιχειρησιακής διαλογής. Το πραγματικό triage παραμένει πειραματικό.</p></div>`
           );
+        }
+        // First-use guide: shown once per browser, reopened from "?" or the profile.
+        // Its flag has its own key, so it never touches the demo state.
+        const WELCOME_KEY = "hostpulse.welcome.v1";
+        const WELCOME_STEPS = [
+          {
+            icon: "spark",
+            title: "Καλώς ήρθες στο HostPulse",
+            text: "Για όσους διαχειρίζονται τη λειτουργία ξενοδοχείων. Το HostPulse μαζεύει τις κριτικές όλων των καταλυμάτων σου σε ένα σημείο και σου δείχνει ποια προβλήματα θέλουν δράση πρώτα.",
+            points: [
+              "Booking.com, Tripadvisor, Google και εσωτερική φόρμα σε ένα inbox.",
+              "Επιλέγεις κατάλυμα από τη λίστα στην κορυφή ή βλέπεις όλα μαζί.",
+            ],
+          },
+          {
+            icon: "reviews",
+            title: "Τι γράφει ο επισκέπτης",
+            text: "Κάθε κριτική χωρίζεται σε θέματα, όπως καθαριότητα, συντήρηση ή πρωινό, με το ακριβές απόσπασμα που το στηρίζει.",
+            points: [
+              "Ξεχωρίζει το εκκρεμές πρόβλημα από το ήδη λυμένο και από μια απλή επιθυμία.",
+              "Μια θετική κριτική μπορεί να κρύβει παράπονο: δεν χάνεται.",
+            ],
+          },
+          {
+            icon: "tasks",
+            title: "Σου προτείνει τι να κάνεις",
+            text: "Στις «Ενέργειες» ένα σύστημα συστάσεων κατατάσσει τις διορθωτικές ενέργειες και φτιάχνει το πλάνο της ημέρας.",
+            points: [
+              "Προτεραιότητα από τη βαρύτητα, την επανάληψη στο ίδιο κατάλυμα και το πόσο πρόσφατο είναι.",
+              "Ορίζεις χρόνο και προϋπολογισμό: το πλάνο χωράει μέσα σε αυτά.",
+            ],
+          },
+          {
+            icon: "check",
+            title: "Εσύ αποφασίζεις",
+            text: "Τίποτα δεν ανατίθεται αυτόματα. Επιβεβαιώνεις την ανάλυση, εγκρίνεις την ανάθεση στο αρμόδιο τμήμα και την παρακολουθείς ως την ολοκλήρωση.",
+            points: [
+              "Στα «Μοτίβα» βλέπεις θέματα που επαναλαμβάνονται σε πολλά καταλύματα.",
+              "Στη «ΔΟΚΙΜΗ» γράφεις δική σου κριτική και βλέπεις την ανάλυση.",
+            ],
+          },
+        ];
+        function welcomeSeen() {
+          try {
+            return localStorage.getItem(WELCOME_KEY) === "seen";
+          } catch {
+            return false;
+          }
+        }
+        function markWelcomeSeen() {
+          try {
+            localStorage.setItem(WELCOME_KEY, "seen");
+          } catch {
+            // Without storage the guide simply shows again on the next visit.
+          }
+        }
+        function welcomeHTML(step) {
+          const s = WELCOME_STEPS[step],
+            last = step === WELCOME_STEPS.length - 1;
+          return (
+            '<div class="sheet"><div class="sheet-head"><div class="eyebrow">Οδηγός · ' +
+            (step + 1) +
+            " από " +
+            WELCOME_STEPS.length +
+            '</div><button class="text-btn" data-action="welcome-close">Παράλειψη</button></div><div class="sheet-body welcome-body"><div class="welcome-icon">' +
+            icon(s.icon, 30) +
+            '</div><h2 id="dialog-title">' +
+            e(s.title) +
+            '</h2><p class="body-text">' +
+            e(s.text) +
+            '</p><ul class="welcome-points">' +
+            s.points.map((p) => "<li>" + e(p) + "</li>").join("") +
+            '</ul><div class="welcome-dots" aria-hidden="true">' +
+            WELCOME_STEPS.map(
+              (_, i) => "<span" + (i === step ? ' class="on"' : "") + "></span>",
+            ).join("") +
+            '</div><div class="button-row" style="margin-top:16px">' +
+            (step > 0
+              ? '<button class="secondary" data-action="welcome-step" data-value="' +
+                (step - 1) +
+                '">Πίσω</button>'
+              : "") +
+            (last
+              ? '<button class="primary" data-action="welcome-close" data-view="tasks">Δες τις προτάσεις</button>'
+              : '<button class="primary" data-action="welcome-step" data-value="' +
+                (step + 1) +
+                '">Επόμενο</button>') +
+            "</div>" +
+            (last
+              ? '<p class="hint">Ο οδηγός ανοίγει ξανά από το «?» στην κορυφή ή από το Προφίλ. Τα δεδομένα είναι συνθετικά και τίποτα δεν αποστέλλεται.</p>'
+              : "") +
+            "</div></div>"
+          );
+        }
+        function openWelcome(step = 0) {
+          const dialog = $("detail-dialog");
+          ui.detailId = null;
+          ui.welcome = true;
+          dialog.innerHTML = welcomeHTML(step);
+          if (!dialog.open) dialog.showModal();
+          dialog.querySelector('[data-action="welcome-step"], [data-view="tasks"]')?.focus();
+        }
+        function closeWelcome(view) {
+          markWelcomeSeen();
+          ui.welcome = false;
+          $("detail-dialog").close();
+          if (view) navigate(view);
         }
         function reviewCheckHTML(review) {
           return `<div class="card" id="analysis-check"><div class="card-meta">${e(SOURCES[sourceOf(review)])} · ${e(externalIdOf(review))} · ${languageOf(review).toUpperCase()}</div><h3 class="small-title">Έλεγχος από τον υπεύθυνο</h3><p class="body-text">Επιβεβαίωσε ότι το απόσπασμα, το θέμα και η προτεινόμενη ενέργεια ανταποκρίνονται στην κριτική. Οι ενδείξεις δεν δημιουργούν αυτόματες αναθέσεις.</p>${data.checked[review.id] ? '<p class="feedback">✓ Η ανάλυση ελέγχθηκε στο demo.</p>' : `<button class="secondary full" style="margin-top:12px" data-action="confirm-analysis" data-id="${review.id}">Επιβεβαίωση ανάλυσης</button>`}</div>`;
@@ -3798,6 +3978,9 @@
             id = target.dataset.id,
             value = target.dataset.value;
           if (action === "nav") navigate(target.dataset.view);
+          if (action === "welcome-open") openWelcome();
+          if (action === "welcome-step") openWelcome(Number(value));
+          if (action === "welcome-close") closeWelcome(target.dataset.view);
           if (action === "topic") openTopic(target.dataset.aspect);
           if (action === "topic-inbox") {
             $("detail-dialog").close();
@@ -4073,6 +4256,11 @@
         });
         $("detail-dialog").addEventListener("close", () => {
           ui.detailId = null;
+          if (ui.welcome) {
+            // Esc or a click outside also counts as having seen the guide.
+            markWelcomeSeen();
+            ui.welcome = false;
+          }
         });
         $("detail-dialog").addEventListener("click", (event) => {
           if (event.target === $("detail-dialog")) $("detail-dialog").close();
@@ -4094,6 +4282,7 @@
         $("storage-notice").hidden = storageAvailable;
         render();
         save();
+        if (!welcomeSeen()) openWelcome();
       })();
     </script>
   </body>
