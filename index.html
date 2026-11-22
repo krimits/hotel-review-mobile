@@ -1230,6 +1230,184 @@
           scroll-behavior: auto !important;
         }
       }
+      .report-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin: 12px 0;
+      }
+      .report-kpi {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px 12px;
+      }
+      .report-kpi strong {
+        display: block;
+        font-size: 20px;
+        letter-spacing: -0.4px;
+        color: var(--brand);
+        margin-top: 2px;
+      }
+      .report-kpi strong.red {
+        color: var(--red);
+      }
+      .report-kpi strong.green {
+        color: var(--green);
+      }
+      .report-kpi span {
+        display: block;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .report-bar {
+        display: flex;
+        height: 10px;
+        border-radius: 99px;
+        overflow: hidden;
+        background: var(--line);
+        margin: 8px 0 6px;
+      }
+      .report-bar .seg-pos {
+        background: var(--green);
+      }
+      .report-bar .seg-neu {
+        background: var(--amber);
+      }
+      .report-bar .seg-neg {
+        background: var(--red);
+      }
+      .report-preview-doc {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        margin-top: 12px;
+      }
+      .report-doc-head {
+        background: var(--brand);
+        color: #fff;
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 12px;
+      }
+      .report-doc-head .eyebrow {
+        color: var(--accent);
+        margin-bottom: 3px;
+      }
+      .report-doc-head h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #fff;
+      }
+      .report-doc-head p {
+        margin: 4px 0 0;
+        font-size: 11px;
+        color: #dcebe5;
+      }
+      .report-sheet-tabs {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        margin: 10px 0 8px;
+      }
+      .report-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--paper);
+      }
+      .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        line-height: 1.45;
+      }
+      .report-table th,
+      .report-table td {
+        padding: 7px 9px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+      .report-table th {
+        background: #eaf2ee;
+        color: var(--ink);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .report-table tr:nth-child(even) td {
+        background: #fafbf9;
+      }
+      .report-summary-box {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 11px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin-top: 10px;
+      }
+      .report-checks {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .report-checks label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12px;
+        padding: 8px 10px;
+        background: var(--bg);
+        border-radius: 12px;
+      }
+      #print-report-root {
+        display: none;
+      }
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 14mm;
+        }
+        body {
+          background: #fff !important;
+          color: #1c302c !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .desk,
+        #detail-dialog,
+        #toast {
+          display: none !important;
+        }
+        #print-report-root {
+          display: block !important;
+          font-family: Inter, "Segoe UI", system-ui, sans-serif;
+          color: #1c302c;
+        }
+        #print-report-root .report-kpi-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        #print-report-root .report-table-wrap {
+          overflow: visible;
+        }
+        #print-report-root .report-table th,
+        #print-report-root .report-table td {
+          font-size: 9.5px;
+          padding: 5px 7px;
+        }
+        #print-report-root .print-block {
+          break-inside: avoid;
+          margin-bottom: 14px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1246,7 +1424,7 @@
           Ένα mobile εργαλείο για να εντοπίζεις παράπονα από όλες τις πηγές, να
           ελέγχεις επαναλήψεις και να οργανώνεις την επίλυσή τους.
         </p>
-        <p class="tag">Interactive mockup · v0.3</p>
+        <p class="tag">Interactive mockup · v0.4 (V2)</p>
         <p style="margin-top: 12px; font-size: 11px">
           Συνθετικά δεδομένα. Τοπικές προσομοιώσεις ανάλυσης και συστάσεων. Δεν
           γίνεται αποστολή μηνυμάτων.
@@ -1281,7 +1459,7 @@
                   data-view="lab"
                   aria-label="Δοκιμή κριτικής"
                 >
-                  ΔΟΚΙΜΗ · 0.3
+                  ΔΟΚΙΜΗ · V2
                 </button>
                 <button
                   class="help-btn"
@@ -1316,6 +1494,7 @@
       </div>
     </div>
     <dialog id="detail-dialog" aria-labelledby="dialog-title"></dialog>
+    <div id="print-report-root" aria-hidden="true"></div>
     <noscript
       ><p style="padding: 25px">
         Ενεργοποίησε τη JavaScript για να χρησιμοποιήσεις το διαδραστικό
@@ -2817,7 +2996,725 @@
             );
         }
 
+        const REPORT_LABELS = Object.freeze({
+          positive: "Θετική",
+          negative: "Αρνητική",
+          neutral: "Ουδέτερη",
+          unknown: "Χωρίς ένδειξη",
+          real_pending: "Εκκρεμές πρόβλημα",
+          real_resolved: "Λυμένο περιστατικό",
+          hypothetical: "Επιθυμία / υπόθεση",
+          positive_comment: "Χωρίς εκκρεμές πρόβλημα",
+          insufficient: "Χρειάζεται έλεγχος",
+          awaiting: "Προς αξιολόγηση",
+          assigned: "Ανατέθηκε",
+          in_progress: "Σε εξέλιξη",
+          done: "Ολοκληρώθηκε",
+          no_action: "Χωρίς ενέργεια",
+        });
+        function encodeUtf8(str) {
+          const input = String(str);
+          const out = [];
+          for (let i = 0; i < input.length; i++) {
+            let code = input.charCodeAt(i);
+            if (code >= 0xd800 && code <= 0xdbff && i + 1 < input.length) {
+              const next = input.charCodeAt(i + 1);
+              if (next >= 0xdc00 && next <= 0xdfff) {
+                code = 0x10000 + ((code - 0xd800) << 10) + (next - 0xdc00);
+                i++;
+              }
+            }
+            if (code <= 0x7f) {
+              out.push(code);
+            } else if (code <= 0x7ff) {
+              out.push(0xc0 | (code >> 6), 0x80 | (code & 0x3f));
+            } else if (code <= 0xffff) {
+              out.push(
+                0xe0 | (code >> 12),
+                0x80 | ((code >> 6) & 0x3f),
+                0x80 | (code & 0x3f),
+              );
+            } else {
+              out.push(
+                0xf0 | (code >> 18),
+                0x80 | ((code >> 12) & 0x3f),
+                0x80 | ((code >> 6) & 0x3f),
+                0x80 | (code & 0x3f),
+              );
+            }
+          }
+          return new Uint8Array(out);
+        }
+        const CRC32_TABLE = (() => {
+          const table = new Uint32Array(256);
+          for (let n = 0; n < 256; n++) {
+            let c = n;
+            for (let k = 0; k < 8; k++) {
+              c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+            }
+            table[n] = c >>> 0;
+          }
+          return table;
+        })();
+        function crc32(bytes) {
+          let c = 0xffffffff;
+          for (let i = 0; i < bytes.length; i++) {
+            c = CRC32_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
+          }
+          return (c ^ 0xffffffff) >>> 0;
+        }
+        function buildZipBytes(entries) {
+          const locals = [];
+          const centrals = [];
+          let offset = 0;
+          const setU16 = (view, pos, val) => view.setUint16(pos, val & 0xffff, true);
+          const setU32 = (view, pos, val) => view.setUint32(pos, val >>> 0, true);
+          for (const entry of entries) {
+            const nameBytes = encodeUtf8(entry.name);
+            const dataBytes =
+              entry.data instanceof Uint8Array
+                ? entry.data
+                : encodeUtf8(entry.data);
+            const crc = crc32(dataBytes);
+            const local = new Uint8Array(30 + nameBytes.length + dataBytes.length);
+            const lv = new DataView(local.buffer);
+            setU32(lv, 0, 0x04034b50);
+            setU16(lv, 4, 20);
+            setU16(lv, 6, 0x0800);
+            setU16(lv, 8, 0);
+            setU16(lv, 10, 0);
+            setU16(lv, 12, 0);
+            setU32(lv, 14, crc);
+            setU32(lv, 18, dataBytes.length);
+            setU32(lv, 22, dataBytes.length);
+            setU16(lv, 26, nameBytes.length);
+            setU16(lv, 28, 0);
+            local.set(nameBytes, 30);
+            local.set(dataBytes, 30 + nameBytes.length);
+            locals.push(local);
+
+            const central = new Uint8Array(46 + nameBytes.length);
+            const cv = new DataView(central.buffer);
+            setU32(cv, 0, 0x02014b50);
+            setU16(cv, 4, 20);
+            setU16(cv, 6, 20);
+            setU16(cv, 8, 0x0800);
+            setU16(cv, 10, 0);
+            setU16(cv, 12, 0);
+            setU16(cv, 14, 0);
+            setU32(cv, 16, crc);
+            setU32(cv, 20, dataBytes.length);
+            setU32(cv, 24, dataBytes.length);
+            setU16(cv, 28, nameBytes.length);
+            setU16(cv, 30, 0);
+            setU16(cv, 32, 0);
+            setU16(cv, 34, 0);
+            setU16(cv, 36, 0);
+            setU32(cv, 38, 0);
+            setU32(cv, 42, offset);
+            central.set(nameBytes, 46);
+            centrals.push(central);
+            offset += local.length;
+          }
+          const centralSize = centrals.reduce((sum, arr) => sum + arr.length, 0);
+          const eocd = new Uint8Array(22);
+          const ev = new DataView(eocd.buffer);
+          setU32(ev, 0, 0x06054b50);
+          setU16(ev, 4, 0);
+          setU16(ev, 6, 0);
+          setU16(ev, 8, entries.length);
+          setU16(ev, 10, entries.length);
+          setU32(ev, 12, centralSize);
+          setU32(ev, 16, offset);
+          setU16(ev, 20, 0);
+
+          const total = offset + centralSize + eocd.length;
+          const result = new Uint8Array(total);
+          let cursor = 0;
+          for (const chunk of [...locals, ...centrals, eocd]) {
+            result.set(chunk, cursor);
+            cursor += chunk.length;
+          }
+          return result;
+        }
+        function escapeXml(value) {
+          let out = "";
+          const input = String(value ?? "");
+          for (let i = 0; i < input.length; i++) {
+            const ch = input[i];
+            const code = input.charCodeAt(i);
+            if (ch === "&") out += "&amp;";
+            else if (ch === "<") out += "&lt;";
+            else if (ch === ">") out += "&gt;";
+            else if (ch === '"') out += "&quot;";
+            else if (ch === "'") out += "&apos;";
+            else if (code === 0x09 || code === 0x0a || code === 0x0d || code >= 0x20)
+              out += ch;
+          }
+          return out;
+        }
+        function excelColumnLetters(index) {
+          let n = index;
+          let label = "";
+          while (n >= 0) {
+            label = String.fromCharCode(65 + (n % 26)) + label;
+            n = Math.floor(n / 26) - 1;
+          }
+          return label;
+        }
+        function buildReportData(data, options = {}) {
+          const property = options.property || "all";
+          const days = options.days === undefined ? "all" : options.days;
+          const source = options.source || "all";
+          const sentiment = options.sentiment || "all";
+          const onlyPending = Boolean(options.onlyPending);
+          const includeRecommendations = options.includeRecommendations !== false;
+          const weights = options.weights || { severity: 4, recurrence: 3 };
+          const limits = options.limits || { minutes: 120, budget: 150 };
+
+          const numericDays = days === "all" ? null : Number(days);
+          const matching = filteredReviews(data, property)
+            .filter((r) => {
+              if (
+                numericDays &&
+                !(dayDifference(r.date) >= 0 && dayDifference(r.date) < numericDays)
+              )
+                return false;
+              if (source !== "all" && sourceOf(r) !== source) return false;
+              const analysis = analyze(r.text);
+              if (sentiment !== "all" && analysis.binaryLabel !== sentiment)
+                return false;
+              if (
+                onlyPending &&
+                !(analysis.pending.length && reviewStatus(data, r) !== "done")
+              )
+                return false;
+              return true;
+            })
+            .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+
+          const propInfo = PROPS.find((p) => p.id === property);
+          const propertyLabel = propInfo
+            ? `${propInfo.name} (${propInfo.loc})`
+            : `Όλα τα καταλύματα (${PROPS.length})`;
+          const periodLabel = numericDays
+            ? `Τελευταίες ${numericDays} μέρες`
+            : "Όλες οι περίοδοι";
+          const sourceLabel = source === "all" ? "Όλες οι πηγές" : SOURCES[source] || source;
+
+          let positiveCount = 0;
+          let negativeCount = 0;
+          let neutralCount = 0;
+          let urgentCount = 0;
+          let pendingCount = 0;
+          let unansweredCount = 0;
+
+          const rows = matching.map((r) => {
+            const analysis = analyze(r.text);
+            const status = reviewStatus(data, r);
+            if (analysis.binaryLabel === "positive") positiveCount++;
+            else if (analysis.binaryLabel === "negative") negativeCount++;
+            else neutralCount++;
+            if (analysis.pending.length && status !== "done") {
+              pendingCount++;
+              if (analysis.pending.some((i) => i.severity === 3)) urgentCount++;
+            }
+            if (!data.replies[r.id]) unansweredCount++;
+            const departments = [
+              ...new Set(
+                analysis.pending.map((i) => CATEGORIES[i.category]?.department).filter(Boolean),
+              ),
+            ];
+            const quotes = analysis.issues.map((i) => i.quote);
+            const prop = PROPS.find((p) => p.id === r.p);
+            return {
+              id: r.id,
+              externalId: externalIdOf(r),
+              date: r.date,
+              propertyId: r.p,
+              propertyName: prop ? prop.name : r.p,
+              guest: r.guest,
+              source: sourceOf(r),
+              sourceLabel: SOURCES[sourceOf(r)] || sourceOf(r),
+              language: languageOf(r).toUpperCase(),
+              stars: r.stars,
+              sentiment: analysis.binaryLabel,
+              sentimentLabel: REPORT_LABELS[analysis.binaryLabel] || analysis.binaryLabel,
+              triage: analysis.triage,
+              triageLabel: REPORT_LABELS[analysis.triage] || analysis.triage,
+              status,
+              statusLabel: REPORT_LABELS[status] || status,
+              departments,
+              quotes,
+              text: r.text,
+              reply: data.replies[r.id] || "",
+              checked: Boolean(data.checked && data.checked[r.id]),
+            };
+          });
+
+          const total = rows.length;
+          const averageStars = total ? mean(rows.map((r) => r.stars)) : null;
+          const positivePercent = total ? Math.round((positiveCount / total) * 100) : 0;
+          const negativePercent = total ? Math.round((negativeCount / total) * 100) : 0;
+          const neutralPercent = total
+            ? Math.max(0, 100 - positivePercent - negativePercent)
+            : 0;
+
+          const matchingIds = new Set(matching.map((r) => r.id));
+          const tasksInScope = data.tasks.filter(
+            (t) =>
+              (property === "all" || t.property === property) &&
+              matchingIds.has(t.reviewId),
+          );
+          const openTasks = tasksInScope.filter((t) => t.status !== "done").length;
+          const doneTasks = tasksInScope.filter((t) => t.status === "done").length;
+
+          const sources = SOURCE_IDS.map((s) => ({
+            source: s,
+            label: SOURCES[s],
+            count: rows.filter((r) => r.source === s).length,
+          })).filter((s) => s.count > 0);
+
+          const signalWindow = [7, 14, 30, 60].includes(numericDays)
+            ? numericDays
+            : 60;
+          const signals = topicSignals(data, property, signalWindow, source).filter(
+            (s) => s.reviewIds.some((id) => matchingIds.has(id)),
+          );
+
+          const allRecs = includeRecommendations
+            ? recommendations(data, property, weights, limits).filter((rec) =>
+                matchingIds.has(rec.reviewId),
+              )
+            : [];
+          const plan = includeRecommendations
+            ? buildPlan(allRecs, limits)
+            : { selected: [], minutes: 0, budget: 0 };
+
+          return {
+            meta: {
+              property,
+              propertyLabel,
+              periodLabel,
+              sourceLabel,
+              sentiment,
+              onlyPending,
+              includeRecommendations,
+              generatedDate: DEMO_DATE,
+            },
+            kpis: {
+              total,
+              averageStars,
+              positiveCount,
+              negativeCount,
+              neutralCount,
+              positivePercent,
+              negativePercent,
+              neutralPercent,
+              urgentCount,
+              pendingCount,
+              unansweredCount,
+              openTasks,
+              doneTasks,
+            },
+            sources,
+            signals,
+            recommendations: allRecs,
+            plan,
+            rows,
+          };
+        }
+        function buildReportSummaryText(report) {
+          const { meta, kpis, signals, recommendations: recs } = report;
+          const avg = kpis.averageStars === null ? "—" : `${kpis.averageStars.toFixed(1)}/5`;
+          const lines = [
+            `ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ HOSTPULSE — ${meta.propertyLabel}`,
+            `Περίοδος: ${meta.periodLabel} | Πηγή: ${meta.sourceLabel} | Ημερομηνία: ${meta.generatedDate}`,
+            "",
+            "ΒΑΣΙΚΟΙ ΔΕΙΚΤΕΣ (KPIs):",
+            `- Σύνολο κριτικών: ${kpis.total} | Μέση βαθμολογία: ${avg}`,
+            `- Συναίσθημα: Θετικές ${kpis.positivePercent}% (${kpis.positiveCount}), Αρνητικές ${kpis.negativePercent}% (${kpis.negativeCount}), Λοιπές ${kpis.neutralPercent}% (${kpis.neutralCount})`,
+            `- Υψηλή προτεραιότητα: ${kpis.urgentCount} | Εκκρεμή: ${kpis.pendingCount} | Χωρίς απάντηση: ${kpis.unansweredCount}`,
+            `- Εργασίες ομάδας: ${kpis.openTasks} ανοικτές, ${kpis.doneTasks} ολοκληρωμένες`,
+          ];
+          if (signals.length) {
+            lines.push("", "ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΑ ΘΕΜΑΤΑ:");
+            signals.slice(0, 4).forEach((s) => {
+              lines.push(
+                `- ${s.label}: ${s.negativeCount}/${s.totalMentions} αρνητικές (${Math.round(s.negativeRate * 100)}%) σε ${s.hotelCount} καταλύματα`,
+              );
+            });
+          }
+          if (recs.length) {
+            lines.push("", "ΠΡΟΤΕΡΑΙΟΠΟΙΗΜΕΝΕΣ ΠΡΟΤΑΣΕΙΣ ΕΝΕΡΓΕΙΩΝ:");
+            recs.slice(0, 4).forEach((r, idx) => {
+              const pName = PROPS.find((p) => p.id === r.property)?.name || r.property;
+              lines.push(
+                `${idx + 1}. [${r.department} · Σκορ ${r.score}] ${r.title} (${pName}) — ${r.effort} λ., ${r.cost}€`,
+              );
+            });
+          }
+          lines.push("", "Παράχθηκε τοπικά από το HostPulse V2 (demo δεδομένα).");
+          return lines.join("\n");
+        }
+        function buildXlsxSheets(report) {
+          const { meta, kpis, sources, signals, recommendations: recs, rows } = report;
+          const avgVal = kpis.averageStars === null ? "—" : kpis.averageStars.toFixed(2);
+          const summaryRows = [
+            [
+              { v: `ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ HOSTPULSE — ${meta.propertyLabel}`, s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+            ],
+            [
+              { v: "Περίοδος", s: 3 },
+              { v: meta.periodLabel },
+              { v: `Ημερομηνία σεναρίου: ${meta.generatedDate}` },
+            ],
+            [
+              { v: "Πηγή κριτικών", s: 3 },
+              { v: meta.sourceLabel },
+              { v: meta.onlyPending ? "Φίλτρο: Μόνο εκκρεμή" : "Όλες οι καταστάσεις" },
+            ],
+            [],
+            [
+              { v: "Δείκτης Απόδοσης (KPI)", s: 2 },
+              { v: "Τιμή", s: 2 },
+              { v: "Λεπτομέρειες", s: 2 },
+            ],
+            [
+              { v: "Σύνολο Κριτικών", s: 3 },
+              { v: String(kpis.total), n: kpis.total, s: 4 },
+              { v: "Κριτικές στο επιλεγμένο φίλτρο" },
+            ],
+            [
+              { v: "Μέση Βαθμολογία (/5)", s: 3 },
+              { v: avgVal, n: kpis.averageStars, s: 4 },
+              { v: "Κλίμακα 1 έως 5 αστέρια" },
+            ],
+            [
+              { v: "Θετικές Κριτικές (%)", s: 3 },
+              { v: `${kpis.positivePercent}%`, n: kpis.positivePercent, s: 4 },
+              { v: `${kpis.positiveCount} θετικές` },
+            ],
+            [
+              { v: "Αρνητικές Κριτικές (%)", s: 3 },
+              { v: `${kpis.negativePercent}%`, n: kpis.negativePercent, s: 4 },
+              { v: `${kpis.negativeCount} αρνητικές` },
+            ],
+            [
+              { v: "Υψηλής Προτεραιότητας", s: 3 },
+              { v: String(kpis.urgentCount), n: kpis.urgentCount, s: 4 },
+              { v: "Εκκρεμή σοβαρά περιστατικά" },
+            ],
+            [
+              { v: "Χωρίς Απάντηση", s: 3 },
+              { v: String(kpis.unansweredCount), n: kpis.unansweredCount, s: 4 },
+              { v: "Περιμένουν απάντηση" },
+            ],
+            [
+              { v: "Ανοικτές / Ολοκληρωμένες Εργασίες", s: 3 },
+              { v: `${kpis.openTasks} / ${kpis.doneTasks}`, s: 4 },
+              { v: "Αναθέσεις στα τμήματα" },
+            ],
+            [],
+            [
+              { v: "Πηγή", s: 2 },
+              { v: "Πλήθος Κριτικών", s: 2 },
+              { v: "Μερίδιο (%)", s: 2 },
+            ],
+            ...sources.map((src) => {
+              const pct = kpis.total ? Math.round((src.count / kpis.total) * 100) : 0;
+              return [
+                { v: src.label },
+                { v: String(src.count), n: src.count, s: 4 },
+                { v: `${pct}%`, n: pct, s: 4 },
+              ];
+            }),
+          ];
+
+          const actionRows = [
+            [
+              { v: "ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΑ ΜΟΤΙΒΑ ΠΑΡΑΠΟΝΩΝ", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+            ],
+            [
+              { v: "Θέμα", s: 2 },
+              { v: "Αρνητικές", s: 2 },
+              { v: "Σύνολο Αναφορών", s: 2 },
+              { v: "Ποσοστό Αρν. (%)", s: 2 },
+              { v: "Καταλύματα", s: 2 },
+            ],
+            ...(signals.length
+              ? signals.map((sig) => [
+                  { v: sig.label, s: 3 },
+                  { v: String(sig.negativeCount), n: sig.negativeCount, s: 4 },
+                  { v: String(sig.totalMentions), n: sig.totalMentions },
+                  {
+                    v: `${Math.round(sig.negativeRate * 100)}%`,
+                    n: Math.round(sig.negativeRate * 100),
+                    s: 4,
+                  },
+                  { v: String(sig.hotelCount), n: sig.hotelCount },
+                ])
+              : [[{ v: "Δεν υπάρχουν επαναλαμβανόμενα θέματα στο επιλεγμένο φίλτρο." }]]),
+            [],
+            [
+              { v: "ΠΡΟΤΕΡΑΙΟΠΟΙΗΜΕΝΕΣ ΠΡΟΤΑΣΕΙΣ ΕΝΕΡΓΕΙΩΝ (ΣΟΒΑΡΟΤΗΤΑ × ΣΥΧΝΟΤΗΤΑ)", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+              { v: "", s: 1 },
+            ],
+            [
+              { v: "Σκορ", s: 2 },
+              { v: "Βαρύτητα", s: 2 },
+              { v: "Επανάληψη (30μ)", s: 2 },
+              { v: "Κατάλυμα", s: 2 },
+              { v: "Τμήμα", s: 2 },
+              { v: "Προτεινόμενη Ενέργεια", s: 2 },
+              { v: "Χρόνος (λ.)", s: 2 },
+              { v: "Κόστος (€)", s: 2 },
+              { v: "Απόσπασμα Τεκμηρίωσης", s: 2 },
+            ],
+            ...(recs.length
+              ? recs.map((rec) => {
+                  const pName = PROPS.find((p) => p.id === rec.property)?.name || rec.property;
+                  return [
+                    { v: String(rec.score), n: rec.score, s: 4 },
+                    { v: `${rec.severity}/3`, n: rec.severity },
+                    { v: String(rec.recurrence), n: rec.recurrence },
+                    { v: pName },
+                    { v: rec.department, s: 3 },
+                    { v: rec.title, s: 5 },
+                    { v: String(rec.effort), n: rec.effort },
+                    { v: String(rec.cost), n: rec.cost },
+                    { v: rec.quote, s: 5 },
+                  ];
+                })
+              : [[{ v: "Δεν υπάρχουν εκκρεμείς προτεινόμενες ενέργειες." }]]),
+          ];
+
+          const reviewRows = [
+            [
+              { v: "ID", s: 2 },
+              { v: "Ημερομηνία", s: 2 },
+              { v: "Κατάλυμα", s: 2 },
+              { v: "Επισκέπτης", s: 2 },
+              { v: "Πηγή", s: 2 },
+              { v: "Γλώσσα", s: 2 },
+              { v: "Αστέρια (/5)", s: 2 },
+              { v: "Συναίσθημα", s: 2 },
+              { v: "Διαλογή", s: 2 },
+              { v: "Κατάσταση", s: 2 },
+              { v: "Τμήματα", s: 2 },
+              { v: "Κείμενο Κριτικής", s: 2 },
+              { v: "Απάντηση Demo", s: 2 },
+            ],
+            ...rows.map((r) => [
+              { v: r.externalId },
+              { v: r.date },
+              { v: r.propertyName, s: 3 },
+              { v: r.guest },
+              { v: r.sourceLabel },
+              { v: r.language },
+              { v: String(r.stars), n: r.stars, s: 4 },
+              { v: r.sentimentLabel },
+              { v: r.triageLabel },
+              { v: r.statusLabel },
+              { v: r.departments.join(", ") },
+              { v: r.text, s: 5 },
+              { v: r.reply || "—", s: 5 },
+            ]),
+          ];
+
+          return [
+            { name: "Συνοπτικά KPIs", widths: [34, 24, 38], rows: summaryRows },
+            {
+              name: "Μοτίβα & Ενέργειες",
+              widths: [24, 14, 16, 24, 22, 34, 13, 13, 42],
+              rows: actionRows,
+            },
+            {
+              name: "Αναλυτικές Κριτικές",
+              widths: [20, 13, 24, 18, 16, 10, 13, 14, 22, 18, 24, 52, 46],
+              rows: reviewRows,
+            },
+          ];
+        }
+        function buildXlsxBytes(report) {
+          const sheets = buildXlsxSheets(report);
+          const contentTypes =
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+            '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+            '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+            '<Default Extension="xml" ContentType="application/xml"/>' +
+            '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+            '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+            sheets
+              .map(
+                (_, i) =>
+                  `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`,
+              )
+              .join("") +
+            "</Types>";
+          const rootRels =
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+            '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+            "</Relationships>";
+          const workbookXml =
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+            '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' +
+            sheets
+              .map(
+                (s, i) =>
+                  `<sheet name="${escapeXml(s.name.slice(0, 31))}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`,
+              )
+              .join("") +
+            "</sheets></workbook>";
+          const workbookRels =
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+            sheets
+              .map(
+                (_, i) =>
+                  `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`,
+              )
+              .join("") +
+            `<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>` +
+            "</Relationships>";
+          const stylesXml =
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+            '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+            '<fonts count="3">' +
+            '<font><sz val="11"/><color rgb="FF1C302C"/><name val="Calibri"/></font>' +
+            '<font><b/><sz val="12"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>' +
+            '<font><b/><sz val="11"/><color rgb="FF174E46"/><name val="Calibri"/></font>' +
+            "</fonts>" +
+            '<fills count="4">' +
+            '<fill><patternFill patternType="none"/></fill>' +
+            '<fill><patternFill patternType="gray125"/></fill>' +
+            '<fill><patternFill patternType="solid"><fgColor rgb="FF174E46"/></patternFill></fill>' +
+            '<fill><patternFill patternType="solid"><fgColor rgb="FFEAF2EE"/></patternFill></fill>' +
+            "</fills>" +
+            '<borders count="2">' +
+            "<border><left/><right/><top/><bottom/><diagonal/></border>" +
+            '<border><left style="thin"><color rgb="FFC5D3CB"/></left><right style="thin"><color rgb="FFC5D3CB"/></right><top style="thin"><color rgb="FFC5D3CB"/></top><bottom style="thin"><color rgb="FFC5D3CB"/></bottom><diagonal/></border>' +
+            "</borders>" +
+            '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>' +
+            '<cellXfs count="6">' +
+            '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>' +
+            '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/>' +
+            '<xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>' +
+            '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+            '<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment horizontal="right"/></xf>' +
+            '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf>' +
+            "</cellXfs></styleSheet>";
+          const worksheetXml = (sheet) => {
+            const cols = sheet.widths.length
+              ? "<cols>" +
+                sheet.widths
+                  .map(
+                    (w, i) =>
+                      `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`,
+                  )
+                  .join("") +
+                "</cols>"
+              : "";
+            const rowsXml = sheet.rows
+              .map((row, rIdx) => {
+                const rowNum = rIdx + 1;
+                if (!row.length) return `<row r="${rowNum}"/>`;
+                const cells = row
+                  .map((cell, cIdx) => {
+                    const ref = `${excelColumnLetters(cIdx)}${rowNum}`;
+                    const styleAttr = cell.s ? ` s="${cell.s}"` : "";
+                    if (typeof cell.n === "number" && Number.isFinite(cell.n)) {
+                      const numStr = Number.isInteger(cell.n)
+                        ? String(cell.n)
+                        : cell.n.toFixed(2);
+                      return `<c r="${ref}"${styleAttr} t="n"><v>${numStr}</v></c>`;
+                    }
+                    return `<c r="${ref}"${styleAttr} t="inlineStr"><is><t xml:space="preserve">${escapeXml(cell.v)}</t></is></c>`;
+                  })
+                  .join("");
+                return `<row r="${rowNum}">${cells}</row>`;
+              })
+              .join("");
+            return (
+              '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+              '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+              cols +
+              "<sheetData>" +
+              rowsXml +
+              "</sheetData></worksheet>"
+            );
+          };
+          const entries = [
+            { name: "[Content_Types].xml", data: contentTypes },
+            { name: "_rels/.rels", data: rootRels },
+            { name: "xl/workbook.xml", data: workbookXml },
+            { name: "xl/_rels/workbook.xml.rels", data: workbookRels },
+            { name: "xl/styles.xml", data: stylesXml },
+            ...sheets.map((s, i) => ({
+              name: `xl/worksheets/sheet${i + 1}.xml`,
+              data: worksheetXml(s),
+            })),
+          ];
+          return buildZipBytes(entries);
+        }
+        function buildPrintableReportHTML(report) {
+          const { meta, kpis, sources, signals, recommendations: recs, rows } = report;
+          const esc = escapeHTML;
+          const avg = kpis.averageStars === null ? "—" : `${kpis.averageStars.toFixed(1)} / 5`;
+          return (
+            `<div class="print-block"><div class="report-doc-head"><div class="eyebrow">ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ & ΚΡΙΤΙΚΩΝ · HOSTPULSE V2</div><h3>${esc(meta.propertyLabel)}</h3><p>Περίοδος: ${esc(meta.periodLabel)} · Πηγή: ${esc(meta.sourceLabel)} · Ημερομηνία σεναρίου: ${esc(meta.generatedDate)}</p></div>` +
+            `<div class="report-kpi-grid"><div class="report-kpi"><span>Μέση βαθμολογία</span><strong>${avg}</strong></div><div class="report-kpi"><span>Σύνολο κριτικών</span><strong>${kpis.total}</strong></div><div class="report-kpi"><span>Θετικό συναίσθημα</span><strong class="green">${kpis.positivePercent}%</strong></div><div class="report-kpi"><span>Υψηλή προτεραιότητα</span><strong class="${kpis.urgentCount ? "red" : "green"}">${kpis.urgentCount}</strong></div></div>` +
+            `<div class="report-bar" aria-label="Κατανομή συναισθήματος"><span class="seg-pos" style="width:${kpis.positivePercent}%"></span><span class="seg-neu" style="width:${kpis.neutralPercent}%"></span><span class="seg-neg" style="width:${kpis.negativePercent}%"></span></div>` +
+            `<p class="hint" style="margin-top:4px">Θετικές: ${kpis.positiveCount} (${kpis.positivePercent}%) · Αρνητικές: ${kpis.negativeCount} (${kpis.negativePercent}%) · Λοιπές: ${kpis.neutralCount} (${kpis.neutralPercent}%) · Χωρίς απάντηση: ${kpis.unansweredCount} · Εργασίες: ${kpis.openTasks} ανοικτές / ${kpis.doneTasks} ολοκληρωμένες</p>` +
+            (sources.length
+              ? `<p class="hint" style="margin-top:4px">Πηγές: ${sources.map((s) => `${esc(s.label)} (${s.count})`).join(" · ")}</p>`
+              : "") +
+            `</div>` +
+            (signals.length
+              ? `<div class="print-block"><h3 class="small-title">Επαναλαμβανόμενα μοτίβα παραπόνων</h3><div class="report-table-wrap"><table class="report-table"><thead><tr><th>Θέμα</th><th>Αρνητικές</th><th>Σύνολο</th><th>Ποσοστό</th><th>Καταλύματα</th></tr></thead><tbody>${signals
+                  .map(
+                    (s) =>
+                      `<tr><td><b>${esc(s.label)}</b></td><td>${s.negativeCount}</td><td>${s.totalMentions}</td><td>${Math.round(s.negativeRate * 100)}%</td><td>${s.hotelCount}</td></tr>`,
+                  )
+                  .join("")}</tbody></table></div></div>`
+              : "") +
+            (recs.length
+              ? `<div class="print-block"><h3 class="small-title">Προτεραιοποιημένες προτάσεις ενεργειών (Σοβαρότητα × Συχνότητα)</h3><div class="report-table-wrap"><table class="report-table"><thead><tr><th>Σκορ</th><th>Κατάλυμα</th><th>Τμήμα</th><th>Προτεινόμενη ενέργεια</th><th>Χρόνος / Κόστος</th></tr></thead><tbody>${recs
+                  .slice(0, 8)
+                  .map((r) => {
+                    const pName = PROPS.find((p) => p.id === r.property)?.name || r.property;
+                    return `<tr><td><b>${r.score}</b></td><td>${esc(pName)}</td><td>${esc(r.department)}</td><td>${esc(r.title)}</td><td>${r.effort} λ. / ${r.cost}€</td></tr>`;
+                  })
+                  .join("")}</tbody></table></div></div>`
+              : "") +
+            `<div class="print-block"><h3 class="small-title">Αναλυτικός πίνακας κριτικών (${rows.length})</h3><div class="report-table-wrap"><table class="report-table"><thead><tr><th>Ημ/νία & Κατάλυμα</th><th>Επισκέπτης / Πηγή</th><th>Βαθμ.</th><th>Κατάσταση</th><th>Κείμενο κριτικής</th></tr></thead><tbody>${rows
+              .map(
+                (r) =>
+                  `<tr><td><b>${esc(r.propertyName)}</b><br/>${esc(r.date)}</td><td>${esc(r.guest)}<br/>${esc(r.sourceLabel)}</td><td>★ ${r.stars}/5</td><td>${esc(r.sentimentLabel)}<br/>${esc(r.statusLabel)}</td><td>${esc(r.text)}</td></tr>`,
+              )
+              .join("")}</tbody></table></div></div>`
+          );
+        }
+
         globalThis.HostPulseCore = Object.freeze({
+          buildReportData,
+          buildReportSummaryText,
+          buildXlsxSheets,
+          buildXlsxBytes,
+          buildPrintableReportHTML,
           analyze,
           mean,
           portfolioStats,
@@ -2868,6 +3765,8 @@
           empty: '<path d="M4 7h16v14H4zM2 3h20v4H2zM9 12h6"/>',
           reset: '<path d="M3 10a9 9 0 1 1 1 7M3 3v7h7"/>',
           bell: '<path d="M18 8a6 6 0 0 0-12 0c0 8-3 8-3 10h18c0-2-3-2-3-10M10 22h4"/>',
+          report:
+            '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/>',
         };
         const icon = (name, size = 20) =>
           '<svg width="' +
@@ -2956,6 +3855,18 @@
           labAddedId: null,
           detailId: null,
           welcome: false,
+          report: {
+            open: false,
+            property: "all",
+            days: "all",
+            source: "all",
+            sentiment: "all",
+            onlyPending: false,
+            includeRecs: true,
+            previewTab: "pdf",
+            excelSheet: 0,
+            showSummaryText: false,
+          },
         };
         let toastTimer;
         function save() {
@@ -3733,7 +4644,9 @@
           return `<div class="section-row"><h2>Θέματα που επαναλαμβάνονται</h2><button class="text-btn" data-action="nav" data-view="insights">Δες μοτίβα →</button></div>${signals.length ? signals.map((s) => `<button class="card review-card" data-action="topic" data-aspect="${s.aspect}"><div class="task-top"><strong class="card-name">${e(s.label)}</strong>${chip(`${s.negativeCount} αρνητικές αναφορές`, "amber")}</div><p class="sub">Σε ${s.hotelCount} ${s.hotelCount === 1 ? "κατάλυμα" : "καταλύματα"} · τελευταίες 30 μέρες</p></button>`).join("") : empty("Δεν υπάρχουν σήματα στο δείγμα", "Οι επαναλήψεις θα εμφανίζονται όταν υπάρχουν σχετικές αναφορές.")}`;
         }
         function home() {
-          return legacyHome() + sourceOverview() + patternSummary();
+          const stats = portfolioStats(data, ui.property);
+          const reportCard = `<div class="section-row"><h2>Αναφορά για την ομάδα (V2)</h2><button class="text-btn" data-action="report-open">Εξαγωγή →</button></div><div class="card"><p class="small-title">Εξαγωγή στατιστικών & κριτικών σε PDF ή Excel</p><p class="body-text">Δημιούργησε έτοιμη αναφορά απόδοσης (${stats.total} κριτικές, μοτίβα και προτεινόμενες ενέργειες) για παρακολούθηση και διαμοιρασμό με την ομάδα σου.</p><button class="secondary full" style="margin-top:13px" data-action="report-open">${icon("report", 16)}Άνοιγμα εξαγωγής PDF / Excel</button></div>`;
+          return legacyHome() + reportCard + sourceOverview() + patternSummary();
         }
         function inbox() {
           const options = (items, selected) =>
@@ -3772,7 +4685,7 @@
      ["month", "Κριτικές Οκτωβρίου"],
    ],
    ui.status,
- )}</select></div></div><div id="review-results"></div>`
+ )}</select></div></div><button class="secondary full" style="margin:10px 0 12px" data-action="report-open" data-from="reviews">${icon("report", 16)}Εξαγωγή αναφοράς PDF / Excel</button><div id="review-results"></div>`
           );
         }
         function signalChange(signal) {
@@ -3805,7 +4718,7 @@
             notice(
               "Οι επαναλήψεις είναι <b>ενδείξεις για διερεύνηση</b>. Έλεγξε τα αποσπάσματα και το μέγεθος του δείγματος πριν αποφασίσεις.",
             ) +
-            `<div class="section-row"><h2>${signals.length} θέματα με αρνητικές αναφορές</h2></div>` +
+            `<div class="section-row"><h2>${signals.length} θέματα με αρνητικές αναφορές</h2><button class="text-btn" data-action="report-open" data-from="insights">Εξαγωγή PDF/Excel →</button></div>` +
             (signals.length
               ? signals
                   .map(
@@ -3856,6 +4769,7 @@
         function profile() {
           return (
             legacyProfile() +
+            `<div class="card"><h2 class="small-title">Αναφορές PDF & Excel (V2)</h2><p class="body-text">Εξήγαγε στατιστικά, επαναλαμβανόμενα μοτίβα, προτεραιοποιημένες ενέργειες και κριτικές σε εκτυπώσιμο PDF ή αρχείο Excel (.xlsx) 3 φύλλων για διαμοιρασμό με την ομάδα.</p><button class="secondary full" style="margin-top:12px" data-action="report-open">${icon("report", 16)}Δημιουργία αναφοράς PDF / Excel</button></div>` +
             `<div class="card"><h2 class="small-title">Πρώτη φορά εδώ;</h2><p class="body-text">Ο οδηγός εξηγεί σε τέσσερα βήματα τι κάνει η εφαρμογή και πού βρίσκονται οι συστάσεις.</p><button class="secondary full" style="margin-top:12px" data-action="welcome-open">Άνοιγμα οδηγού χρήσης</button></div>` +
             `<div class="card"><h2 class="small-title">Από το μοντέλο στην καθημερινή λειτουργία</h2><p class="body-text">Το mobile app σχεδιάζεται πάνω στο έργο hotel-review-nlp: συνολικό συναίσθημα, θέματα με τεκμήρια, συστάσεις και ανθρώπινη απόφαση. Στο τρέχον mock χρησιμοποιούνται τοπικές προσομοιώσεις.</p><p class="scene-note">Η αξιολόγηση του δυαδικού ταξινομητή αφορά αγγλικά δεδομένα Booking.com. Δεν αποδεικνύει ακρίβεια ελληνικών, ανάλυσης ανά θέμα ή επιχειρησιακής διαλογής. Το πραγματικό triage παραμένει πειραματικό.</p></div>`
           );
@@ -3967,6 +4881,161 @@
           $("detail-dialog").close();
           if (view) navigate(view);
         }
+        function currentReport() {
+          return buildReportData(data, {
+            property: ui.report.property,
+            days: ui.report.days,
+            source: ui.report.source,
+            sentiment: ui.report.sentiment,
+            onlyPending: ui.report.onlyPending,
+            includeRecommendations: ui.report.includeRecs,
+            weights: ui.weights,
+            limits: ui.limits,
+          });
+        }
+        function openReportDialog(preserveScroll = false) {
+          const dialog = $("detail-dialog");
+          const previousScroll =
+            dialog.querySelector(".sheet-body")?.scrollTop || 0;
+          ui.detailId = null;
+          ui.welcome = false;
+          ui.report.open = true;
+          const report = currentReport();
+          const sheets = buildXlsxSheets(report);
+          const sheetIdx = Math.min(
+            Math.max(0, ui.report.excelSheet),
+            Math.max(0, sheets.length - 1),
+          );
+          const activeSheet = sheets[sheetIdx];
+          const options = (items, selected) =>
+            items
+              .map(
+                ([val, lbl]) =>
+                  `<option value="${e(val)}"${String(val) === String(selected) ? " selected" : ""}>${e(lbl)}</option>`,
+              )
+              .join("");
+          const pdfPreviewHtml = report.kpis.total
+            ? `<div class="report-preview-doc">${buildPrintableReportHTML(report)}</div>`
+            : empty(
+                "Δεν βρέθηκαν κριτικές",
+                "Άλλαξε τα φίλτρα περιόδου, πηγής ή συναισθήματος για να δημιουργηθεί η αναφορά.",
+              );
+          const excelPreviewHtml = report.kpis.total
+            ? `<div class="report-sheet-tabs">${sheets
+                .map(
+                  (s, i) =>
+                    `<button type="button" class="filter-btn ${i === sheetIdx ? "active" : ""}" data-action="report-sheet" data-value="${i}">${i + 1}. ${e(s.name)}</button>`,
+                )
+                .join("")}</div><div class="report-table-wrap"><table class="report-table"><tbody>${activeSheet.rows
+                .slice(0, 18)
+                .map((row) =>
+                  row.length
+                    ? `<tr>${row
+                        .map((c) => {
+                          const tag = c.s === 2 ? "th" : "td";
+                          const style =
+                            c.s === 1
+                              ? ' style="background:#174e46;color:#fff;font-weight:700"'
+                              : c.s === 3 || c.s === 4
+                                ? ' style="font-weight:700"'
+                                : "";
+                          return `<${tag}${style}>${e(c.v)}</${tag}>`;
+                        })
+                        .join("")}</tr>`
+                    : `<tr><td colspan="${Math.max(1, activeSheet.widths.length)}" style="height:8px;background:transparent"></td></tr>`,
+                )
+                .join("")}</tbody></table></div><p class="hint">Προεπισκόπηση έως 18 γραμμών του φύλλου «${e(activeSheet.name)}». Το αρχείο .xlsx περιέχει όλα τα δεδομένα και τα 3 φύλλα.</p>`
+            : empty(
+                "Δεν βρέθηκαν κριτικές",
+                "Άλλαξε τα φίλτρα για να παραχθούν τα φύλλα Excel.",
+              );
+          dialog.innerHTML =
+            `<div class="sheet"><header class="sheet-head"><div><div class="eyebrow">HostPulse V2 · Αναφορές</div><h2 id="dialog-title">Εξαγωγή PDF &amp; Excel</h2></div><button class="close-btn" data-action="close-dialog" aria-label="Κλείσιμο εξαγωγής">${icon("close", 19)}</button></header><div class="sheet-body">` +
+            `<p class="body-text">Φιλτράρισε τα δεδομένα, δες την προεπισκόπηση και εξήγαγε αναφορά PDF ή αρχείο Excel (.xlsx) 3 φύλλων για την ομάδα σου.</p>` +
+            `<div class="filter-grid"><div><label for="report-property" class="field-label">Κατάλυμα</label><select id="report-property" class="select">${options([["all", `Όλα (${PROPS.length})`], ...PROPS.map((p) => [p.id, p.name])], ui.report.property)}</select></div><div><label for="report-days" class="field-label">Περίοδος</label><select id="report-days" class="select">${options([["all", "Όλες οι περίοδοι"], ["7", "Τελευταίες 7 μέρες"], ["14", "Τελευταίες 14 μέρες"], ["30", "Τελευταίες 30 μέρες"], ["60", "Τελευταίες 60 μέρες"]], ui.report.days)}</select></div><div><label for="report-source" class="field-label">Πηγή</label><select id="report-source" class="select">${options([["all", "Όλες οι πηγές"], ...Object.entries(SOURCES)], ui.report.source)}</select></div><div><label for="report-sentiment" class="field-label">Συναίσθημα</label><select id="report-sentiment" class="select">${options([["all", "Όλα"], ["positive", "Θετικές"], ["negative", "Αρνητικές"], ["unknown", "Χωρίς ένδειξη"]], ui.report.sentiment)}</select></div></div>` +
+            `<div class="report-checks"><label for="report-only-pending"><span>Μόνο εκκρεμή περιστατικά</span><input id="report-only-pending" type="checkbox"${ui.report.onlyPending ? " checked" : ""}></label><label for="report-include-recs"><span>Συμπερίληψη προτεινόμενων ενεργειών (Σοβαρότητα × Συχνότητα)</span><input id="report-include-recs" type="checkbox"${ui.report.includeRecs ? " checked" : ""}></label></div>` +
+            `<div class="tabs-inline" style="margin-top:14px" aria-label="Μορφή προεπισκόπησης"><button type="button" class="${ui.report.previewTab === "pdf" ? "active" : ""}" data-action="report-tab" data-value="pdf" aria-pressed="${ui.report.previewTab === "pdf"}">Προεπισκόπηση PDF</button><button type="button" class="${ui.report.previewTab === "excel" ? "active" : ""}" data-action="report-tab" data-value="excel" aria-pressed="${ui.report.previewTab === "excel"}">Φύλλα Excel (3)</button></div>` +
+            (ui.report.previewTab === "pdf" ? pdfPreviewHtml : excelPreviewHtml) +
+            `<div class="button-row" style="margin-top:14px"><button type="button" class="primary" data-action="export-pdf"${report.kpis.total ? "" : " disabled"}>${icon("report", 16)}Αποθήκευση PDF / Εκτύπωση</button><button type="button" class="secondary" data-action="export-xlsx"${report.kpis.total ? "" : " disabled"}>${icon("report", 16)}Λήψη Excel (.xlsx)</button></div>` +
+            `<button type="button" class="secondary full" style="margin-top:8px" data-action="share-summary"${report.kpis.total ? "" : " disabled"}>Αντιγραφή / Διαμοιρασμός σύνοψης ομάδας</button>` +
+            (ui.report.showSummaryText && report.kpis.total
+              ? `<div class="report-summary-box" id="report-summary-preview">${e(buildReportSummaryText(report))}</div>`
+              : "") +
+            `<p class="hint">Η παραγωγή PDF &amp; Excel (.xlsx) γίνεται 100% τοπικά στον browser χωρίς σύνδεση σε server. Στην εκτύπωση επέλεξε «Αποθήκευση ως PDF».</p></div></div>`;
+          if (!dialog.open) dialog.showModal();
+          if (preserveScroll)
+            dialog.querySelector(".sheet-body").scrollTop = previousScroll;
+        }
+        function exportXlsxFile() {
+          const report = currentReport();
+          if (!report.kpis.total) return;
+          const bytes = buildXlsxBytes(report);
+          const blob = new Blob([bytes], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const filename = `HostPulse_Report_${report.meta.generatedDate}.xlsx`;
+          if (typeof URL !== "undefined" && typeof URL.createObjectURL === "function") {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+          }
+          toast(`Κατέβηκε το αρχείο ${filename} (3 φύλλα Excel).`);
+        }
+        function exportPdfReport() {
+          const report = currentReport();
+          if (!report.kpis.total) return;
+          const root = $("print-report-root");
+          if (root) {
+            root.innerHTML = buildPrintableReportHTML(report);
+            root.setAttribute("aria-hidden", "false");
+          }
+          if (typeof window.print === "function") {
+            try {
+              window.print();
+            } catch {
+              // Print may not be supported in headless/jsdom environments.
+            }
+          }
+          toast("Άνοιξε η προβολή εκτύπωσης — επίλεξε «Αποθήκευση ως PDF».");
+        }
+        async function shareReportSummary() {
+          const report = currentReport();
+          if (!report.kpis.total) return;
+          const text = buildReportSummaryText(report);
+          ui.report.showSummaryText = true;
+          openReportDialog(true);
+          if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+            try {
+              await navigator.share({
+                title: `Αναφορά HostPulse — ${report.meta.propertyLabel}`,
+                text,
+              });
+              toast("Η σύνοψη κοινοποιήθηκε στην ομάδα.");
+              return;
+            } catch {
+              // Fall back to clipboard copy below.
+            }
+          }
+          if (
+            typeof navigator !== "undefined" &&
+            navigator.clipboard &&
+            typeof navigator.clipboard.writeText === "function"
+          ) {
+            try {
+              await navigator.clipboard.writeText(text);
+              toast("Η σύνοψη αντιγράφηκε στο πρόχειρο για αποστολή στην ομάδα.");
+              return;
+            } catch {
+              // Fallback already visible in #report-summary-preview.
+            }
+          }
+          toast("Η σύνοψη ετοιμάστηκε παρακάτω για αντιγραφή και αποστολή.");
+        }
         function reviewCheckHTML(review) {
           return `<div class="card" id="analysis-check"><div class="card-meta">${e(SOURCES[sourceOf(review)])} · ${e(externalIdOf(review))} · ${languageOf(review).toUpperCase()}</div><h3 class="small-title">Έλεγχος από τον υπεύθυνο</h3><p class="body-text">Επιβεβαίωσε ότι το απόσπασμα, το θέμα και η προτεινόμενη ενέργεια ανταποκρίνονται στην κριτική. Οι ενδείξεις δεν δημιουργούν αυτόματες αναθέσεις.</p>${data.checked[review.id] ? '<p class="feedback">✓ Η ανάλυση ελέγχθηκε στο demo.</p>' : `<button class="secondary full" style="margin-top:12px" data-action="confirm-analysis" data-id="${review.id}">Επιβεβαίωση ανάλυσης</button>`}</div>`;
         }
@@ -3981,6 +5050,30 @@
           if (action === "welcome-open") openWelcome();
           if (action === "welcome-step") openWelcome(Number(value));
           if (action === "welcome-close") closeWelcome(target.dataset.view);
+          if (action === "report-open") {
+            ui.report.property = ui.property;
+            if (target.dataset.from === "reviews") {
+              ui.report.source = ui.source;
+              ui.report.sentiment = ui.sentiment;
+              ui.report.onlyPending = ui.status === "pending" || ui.status === "urgent";
+            } else if (target.dataset.from === "insights") {
+              ui.report.days = String(ui.insightDays);
+              ui.report.source = ui.insightSource;
+            }
+            ui.report.showSummaryText = false;
+            openReportDialog();
+          }
+          if (action === "report-tab") {
+            ui.report.previewTab = value === "excel" ? "excel" : "pdf";
+            openReportDialog(true);
+          }
+          if (action === "report-sheet") {
+            ui.report.excelSheet = Number(value) || 0;
+            openReportDialog(true);
+          }
+          if (action === "export-pdf") exportPdfReport();
+          if (action === "export-xlsx") exportXlsxFile();
+          if (action === "share-summary") shareReportSummary();
           if (action === "topic") openTopic(target.dataset.aspect);
           if (action === "topic-inbox") {
             $("detail-dialog").close();
@@ -4209,6 +5302,30 @@
             ui.limits.minutes = Number(target.value);
             renderTaskResults();
           }
+          if (target.id === "report-property") {
+            ui.report.property = target.value;
+            openReportDialog(true);
+          }
+          if (target.id === "report-days") {
+            ui.report.days = target.value;
+            openReportDialog(true);
+          }
+          if (target.id === "report-source") {
+            ui.report.source = target.value;
+            openReportDialog(true);
+          }
+          if (target.id === "report-sentiment") {
+            ui.report.sentiment = target.value;
+            openReportDialog(true);
+          }
+          if (target.id === "report-only-pending") {
+            ui.report.onlyPending = target.checked;
+            openReportDialog(true);
+          }
+          if (target.id === "report-include-recs") {
+            ui.report.includeRecs = target.checked;
+            openReportDialog(true);
+          }
           if (target.id === "plan-budget") {
             ui.limits.budget = Number(target.value);
             renderTaskResults();
@@ -4255,6 +5372,7 @@
           }
         });
         $("detail-dialog").addEventListener("close", () => {
+          ui.report.open = false;
           ui.detailId = null;
           if (ui.welcome) {
             // Esc or a click outside also counts as having seen the guide.

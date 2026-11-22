@@ -1,0 +1,6 @@
+{
+  "name": "Hotel Pulse",
+  "description": "Ανάλυση κριτικών ξενοδοχείου με AI, triage παραπόνων ανά τμήμα και εξαγωγή αναφορών απόδοσης σε PDF και Excel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

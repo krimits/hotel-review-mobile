@@ -88,6 +88,19 @@ async function step(name, run) {
       assert.equal(await dialog.evaluate((d) => d.open), false);
     });
 
+    await step("v2 report export opens, switches PDF/Excel previews and generates summary", async () => {
+      await page.locator('.nav-btn[data-view="home"]').click();
+      await page.locator('#main [data-action="report-open"]').first().click();
+      await dialog.locator("text=Εξαγωγή PDF & Excel").waitFor();
+      await page.screenshot({ path: path.join(OUT, "report-pdf.png") });
+      await dialog.locator('[data-action="report-tab"][data-value="excel"]').click();
+      await dialog.locator('[data-action="report-sheet"][data-value="1"]').click();
+      await dialog.locator("text=ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΑ ΜΟΤΙΒΑ").waitFor();
+      await page.screenshot({ path: path.join(OUT, "report-excel.png") });
+      await dialog.locator('[data-action="close-dialog"]').first().click();
+      assert.equal(await dialog.evaluate((d) => d.open), false);
+    });
+
     await step("no screen scrolls sideways at 360 px", async () => {
       await page.setViewportSize({ width: 360, height: 740 });
       for (const tab of ["home", "reviews", "tasks", "insights", "profile"]) {

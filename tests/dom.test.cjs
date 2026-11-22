@@ -143,3 +143,25 @@ test("the plan on the actions tab is the core's plan", () => {
   const shown = page.document.getElementById("task-results").textContent;
   for (const action of plan.selected) assert.ok(shown.includes(action.title), action.title);
 });
+
+
+test("v2 report export dialog previews PDF and 3 Excel sheets and populates print root", () => {
+  const page = openPage({ storage: { [WELCOME_KEY]: "seen" } });
+  page.click('#main [data-action="report-open"]');
+  assert.ok(page.dialog.open);
+  assert.equal(page.title(), "Εξαγωγή PDF & Excel");
+  assert.match(page.dialog.textContent, /ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ/);
+
+  page.click('#detail-dialog [data-action="report-tab"][data-value="excel"]');
+  assert.match(page.dialog.textContent, /Συνοπτικά KPIs/);
+  page.click('#detail-dialog [data-action="report-sheet"][data-value="1"]');
+  assert.match(page.dialog.textContent, /ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΑ ΜΟΤΙΒΑ/);
+
+  page.window.print = () => {};
+  page.click('#detail-dialog [data-action="export-pdf"]');
+  const printRoot = page.document.getElementById("print-report-root");
+  assert.match(printRoot.textContent, /Αναλυτικός πίνακας κριτικών/);
+
+  page.click('#detail-dialog [data-action="share-summary"]');
+  assert.ok(page.document.getElementById("report-summary-preview"));
+});

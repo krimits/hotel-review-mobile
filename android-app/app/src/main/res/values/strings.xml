@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">Hotel Pulse</string>
+
+    <!-- Authentication -->
+    <string name="auth_headline">Έξυπνη Διαχείριση Κριτικών &amp; Αναφορών Ξενοδοχείου</string>
+    <string name="auth_subtitle">Αναλύστε ελληνικές και αγγλικές κριτικές με AI, οργανώστε παράπονα ανά τμήμα και μοιραστείτε αναφορές PDF &amp; Excel με την ομάδα σας.</string>
+    <string name="auth_google_button">Σύνδεση με Google</string>
+    <string name="auth_feature_sentiment">Ανάλυση συναισθήματος &amp; προτεινόμενες απαντήσεις</string>
+    <string name="auth_feature_triage">Αυτόματο triage παραπόνων ανά τμήμα ξενοδοχείου</string>
+    <string name="auth_feature_reports">Εξαγωγή &amp; προεπισκόπηση αναφορών PDF και Excel (.xlsx)</string>
+    <string name="sign_out">Αποσύνδεση</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Επισκόπηση</string>
+    <string name="nav_reviews">Κριτικές &amp; AI</string>
+    <string name="nav_reports">Αναφορές</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_export_cta">Εξαγωγή Αναφοράς</string>
+    <string name="dashboard_add_review">Νέα Κριτική</string>
+    <string name="dashboard_seed_demo">Φόρτωση Δείγματος Κριτικών</string>
+    <string name="dashboard_empty_title">Δεν υπάρχουν καταχωρημένες κριτικές</string>
+    <string name="dashboard_empty_body">Προσθέστε μια νέα κριτική πελάτη για ανάλυση με AI ή φορτώστε ένα ρεαλιστικό δείγμα δίγλωσσων κριτικών ξενοδοχείου στο Cloud για να δοκιμάσετε τα γραφήματα και την εξαγωγή PDF/Excel.</string>
+    <string name="kpi_avg_rating">Μέση Βαθμολογία</string>
+    <string name="kpi_total_reviews">Σύνολο Κριτικών</string>
+    <string name="kpi_positive_rate">Θετικό Κλίμα</string>
+    <string name="kpi_urgent_open">Επείγοντα Εκκρεμή</string>
+    <string name="section_sentiment_split">Κατανομή Συναισθήματος</string>
+    <string name="section_department_triage">Triage Παραπόνων &amp; Αναφορών ανά Τμήμα</string>
+    <string name="section_recent_urgent">Κριτικές που Χρειάζονται Προσοχή</string>
+    <string name="hotel_settings_title">Στοιχεία Ξενοδοχείου</string>
+    <string name="hotel_name_label">Όνομα Ξενοδοχείου</string>
+    <string name="hotel_location_label">Τοποθεσία</string>
+    <string name="save_action">Αποθήκευση</string>
+    <string name="cancel_action">Ακύρωση</string>
+
+    <!-- Reviews & AI Triage -->
+    <string name="reviews_search_hint">Αναζήτηση πελάτη, σχολίου ή σημείου…</string>
+    <string name="filter_all">Όλες</string>
+    <string name="filter_positive">Θετικές</string>
+    <string name="filter_neutral">Ουδέτερες</string>
+    <string name="filter_negative">Αρνητικές</string>
+    <string name="filter_unresolved">Εκκρεμείς</string>
+    <string name="new_review_sheet_title">Ανάλυση Νέας Κριτικής με AI</string>
+    <string name="guest_name_label">Όνομα Πελάτη</string>
+    <string name="review_text_label">Κείμενο Κριτικής (Ελληνικά ή Αγγλικά)</string>
+    <string name="rating_label">Βαθμολογία Πελάτη (1–10)</string>
+    <string name="source_label">Πηγή Κριτικής</string>
+    <string name="analyze_and_save_button">Ανάλυση AI &amp; Αποθήκευση</string>
+    <string name="analyzing_with_ai">Ανάλυση συναισθήματος &amp; triage με AI…</string>
+    <string name="suggested_reply_title">Προτεινόμενη Απάντηση προς τον Πελάτη</string>
+    <string name="copy_reply_button">Αντιγραφή Απάντησης</string>
+    <string name="regenerate_reply_warm">Ζεστό Ύφος</string>
+    <string name="regenerate_reply_formal">Επίσημο Ύφος</string>
+    <string name="mark_resolved">Σήμανση ως Τακτοποιήθηκε</string>
+    <string name="mark_unresolved">Επαναφορά σε Εκκρεμές</string>
+    <string name="delete_review">Διαγραφή</string>
+    <string name="reply_copied_toast">Η απάντηση αντιγράφηκε στο πρόχειρο.</string>
+
+    <!-- Reports Studio (PDF & Excel) -->
+    <string name="reports_title">Εξαγωγή Αναφορών Απόδοσης</string>
+    <string name="reports_subtitle">Δημιουργήστε αναφορές PDF με γραφήματα ή αρχεία Excel (.xlsx) πολλαπλών φύλλων για την ομάδα του ξενοδοχείου.</string>
+    <string name="period_7_days">7 Ημέρες</string>
+    <string name="period_30_days">30 Ημέρες</string>
+    <string name="period_90_days">90 Ημέρες</string>
+    <string name="period_all_time">Όλες οι Περίοδοι</string>
+    <string name="period_custom">Επιλογή Ημερομηνιών</string>
+    <string name="include_ai_summary_label">Συμπερίληψη Επιτελικής Σύνοψης AI για τη Διοίκηση</string>
+    <string name="generate_preview_button">Δημιουργία &amp; Προεπισκόπηση Αναφοράς</string>
+    <string name="generating_reports_status">Σύνθεση γραφημάτων PDF, πινάκων Excel &amp; σύνοψης…</string>
+    <string name="preview_tab_pdf">Προεπισκόπηση PDF</string>
+    <string name="preview_tab_excel">Φύλλα Excel (.xlsx)</string>
+    <string name="share_pdf_button">Διαμοιρασμός PDF</string>
+    <string name="share_excel_button">Διαμοιρασμός Excel</string>
+    <string name="save_pdf_device">Αποθήκευση PDF</string>
+    <string name="save_excel_device">Αποθήκευση Excel</string>
+    <string name="share_chooser_title">Αποστολή Αναφοράς Ξενοδοχείου στην Ομάδα</string>
+    <string name="report_saved_success">Το αρχείο αναφοράς αποθηκεύτηκε επιτυχώς στη συσκευή.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_hero_banner">Βεράντα ξενοδοχείου με θέα στο Αιγαίο</string>
+    <string name="cd_edit_hotel">Επεξεργασία στοιχείων ξενοδοχείου</string>
+    <string name="cd_close">Κλείσιμο</string>
+</resources>

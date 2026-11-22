@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="firestore_database_id" translatable="false">ai-studio-android-hotelpul-3592ba1c-ae80-43cb-84cd-09e1773e5dbd</string>
+    <string name="recaptcha_site_key" translatable="false">6LdjqisuAAAAAGQTQ0S90kQd3kDxKBd4Ziz5dTDJ</string>
+</resources>

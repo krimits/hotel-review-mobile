@@ -179,3 +179,51 @@ test("sources, languages and external ids are stable", () => {
   assert.equal(core.languageOf({ text: "12345" }), "und");
   assert.equal(core.externalIdOf({ id: 7, text: "" }), `${core.sourceOf({ id: 7 })}-demo-0007`);
 });
+
+
+test("v2 report data filters reviews and includes KPIs, patterns and prioritized actions", () => {
+  const data = core.seedState();
+  const full = core.buildReportData(data, { property: "all", days: "all" });
+  assert.equal(full.kpis.total, data.reviews.length);
+  assert.ok(full.kpis.averageStars > 1 && full.kpis.averageStars <= 5);
+  assert.ok(full.signals.length > 0);
+  assert.ok(full.recommendations.length > 0);
+  assert.equal(full.rows.length, data.reviews.length);
+
+  const pendingOnly = core.buildReportData(data, { property: "p1", onlyPending: true });
+  assert.ok(pendingOnly.rows.every((r) => r.propertyId === "p1"));
+  assert.ok(pendingOnly.rows.every((r) => r.status !== "done" && r.status !== "no_action"));
+});
+
+test("v2 xlsx generator produces a valid 3-sheet OOXML zip with Greek UTF-8 content", () => {
+  const data = core.seedState();
+  const report = core.buildReportData(data, { property: "all", days: "all" });
+  const bytes = core.buildXlsxBytes(report);
+  assert.ok(ArrayBuffer.isView(bytes));
+  assert.ok(bytes.length > 4000);
+  // ZIP local file header signature PK\x03\x04
+  assert.equal(bytes[0], 0x50);
+  assert.equal(bytes[1], 0x4b);
+  assert.equal(bytes[2], 0x03);
+  assert.equal(bytes[3], 0x04);
+  const text = Buffer.from(bytes).toString("utf8");
+  assert.ok(text.includes("[Content_Types].xml"));
+  assert.ok(text.includes("xl/workbook.xml"));
+  assert.ok(text.includes("xl/worksheets/sheet1.xml"));
+  assert.ok(text.includes("xl/worksheets/sheet2.xml"));
+  assert.ok(text.includes("xl/worksheets/sheet3.xml"));
+  assert.ok(text.includes("Συνοπτικά KPIs"));
+  assert.ok(text.includes("Μοτίβα &amp; Ενέργειες"));
+  assert.ok(text.includes("Αναλυτικές Κριτικές"));
+});
+
+test("v2 printable PDF HTML and team summary text include core KPIs and actions", () => {
+  const data = core.seedState();
+  const report = core.buildReportData(data, { property: "all", days: 30 });
+  const htmlDoc = core.buildPrintableReportHTML(report);
+  assert.ok(htmlDoc.includes("ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ"));
+  assert.ok(htmlDoc.includes("Προτεραιοποιημένες προτάσεις ενεργειών"));
+  const summary = core.buildReportSummaryText(report);
+  assert.ok(summary.includes("ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ HOSTPULSE"));
+  assert.ok(summary.includes("ΠΡΟΤΕΡΑΙΟΠΟΙΗΜΕΝΕΣ ΠΡΟΤΑΣΕΙΣ ΕΝΕΡΓΕΙΩΝ"));
+});

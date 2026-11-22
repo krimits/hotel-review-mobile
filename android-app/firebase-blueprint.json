@@ -1,0 +1,144 @@
+{
+  "entities": {
+    "HotelProfile": {
+      "title": "HotelProfile",
+      "description": "Configuration profile for the hotel managed by the signed-in user.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID matching the path {userId}."
+        },
+        "hotelName": {
+          "type": "string",
+          "description": "Display name of the hotel included on exported PDF and Excel reports."
+        },
+        "hotelLocation": {
+          "type": "string",
+          "description": "City or island location of the hotel."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp written via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp written via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["userId", "hotelName", "hotelLocation", "createdAt", "updatedAt"]
+    },
+    "HotelReview": {
+      "title": "HotelReview",
+      "description": "Individual hotel guest review analyzed by AI for sentiment, complaint triage, and suggested guest response.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID matching {userId}."
+        },
+        "guestName": {
+          "type": "string",
+          "description": "Guest display name or booking alias."
+        },
+        "source": {
+          "type": "string",
+          "enum": ["BOOKING", "GOOGLE", "TRIPADVISOR", "DIRECT"],
+          "description": "Review channel or platform."
+        },
+        "language": {
+          "type": "string",
+          "enum": ["EL", "EN"],
+          "description": "Detected or selected language of the review."
+        },
+        "rating": {
+          "type": "number",
+          "description": "Guest score on a 1.0 to 10.0 scale."
+        },
+        "stayDateMillis": {
+          "type": "integer",
+          "description": "Epoch milliseconds of the stay/review date used for report filtering."
+        },
+        "reviewText": {
+          "type": "string",
+          "description": "Full text of the guest review."
+        },
+        "sentiment": {
+          "type": "string",
+          "enum": ["POSITIVE", "NEUTRAL", "NEGATIVE"],
+          "description": "AI-classified overall sentiment."
+        },
+        "sentimentScore": {
+          "type": "integer",
+          "description": "Normalized sentiment confidence/positivity score from 0 to 100."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["HIGH", "MEDIUM", "LOW"],
+          "description": "Operational triage urgency level."
+        },
+        "departments": {
+          "type": "array",
+          "description": "Bounded list (max 6) of hotel department category codes mentioned in the review."
+        },
+        "keyHighlights": {
+          "type": "array",
+          "description": "Bounded list (max 8) of short key takeaways or complaint points."
+        },
+        "summaryLine": {
+          "type": "string",
+          "description": "Concise one-line AI summary of the review."
+        },
+        "suggestedReply": {
+          "type": "string",
+          "description": "AI-generated polite response to the guest in the review's language."
+        },
+        "resolved": {
+          "type": "boolean",
+          "description": "Whether the hotel team has addressed or replied to this review."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp written via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp written via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": [
+        "userId",
+        "guestName",
+        "source",
+        "language",
+        "rating",
+        "stayDateMillis",
+        "reviewText",
+        "sentiment",
+        "sentimentScore",
+        "priority",
+        "departments",
+        "keyHighlights",
+        "summaryLine",
+        "suggestedReply",
+        "resolved",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "HotelProfile",
+      "description": "Per-user hotel configuration profile document."
+    },
+    "/users/{userId}/reviews/{reviewId}": {
+      "schema": "HotelReview",
+      "description": "User-scoped subcollection of analyzed hotel reviews."
+    }
+  }
+}

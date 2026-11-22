@@ -1,0 +1,169 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidHotelProfile(data) {
+      return data.userId is string &&
+             data.userId == request.auth.uid &&
+             data.hotelName is string && data.hotelName.size() >= 1 && data.hotelName.size() <= 100 &&
+             data.hotelLocation is string && data.hotelLocation.size() <= 100 &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidReview(data) {
+      return data.userId is string &&
+             data.userId == request.auth.uid &&
+             data.guestName is string && data.guestName.size() >= 1 && data.guestName.size() <= 100 &&
+             data.source is string && data.source in ['BOOKING', 'GOOGLE', 'TRIPADVISOR', 'DIRECT'] &&
+             data.language is string && data.language in ['EL', 'EN'] &&
+             data.rating is number && data.rating >= 1 && data.rating <= 10 &&
+             data.stayDateMillis is int && data.stayDateMillis > 0 &&
+             data.reviewText is string && data.reviewText.size() >= 2 && data.reviewText.size() <= 4000 &&
+             data.sentiment is string && data.sentiment in ['POSITIVE', 'NEUTRAL', 'NEGATIVE'] &&
+             data.sentimentScore is int && data.sentimentScore >= 0 && data.sentimentScore <= 100 &&
+             data.priority is string && data.priority in ['HIGH', 'MEDIUM', 'LOW'] &&
+             data.departments is list && data.departments.size() <= 6 &&
+             (data.departments.size() == 0 || data.departments[0] is string) &&
+             data.departments.hasOnly([
+               'CLEANLINESS',
+               'STAFF_SERVICE',
+               'BREAKFAST_DINING',
+               'ROOM_COMFORT',
+               'FACILITIES_WIFI',
+               'VALUE_FOR_MONEY'
+             ]) &&
+             data.keyHighlights is list && data.keyHighlights.size() <= 8 &&
+             (data.keyHighlights.size() == 0 || (data.keyHighlights[0] is string && data.keyHighlights[0].size() <= 160)) &&
+             data.summaryLine is string && data.summaryLine.size() <= 500 &&
+             data.suggestedReply is string && data.suggestedReply.size() <= 3000 &&
+             data.resolved is bool &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+
+      allow create: if isOwner(userId) &&
+                       isValidId(userId) &&
+                       isValidHotelProfile(incoming()) &&
+                       incoming().keys().hasAll(['userId', 'hotelName', 'hotelLocation', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['userId', 'hotelName', 'hotelLocation', 'createdAt', 'updatedAt']);
+
+      allow update: if isOwner(userId) &&
+                       isValidId(userId) &&
+                       isValidHotelProfile(incoming()) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['hotelName', 'hotelLocation', 'updatedAt']);
+
+      allow delete: if isOwner(userId) && isValidId(userId);
+
+      match /reviews/{reviewId} {
+        allow get: if isOwner(userId) && isValidId(userId) && isValidId(reviewId);
+        allow list: if isOwner(userId) && isValidId(userId);
+
+        allow create: if isOwner(userId) &&
+                         isValidId(userId) &&
+                         isValidId(reviewId) &&
+                         isValidReview(incoming()) &&
+                         incoming().keys().hasAll([
+                           'userId',
+                           'guestName',
+                           'source',
+                           'language',
+                           'rating',
+                           'stayDateMillis',
+                           'reviewText',
+                           'sentiment',
+                           'sentimentScore',
+                           'priority',
+                           'departments',
+                           'keyHighlights',
+                           'summaryLine',
+                           'suggestedReply',
+                           'resolved',
+                           'createdAt',
+                           'updatedAt'
+                         ]) &&
+                         incoming().keys().hasOnly([
+                           'userId',
+                           'guestName',
+                           'source',
+                           'language',
+                           'rating',
+                           'stayDateMillis',
+                           'reviewText',
+                           'sentiment',
+                           'sentimentScore',
+                           'priority',
+                           'departments',
+                           'keyHighlights',
+                           'summaryLine',
+                           'suggestedReply',
+                           'resolved',
+                           'createdAt',
+                           'updatedAt'
+                         ]);
+
+        allow update: if isOwner(userId) &&
+                         isValidId(userId) &&
+                         isValidId(reviewId) &&
+                         isValidReview(incoming()) &&
+                         incoming().userId == existing().userId &&
+                         incoming().createdAt == existing().createdAt &&
+                         (
+                           // Action 1: Reply & resolution workflow update
+                           incoming().diff(existing()).affectedKeys().hasOnly(['suggestedReply', 'resolved', 'updatedAt']) ||
+                           // Action 2: Full review edit / AI re-triage
+                           incoming().diff(existing()).affectedKeys().hasOnly([
+                             'guestName',
+                             'source',
+                             'language',
+                             'rating',
+                             'stayDateMillis',
+                             'reviewText',
+                             'sentiment',
+                             'sentimentScore',
+                             'priority',
+                             'departments',
+                             'keyHighlights',
+                             'summaryLine',
+                             'suggestedReply',
+                             'resolved',
+                             'updatedAt'
+                           ])
+                         );
+
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(reviewId);
+      }
+    }
+  }
+}
