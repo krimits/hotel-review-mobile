@@ -67,6 +67,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun AuthScreen(
+    isCloudAvailable: Boolean = true,
     onAuthSuccess: () -> Unit,
     onEnterDemoMode: () -> Unit = {}
 ) {
@@ -90,7 +91,8 @@ fun AuthScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(isCloudAvailable) {
+        if (!isCloudAvailable) return@LaunchedEffect
         // Wait for the initial surface transaction to settle before starting CredentialManager IPC
         withFrameNanos { }
         delay(350L)
@@ -241,7 +243,7 @@ fun AuthScreen(
                             }
                         )
                     },
-                    enabled = !isLoading,
+                    enabled = !isLoading && isCloudAvailable,
                     shape = MaterialTheme.shapes.medium,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
@@ -259,7 +261,8 @@ fun AuthScreen(
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.auth_google_button),
+                            text = if (isCloudAvailable) stringResource(R.string.auth_google_button)
+                            else "Σύνδεση Cloud (απαιτεί google-services.json)",
                             style = MaterialTheme.typography.titleMedium
                         )
                     }

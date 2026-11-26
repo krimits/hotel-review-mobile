@@ -120,6 +120,7 @@ import com.example.ui.theme.SentimentNeutral
 import com.example.viewmodel.HotelPulseViewModel
 import com.example.viewmodel.ReviewsUiState
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -197,17 +198,34 @@ private data class FirebaseHandles(
 fun HotelPulseRoot() {
     val context = LocalContext.current
     var handles by remember { mutableStateOf<FirebaseHandles?>(null) }
+    var firebaseChecked by remember { mutableStateOf(false) }
     var isDemoMode by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Complete the initial surface transaction before touching Firebase SDK singletons
         withFrameNanos { }
-        val databaseId = context.applicationContext.getString(R.string.firestore_database_id)
-        handles = withContext(Dispatchers.IO) {
-            FirebaseHandles(
-                auth = Firebase.auth,
-                firestore = FirebaseFirestore.getInstance(databaseId)
-            )
+        val appContext = context.applicationContext
+        val databaseId = appContext.getString(R.string.firestore_database_id)
+        val loaded = withContext(Dispatchers.IO) {
+            runCatching {
+                if (FirebaseApp.getApps(appContext).isEmpty()) {
+                    FirebaseApp.initializeApp(appContext)
+                }
+                if (FirebaseApp.getApps(appContext).isEmpty()) {
+                    null
+                } else {
+                    FirebaseHandles(
+                        auth = Firebase.auth,
+                        firestore = FirebaseFirestore.getInstance(databaseId)
+                    )
+                }
+            }.getOrNull()
+        }
+        handles = loaded
+        firebaseChecked = true
+        if (loaded == null) {
+            // Allow immediate offline testing when app/google-services.json is not present
+            isDemoMode = true
         }
     }
 
@@ -223,14 +241,23 @@ fun HotelPulseRoot() {
         return
     }
 
-    val readyHandles = handles
-    if (readyHandles == null) {
+    if (!firebaseChecked) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
         }
+        return
+    }
+
+    val readyHandles = handles
+    if (readyHandles == null) {
+        AuthScreen(
+            isCloudAvailable = false,
+            onAuthSuccess = {},
+            onEnterDemoMode = { isDemoMode = true }
+        )
         return
     }
 
@@ -241,6 +268,7 @@ fun HotelPulseRoot() {
 
     if (user == null) {
         AuthScreen(
+            isCloudAvailable = true,
             onAuthSuccess = {},
             onEnterDemoMode = { isDemoMode = true }
         )
