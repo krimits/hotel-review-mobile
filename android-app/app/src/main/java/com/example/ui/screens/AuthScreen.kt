@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -66,7 +67,8 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun AuthScreen(
-    onAuthSuccess: () -> Unit
+    onAuthSuccess: () -> Unit,
+    onEnterDemoMode: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -77,9 +79,13 @@ fun AuthScreen(
 
     val heroBitmap by produceState<ImageBitmap?>(initialValue = null, context) {
         value = withContext(Dispatchers.IO) {
+            val opts = BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.RGB_565
+            }
             BitmapFactory.decodeResource(
                 context.resources,
-                R.drawable.img_hotel_hero_1795276513603
+                R.drawable.img_hotel_hero_1795276513603,
+                opts
             )?.asImageBitmap()
         }
     }
@@ -111,7 +117,7 @@ fun AuthScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(270.dp)
+                    .height(255.dp)
             ) {
                 heroBitmap?.let { bmp ->
                     Image(
@@ -143,7 +149,7 @@ fun AuthScreen(
                         shape = CircleShape
                     ) {
                         Text(
-                            text = "HOTEL PULSE • AI ANALYTICS",
+                            text = "HOTEL PULSE • MULTI-PROPERTY AI",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
@@ -162,8 +168,8 @@ fun AuthScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .widthIn(max = 540.dp)
-                    .padding(horizontal = 24.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(horizontal = 24.dp, vertical = 22.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 Text(
                     text = stringResource(R.string.auth_subtitle),
@@ -214,8 +220,6 @@ fun AuthScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
                 Button(
                     onClick = {
                         errorMessage = null
@@ -260,6 +264,27 @@ fun AuthScreen(
                         )
                     }
                 }
+
+                androidx.compose.material3.FilledTonalButton(
+                    onClick = onEnterDemoMode,
+                    enabled = !isLoading,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp)
+                        .testTag("demo_mode_button")
+                ) {
+                    Text(
+                        text = stringResource(R.string.auth_demo_button),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.auth_demo_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }

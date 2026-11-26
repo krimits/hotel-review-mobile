@@ -1,7 +1,13 @@
 package com.example.export
 
+import com.example.domain.HostPulseEngine
+import com.example.model.ActionTaskStatus
+import com.example.model.AssignedActionTask
 import com.example.model.HotelAnalyticsSnapshot
+import com.example.model.HotelProperty
 import com.example.model.HotelReview
+import com.example.model.RecommendedAction
+import com.example.model.TopicPatternSignal
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -9,6 +15,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
+import kotlin.math.roundToInt
 
 data class ExcelCellData(
     val displayValue: String,
@@ -35,23 +42,45 @@ object ExcelReportGenerator {
     // 2 = Table header (#CDE9F2 fill, dark bold font, thin border)
     // 3 = Metric label (bold)
     // 4 = Numeric / Metric value (bold)
-    // 5 = Wrapped text cell for reviews & AI replies
+    // 5 = Wrapped text cell for reviews, quotes & AI replies
 
     fun generateExcelWorkbook(
         outputFile: File,
         metadata: ReportMetadata,
         snapshot: HotelAnalyticsSnapshot,
-        reviews: List<HotelReview>
+        reviews: List<HotelReview>,
+        patterns: List<TopicPatternSignal> = emptyList(),
+        recommendations: List<RecommendedAction> = emptyList(),
+        reviewPropertyMap: Map<String, String> = emptyMap(),
+        checkedReviewIds: Set<String> = emptySet(),
+        assignedTasks: List<AssignedActionTask> = emptyList()
     ): ExcelWorkbookPreview {
         outputFile.parentFile?.mkdirs()
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("el", "GR"))
-        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale("el", "GR"))
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.forLanguageTag("el-GR"))
+        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.forLanguageTag("el-GR"))
         val generatedStr = dateTimeFormat.format(Date(metadata.generatedAtMillis))
 
-        val sheet1 = buildSummaryKpiSheet(metadata, snapshot, generatedStr)
-        val sheet2 = buildDepartmentTriageSheet(snapshot)
-        val sheet3 = buildDetailedReviewsSheet(reviews, dateFormat)
+        val sheet1 = buildSummaryKpiSheet(
+            metadata = metadata,
+            snapshot = snapshot,
+            generatedStr = generatedStr,
+            recommendations = recommendations,
+            assignedTasks = assignedTasks
+        )
+        val sheet2 = buildPatternsAndActionsSheet(
+            snapshot = snapshot,
+            patterns = patterns,
+            recommendations = recommendations,
+            assignedTasks = assignedTasks
+        )
+        val sheet3 = buildDetailedReviewsSheet(
+            reviews = reviews,
+            dateFormat = dateFormat,
+            reviewPropertyMap = reviewPropertyMap,
+            checkedReviewIds = checkedReviewIds,
+            assignedTasks = assignedTasks
+        )
         val sheets = listOf(sheet1, sheet2, sheet3)
 
         ZipOutputStream(FileOutputStream(outputFile)).use { zip ->
@@ -75,20 +104,22 @@ object ExcelReportGenerator {
     private fun buildSummaryKpiSheet(
         metadata: ReportMetadata,
         snapshot: HotelAnalyticsSnapshot,
-        generatedStr: String
+        generatedStr: String,
+        recommendations: List<RecommendedAction>,
+        assignedTasks: List<AssignedActionTask>
     ): ExcelSheetPreview {
         val rows = mutableListOf<List<ExcelCellData>>()
 
         rows.add(
             listOf(
-                ExcelCellData("ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ ΞΕΝΟΔΟΧΕΙΟΥ — ${metadata.hotelName}", styleIndex = 1),
+                ExcelCellData("ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ — ${metadata.hotelName}", styleIndex = 1),
                 ExcelCellData("", styleIndex = 1),
                 ExcelCellData("", styleIndex = 1)
             )
         )
         rows.add(
             listOf(
-                ExcelCellData("Τοποθεσία", styleIndex = 3),
+                ExcelCellData("Εύρος / Τοποθεσία", styleIndex = 3),
                 ExcelCellData(metadata.hotelLocation.ifBlank { "—" }),
                 ExcelCellData("Έκδοση: $generatedStr")
             )
@@ -103,7 +134,7 @@ object ExcelReportGenerator {
         if (!metadata.executiveSummary.isNullOrBlank()) {
             rows.add(
                 listOf(
-                    ExcelCellData("Επιτελική Σύνοψη AI", styleIndex = 3),
+                    ExcelCellData("Επιτελική Σύνοψη", styleIndex = 3),
                     ExcelCellData(metadata.executiveSummary, styleIndex = 5),
                     ExcelCellData("")
                 )
@@ -169,6 +200,23 @@ object ExcelReportGenerator {
             )
         )
 
+        val openTasksCount = assignedTasks.count { it.status != ActionTaskStatus.DONE }
+        val doneTasksCount = assignedTasks.count { it.status == ActionTaskStatus.DONE }
+        rows.add(
+            listOf(
+                ExcelCellData("Προτεινόμενες Εκκρεμείς Ενέργειες", styleIndex = 3),
+                ExcelCellData("${recommendations.size}", numericValue = recommendations.size.toDouble(), styleIndex = 4),
+                ExcelCellData("Μόνο πραγματικά εκκρεμή προβλήματα (όχι λυμένα/υποθέσεις)")
+            )
+        )
+        rows.add(
+            listOf(
+                ExcelCellData("Ανατεθειμένες Εργασίες Ομάδας", styleIndex = 3),
+                ExcelCellData("$openTasksCount ανοικτές / $doneTasksCount ολοκληρωμένες", styleIndex = 4),
+                ExcelCellData("Σύνολο αναθέσεων: ${assignedTasks.size}")
+            )
+        )
+
         rows.add(emptyList())
         rows.add(
             listOf(
@@ -178,7 +226,7 @@ object ExcelReportGenerator {
             )
         )
         snapshot.sourceCounts.entries.sortedByDescending { it.value }.forEach { (source, count) ->
-            val pct = if (snapshot.totalReviews == 0) 0 else (count * 100) / snapshot.totalReviews
+            val pct = if (snapshot.totalReviews == 0) 0 else ((count * 100.0) / snapshot.totalReviews).roundToInt()
             rows.add(
                 listOf(
                     ExcelCellData(source.labelEl),
@@ -190,13 +238,175 @@ object ExcelReportGenerator {
 
         return ExcelSheetPreview(
             sheetName = "Συνοπτικά KPIs",
-            columnWidthsChars = listOf(34, 48, 34),
+            columnWidthsChars = listOf(36, 48, 42),
             rows = rows
         )
     }
 
-    private fun buildDepartmentTriageSheet(snapshot: HotelAnalyticsSnapshot): ExcelSheetPreview {
+    private fun buildPatternsAndActionsSheet(
+        snapshot: HotelAnalyticsSnapshot,
+        patterns: List<TopicPatternSignal>,
+        recommendations: List<RecommendedAction>,
+        assignedTasks: List<AssignedActionTask>
+    ): ExcelSheetPreview {
         val rows = mutableListOf<List<ExcelCellData>>()
+
+        // Section 1: Repeating Negative Patterns (7 columns)
+        rows.add(
+            listOf(
+                ExcelCellData("ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΑ ΜΟΤΙΒΑ ΠΑΡΑΠΟΝΩΝ", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1)
+            )
+        )
+        rows.add(
+            listOf(
+                ExcelCellData("Θέμα / Μοτίβο", styleIndex = 2),
+                ExcelCellData("Αρνητικές", styleIndex = 2),
+                ExcelCellData("Σύνολο Αναφ.", styleIndex = 2),
+                ExcelCellData("Ποσοστό (%)", styleIndex = 2),
+                ExcelCellData("Καταλύματα", styleIndex = 2),
+                ExcelCellData("Μεταβολή (μ.π.)", styleIndex = 2),
+                ExcelCellData("Ενδεικτικό Απόσπασμα", styleIndex = 2)
+            )
+        )
+        if (patterns.isEmpty()) {
+            rows.add(
+                listOf(
+                    ExcelCellData("Δεν εντοπίστηκαν επαναλαμβανόμενα αρνητικά μοτίβα στην περίοδο.")
+                )
+            )
+        } else {
+            patterns.forEach { signal ->
+                val deltaStr = when {
+                    signal.rateChangePoints == null -> "Νέο σήμα"
+                    signal.rateChangePoints > 0 -> "+${signal.rateChangePoints} μ.π."
+                    else -> "${signal.rateChangePoints} μ.π."
+                }
+                val topQuote = signal.evidence.firstOrNull()?.let { "«${it.quote}» (${it.propertyName})" } ?: "—"
+                rows.add(
+                    listOf(
+                        ExcelCellData(signal.aspect.labelEl, styleIndex = 3),
+                        ExcelCellData("${signal.negativeCount}", numericValue = signal.negativeCount.toDouble(), styleIndex = 4),
+                        ExcelCellData("${signal.totalMentions}", numericValue = signal.totalMentions.toDouble()),
+                        ExcelCellData("${signal.negativeRatePercent}%", numericValue = signal.negativeRatePercent.toDouble()),
+                        ExcelCellData("${signal.propertyCount}", numericValue = signal.propertyCount.toDouble()),
+                        ExcelCellData(deltaStr),
+                        ExcelCellData(topQuote, styleIndex = 5)
+                    )
+                )
+            }
+        }
+
+        rows.add(emptyList())
+
+        // Section 2: Prioritized Action Recommendations (Severity x 30d Recurrence)
+        rows.add(
+            listOf(
+                ExcelCellData("ΠΡΟΤΕΡΑΙΟΠΟΙΗΜΕΝΕΣ ΠΡΟΤΑΣΕΙΣ ΕΝΕΡΓΕΙΩΝ (Σοβαρότητα × Συχνότητα)", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1)
+            )
+        )
+        rows.add(
+            listOf(
+                ExcelCellData("Σκορ", styleIndex = 2),
+                ExcelCellData("Σοβαρ.", styleIndex = 2),
+                ExcelCellData("Επαν. (30μ)", styleIndex = 2),
+                ExcelCellData("Κατάλυμα", styleIndex = 2),
+                ExcelCellData("Τμήμα", styleIndex = 2),
+                ExcelCellData("Προτεινόμενη Ενέργεια", styleIndex = 2),
+                ExcelCellData("Χρόνος (λ.)", styleIndex = 2),
+                ExcelCellData("Κόστος (€)", styleIndex = 2),
+                ExcelCellData("Επιβεβαίωση", styleIndex = 2),
+                ExcelCellData("Ακριβές Απόσπασμα", styleIndex = 2)
+            )
+        )
+        if (recommendations.isEmpty()) {
+            rows.add(
+                listOf(
+                    ExcelCellData("Δεν υπάρχουν εκκρεμείς προτάσεις ενεργειών (όλα τα ζητήματα ανατέθηκαν ή δεν εκκρεμούν).")
+                )
+            )
+        } else {
+            recommendations.forEach { rec ->
+                rows.add(
+                    listOf(
+                        ExcelCellData(String.format(Locale.US, "%.1f", rec.priorityScore), numericValue = rec.priorityScore, styleIndex = 4),
+                        ExcelCellData(if (rec.severity == 3) "Επείγον (3)" else "Κανονικό (2)"),
+                        ExcelCellData("${rec.recurrence30d}", numericValue = rec.recurrence30d.toDouble()),
+                        ExcelCellData(rec.propertyName, styleIndex = 3),
+                        ExcelCellData(rec.departmentNameEl),
+                        ExcelCellData(rec.title, styleIndex = 5),
+                        ExcelCellData("${rec.effortMinutes}", numericValue = rec.effortMinutes.toDouble()),
+                        ExcelCellData("${rec.costEuros}", numericValue = rec.costEuros.toDouble()),
+                        ExcelCellData(if (rec.isAnalysisConfirmed) "Επιβεβαιωμένη" else "Προς επιβεβαίωση"),
+                        ExcelCellData("«${rec.quote}»", styleIndex = 5)
+                    )
+                )
+            }
+        }
+
+        if (assignedTasks.isNotEmpty()) {
+            rows.add(emptyList())
+            rows.add(
+                listOf(
+                    ExcelCellData("ΑΝΑΤΕΘΕΙΜΕΝΕΣ ΕΡΓΑΣΙΕΣ ΟΜΑΔΑΣ", styleIndex = 1),
+                    ExcelCellData("", styleIndex = 1),
+                    ExcelCellData("", styleIndex = 1),
+                    ExcelCellData("", styleIndex = 1),
+                    ExcelCellData("", styleIndex = 1),
+                    ExcelCellData("", styleIndex = 1)
+                )
+            )
+            rows.add(
+                listOf(
+                    ExcelCellData("Κατάσταση", styleIndex = 2),
+                    ExcelCellData("Κατάλυμα", styleIndex = 2),
+                    ExcelCellData("Τμήμα", styleIndex = 2),
+                    ExcelCellData("Εργασία", styleIndex = 2),
+                    ExcelCellData("Χρόνος / Κόστος", styleIndex = 2),
+                    ExcelCellData("Απόσπασμα", styleIndex = 2)
+                )
+            )
+            assignedTasks.forEach { task ->
+                rows.add(
+                    listOf(
+                        ExcelCellData(task.status.labelEl, styleIndex = 3),
+                        ExcelCellData(task.propertyName),
+                        ExcelCellData(task.departmentNameEl),
+                        ExcelCellData(task.title, styleIndex = 5),
+                        ExcelCellData("${task.effortMinutes} λ. • ${task.costEuros}€"),
+                        ExcelCellData("«${task.quote}»", styleIndex = 5)
+                    )
+                )
+            }
+        }
+
+        rows.add(emptyList())
+
+        // Section 3: Department Triage Breakdown
+        rows.add(
+            listOf(
+                ExcelCellData("ΤΑΣΕΙΣ ΤΜΗΜΑΤΩΝ ΞΕΝΟΔΟΧΕΙΟΥ", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1),
+                ExcelCellData("", styleIndex = 1)
+            )
+        )
         rows.add(
             listOf(
                 ExcelCellData("Τμήμα Ξενοδοχείου", styleIndex = 2),
@@ -207,7 +417,6 @@ object ExcelReportGenerator {
                 ExcelCellData("Μερίδιο (%)", styleIndex = 2)
             )
         )
-
         snapshot.departmentStats.forEach { stat ->
             val avgFormatted = if (stat.totalMentions == 0) "0.0" else String.format(Locale.US, "%.1f", stat.averageRating)
             rows.add(
@@ -223,48 +432,55 @@ object ExcelReportGenerator {
         }
 
         return ExcelSheetPreview(
-            sheetName = "Τάσεις Τμημάτων",
-            columnWidthsChars = listOf(32, 18, 16, 20, 18, 16),
+            sheetName = "Μοτίβα & Ενέργειες",
+            columnWidthsChars = listOf(22, 16, 15, 24, 18, 42, 14, 14, 20, 48),
             rows = rows
         )
     }
 
     private fun buildDetailedReviewsSheet(
         reviews: List<HotelReview>,
-        dateFormat: SimpleDateFormat
+        dateFormat: SimpleDateFormat,
+        reviewPropertyMap: Map<String, String>,
+        checkedReviewIds: Set<String>,
+        assignedTasks: List<AssignedActionTask>
     ): ExcelSheetPreview {
         val rows = mutableListOf<List<ExcelCellData>>()
         rows.add(
             listOf(
                 ExcelCellData("Ημερομηνία", styleIndex = 2),
+                ExcelCellData("Κατάλυμα", styleIndex = 2),
                 ExcelCellData("Πελάτης", styleIndex = 2),
                 ExcelCellData("Πηγή", styleIndex = 2),
-                ExcelCellData("Γλώσσα", styleIndex = 2),
                 ExcelCellData("Βαθμολογία", styleIndex = 2),
                 ExcelCellData("Συναίσθημα", styleIndex = 2),
-                ExcelCellData("Σκορ AI (%)", styleIndex = 2),
-                ExcelCellData("Προτεραιότητα", styleIndex = 2),
+                ExcelCellData("Διαλογή (4 κατ.)", styleIndex = 2),
+                ExcelCellData("Έλεγχος", styleIndex = 2),
+                ExcelCellData("Κατάσταση Εργασίας", styleIndex = 2),
                 ExcelCellData("Τμήματα", styleIndex = 2),
-                ExcelCellData("Κατάσταση", styleIndex = 2),
-                ExcelCellData("Σύνοψη AI", styleIndex = 2),
+                ExcelCellData("Σύνοψη", styleIndex = 2),
                 ExcelCellData("Πλήρες Κείμενο Κριτικής", styleIndex = 2),
                 ExcelCellData("Προτεινόμενη Απάντηση", styleIndex = 2)
             )
         )
 
         reviews.forEach { r ->
+            val propName = HotelProperty.displayName(reviewPropertyMap[r.id])
+            val analysis = HostPulseEngine.analyzeReviewText(r.reviewText)
+            val workflow = HostPulseEngine.reviewWorkflowStatus(r, assignedTasks, analysis)
+            val checkedLabel = if (r.id in checkedReviewIds) "Ελέγχθηκε" else "Προς έλεγχο"
             rows.add(
                 listOf(
                     ExcelCellData(dateFormat.format(Date(r.stayDateMillis))),
+                    ExcelCellData(propName, styleIndex = 3),
                     ExcelCellData(r.guestName, styleIndex = 3),
                     ExcelCellData(r.sourceEnum.labelEl),
-                    ExcelCellData(r.languageEnum.labelEl),
                     ExcelCellData(String.format(Locale.US, "%.1f", r.rating), numericValue = r.rating, styleIndex = 4),
                     ExcelCellData(r.sentimentEnum.labelEl),
-                    ExcelCellData("${r.sentimentScore}", numericValue = r.sentimentScore.toDouble()),
-                    ExcelCellData(r.priorityEnum.labelEl),
+                    ExcelCellData(analysis.triageCategory.labelEl),
+                    ExcelCellData(checkedLabel),
+                    ExcelCellData(workflow.labelEl),
                     ExcelCellData(r.departmentEnums.joinToString(", ") { it.shortLabelEl }),
-                    ExcelCellData(if (r.resolved) "Τακτοποιήθηκε" else "Εκκρεμεί"),
                     ExcelCellData(r.summaryLine, styleIndex = 5),
                     ExcelCellData(r.reviewText, styleIndex = 5),
                     ExcelCellData(r.suggestedReply, styleIndex = 5)
@@ -274,7 +490,7 @@ object ExcelReportGenerator {
 
         return ExcelSheetPreview(
             sheetName = "Αναλυτικές Κριτικές",
-            columnWidthsChars = listOf(14, 22, 16, 12, 12, 14, 13, 15, 28, 16, 40, 56, 56),
+            columnWidthsChars = listOf(14, 24, 20, 16, 12, 13, 22, 14, 18, 26, 36, 52, 52),
             rows = rows
         )
     }

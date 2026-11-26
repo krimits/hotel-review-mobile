@@ -165,3 +165,29 @@ test("v2 report export dialog previews PDF and 3 Excel sheets and populates prin
   page.click('#detail-dialog [data-action="share-summary"]');
   assert.ok(page.document.getElementById("report-summary-preview"));
 });
+
+test("alerts center opens from topbar bell, lists critical alerts, and task notes can be added between departments", () => {
+  const page = openPage({ storage: { [WELCOME_KEY]: "seen" } });
+  const badge = page.document.getElementById("alerts-badge");
+  assert.equal(badge.hidden, false);
+  assert.ok(Number(badge.textContent) > 0);
+
+  page.click('#alerts-btn');
+  assert.ok(page.dialog.open);
+  assert.match(page.title(), /Κρίσιμες Ειδοποιήσεις/);
+  page.click('#detail-dialog [data-action="close-dialog"]');
+
+  // Open Assigned Tasks and add an inter-department note
+  page.click('.nav-btn[data-view="tasks"]');
+  page.click('#main [data-action="task-tab"][data-value="mine"]');
+  assert.match(page.document.getElementById("task-results").textContent, /Σημειώσεις τμημάτων/);
+  page.click('#task-results [data-action="toggle-note-form"]');
+  const form = page.document.querySelector('form[data-task-note-form]');
+  assert.ok(form);
+  form.querySelector('input[name="text"]').value = "Ενημερώθηκε η Υποδοχή για πρόοδο εργασίας.";
+  form.dispatchEvent(new page.window.Event("submit", { bubbles: true, cancelable: true }));
+  assert.match(
+    page.document.getElementById("task-results").textContent,
+    /Ενημερώθηκε η Υποδοχή για πρόοδο εργασίας/,
+  );
+});

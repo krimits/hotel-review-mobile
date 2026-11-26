@@ -1,5 +1,6 @@
 package com.example.export
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -27,6 +28,7 @@ object ReportShareHelper {
                 Intent.EXTRA_TEXT,
                 "$subject — Παράχθηκε από την εφαρμογή Hotel Pulse."
             )
+            clipData = ClipData.newRawUri(subject, contentUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
 

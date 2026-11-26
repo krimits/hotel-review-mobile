@@ -200,20 +200,26 @@ class HotelRepository(
     }
 
     suspend fun seedSampleReviews(userId: String): Result<Int> {
+        return seedMultiPropertySampleReviews(userId).map { it.size }
+    }
+
+    suspend fun seedMultiPropertySampleReviews(userId: String): Result<Map<String, String>> {
         val path = "users/$userId/reviews"
         return try {
             val uid = requireMatchingUser(userId)
-            val samples = SeedReviewsProvider.buildRealisticSeedReviews(
+            val bundles = SeedReviewsProvider.buildMultiPropertySeedBundles(
                 userId = uid,
                 nowMillis = System.currentTimeMillis()
             )
             val batch = db.batch()
-            samples.forEach { sample ->
+            val assignedPropMap = mutableMapOf<String, String>()
+            bundles.forEach { bundle ->
                 val docRef = db.collection("users").document(uid).collection("reviews").document()
-                batch.set(docRef, buildReviewCreatePayload(uid, sample))
+                batch.set(docRef, buildReviewCreatePayload(uid, bundle.review))
+                assignedPropMap[docRef.id] = bundle.propertyId
             }
             batch.commit().await()
-            Result.success(samples.size)
+            Result.success(assignedPropMap)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

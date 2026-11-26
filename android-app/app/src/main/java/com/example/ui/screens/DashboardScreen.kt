@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -28,7 +29,11 @@ import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.PlaylistAddCheck
 import androidx.compose.material.icons.filled.PriorityHigh
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.RateReview
@@ -51,6 +56,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,13 +66,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.runtime.produceState
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -74,51 +79,82 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.model.CriticalAlertKind
+import com.example.model.DailyActionPlan
 import com.example.model.DepartmentStat
 import com.example.model.HotelAnalyticsSnapshot
 import com.example.model.HotelDepartment
 import com.example.model.HotelProfile
+import com.example.model.HotelProperty
 import com.example.model.HotelReview
+import com.example.model.OperationalAlert
 import com.example.model.SentimentType
+import com.example.model.TopicPatternSignal
 import com.example.model.TriagePriority
 import com.example.ui.theme.SentimentNegative
 import com.example.ui.theme.SentimentNeutral
 import com.example.ui.theme.SentimentPositive
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.Locale
 
 @Composable
 fun DashboardScreen(
     profile: HotelProfile,
+    selectedPropertyId: String,
     reviews: List<HotelReview>,
     snapshot: HotelAnalyticsSnapshot,
+    dailyPlan: DailyActionPlan,
+    topPatterns: List<TopicPatternSignal>,
+    alerts: List<OperationalAlert> = emptyList(),
+    reviewPropertyMap: Map<String, String>,
+    isDemoMode: Boolean,
     isBusy: Boolean,
+    onOpenAlerts: () -> Unit = {},
     onOpenExportStudio: () -> Unit,
     onOpenAddReview: () -> Unit,
+    onOpenActionsTab: () -> Unit,
+    onOpenPatternsTab: () -> Unit,
     onSeedDemoReviews: () -> Unit,
+    onResetDemoData: () -> Unit,
     onSelectDepartment: (HotelDepartment) -> Unit,
     onSelectReview: (HotelReview) -> Unit,
     onSaveHotelProfile: (String, String) -> Unit,
     onSignOut: () -> Unit
 ) {
     var showEditHotelDialog by remember { mutableStateOf(false) }
+    val activeProperty = remember(selectedPropertyId) { HotelProperty.byId(selectedPropertyId) }
+    val heroTitle = activeProperty?.name ?: profile.hotelName
+    val heroLocation = activeProperty?.location ?: profile.hotelLocation
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .widthIn(max = 860.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
                 HotelHeroCard(
-                    profile = profile,
+                    title = heroTitle,
+                    location = heroLocation,
+                    isDemoMode = isDemoMode,
                     onEditHotel = { showEditHotelDialog = true },
+                    onResetDemo = onResetDemoData,
                     onOpenExportStudio = onOpenExportStudio,
                     onOpenAddReview = onOpenAddReview,
                     onSignOut = onSignOut
                 )
+            }
+
+            if (alerts.isNotEmpty()) {
+                item {
+                    ActiveAlertsBannerCard(
+                        alerts = alerts,
+                        onOpenAlerts = onOpenAlerts
+                    )
+                }
             }
 
             if (reviews.isEmpty()) {
@@ -132,6 +168,24 @@ fun DashboardScreen(
             } else {
                 item {
                     KpiSummaryGrid(snapshot = snapshot)
+                }
+
+                // Daily Action Plan Highlight Card (V2)
+                item {
+                    DailyPlanPreviewCard(
+                        dailyPlan = dailyPlan,
+                        onOpenActionsTab = onOpenActionsTab
+                    )
+                }
+
+                // Top Repeating Patterns Highlight Card (V2)
+                if (topPatterns.isNotEmpty()) {
+                    item {
+                        TopPatternsPreviewCard(
+                            patterns = topPatterns.take(3),
+                            onOpenPatternsTab = onOpenPatternsTab
+                        )
+                    }
                 }
 
                 item {
@@ -161,6 +215,7 @@ fun DashboardScreen(
                     items(urgentReviews, key = { it.id }) { urgent ->
                         UrgentReviewCard(
                             review = urgent,
+                            propertyName = HotelProperty.displayName(reviewPropertyMap[urgent.id]),
                             onClick = { onSelectReview(urgent) }
                         )
                     }
@@ -185,9 +240,264 @@ fun DashboardScreen(
 }
 
 @Composable
+private fun ActiveAlertsBannerCard(
+    alerts: List<OperationalAlert>,
+    onOpenAlerts: () -> Unit
+) {
+    val overdueCount = alerts.count { it.kind == CriticalAlertKind.OVERDUE_TASK }
+    val lowRatingCount = alerts.count { it.kind == CriticalAlertKind.LOW_RATING }
+    val summaryLine = buildList {
+        if (overdueCount > 0) add("$overdueCount εκπρόθεσμες εργασίες")
+        if (lowRatingCount > 0) add("$lowRatingCount χαμηλές βαθμολογίες")
+        val urgentOnly = alerts.size - overdueCount - lowRatingCount
+        if (urgentOnly > 0) add("$urgentOnly επείγοντα χωρίς ανάθεση")
+    }.joinToString(" • ")
+
+    Card(
+        onClick = onOpenAlerts,
+        colors = CardDefaults.cardColors(
+            containerColor = SentimentNegative.copy(alpha = 0.11f)
+        ),
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("dashboard_alerts_banner")
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Surface(
+                color = SentimentNegative.copy(alpha = 0.18f),
+                shape = CircleShape,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.NotificationsActive,
+                        contentDescription = null,
+                        tint = SentimentNegative,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "${alerts.size} κρίσιμες ειδοποιήσεις",
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                    color = SentimentNegative
+                )
+                if (summaryLine.isNotBlank()) {
+                    Text(
+                        text = summaryLine,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+            FilledTonalButton(
+                onClick = onOpenAlerts,
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+                Text("Προβολή")
+            }
+        }
+    }
+}
+
+@Composable
+private fun DailyPlanPreviewCard(
+    dailyPlan: DailyActionPlan,
+    onOpenActionsTab: () -> Unit
+) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ),
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.PlaylistAddCheck,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Ημερήσιο Πλάνο Ενεργειών (${dailyPlan.selected.size}/3)",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                TextButton(
+                    onClick = onOpenActionsTab,
+                    modifier = Modifier.testTag("dashboard_open_actions_button")
+                ) {
+                    Text("Όλες")
+                }
+            }
+
+            if (dailyPlan.selected.isEmpty()) {
+                Text(
+                    text = "Δεν υπάρχουν εκκρεμείς προτεινόμενες παρεμβάσεις εντός ορίων χρόνου/προϋπολογισμού.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                Text(
+                    text = "Σύνολο: ${dailyPlan.totalMinutes} λεπτά • ${dailyPlan.totalBudgetEuros}€",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                dailyPlan.selected.forEach { rec ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                            .clickable(onClick = onOpenActionsTab)
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = rec.title,
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = "${rec.propertyName} • ${rec.departmentNameEl} • ${rec.effortMinutes} λ. • ${rec.costEuros}€",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = CircleShape
+                        ) {
+                            Text(
+                                text = String.format(Locale.US, "%.1f", rec.priorityScore),
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TopPatternsPreviewCard(
+    patterns: List<TopicPatternSignal>,
+    onOpenPatternsTab: () -> Unit
+) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ),
+        shape = MaterialTheme.shapes.large,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Insights,
+                        contentDescription = null,
+                        tint = SentimentNegative
+                    )
+                    Text(
+                        text = "Επαναλαμβανόμενα Μοτίβα",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                TextButton(
+                    onClick = onOpenPatternsTab,
+                    modifier = Modifier.testTag("dashboard_open_patterns_button")
+                ) {
+                    Text("Ανάλυση")
+                }
+            }
+
+            patterns.forEach { p ->
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .clickable(onClick = onOpenPatternsTab)
+                        .padding(vertical = 4.dp, horizontal = 4.dp)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = p.aspect.labelEl,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                        )
+                        Text(
+                            text = "${p.propertyCount} καταλύματα • ${p.negativeCount}/${p.totalMentions} αρνητικές",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Surface(
+                        color = SentimentNegative.copy(alpha = 0.14f),
+                        shape = CircleShape
+                    ) {
+                        Text(
+                            text = "${p.negativeRatePercent}%",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = SentimentNegative,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun HotelHeroCard(
-    profile: HotelProfile,
+    title: String,
+    location: String,
+    isDemoMode: Boolean,
     onEditHotel: () -> Unit,
+    onResetDemo: () -> Unit,
     onOpenExportStudio: () -> Unit,
     onOpenAddReview: () -> Unit,
     onSignOut: () -> Unit
@@ -195,9 +505,13 @@ private fun HotelHeroCard(
     val context = LocalContext.current
     val heroBitmap by produceState<ImageBitmap?>(initialValue = null, context) {
         value = withContext(Dispatchers.IO) {
+            val opts = BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.RGB_565
+            }
             BitmapFactory.decodeResource(
                 context.resources,
-                R.drawable.img_hotel_hero_1795276513603
+                R.drawable.img_hotel_hero_1795276513603,
+                opts
             )?.asImageBitmap()
         }
     }
@@ -238,6 +552,18 @@ private fun HotelHeroCard(
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.End
             ) {
+                if (isDemoMode) {
+                    IconButton(
+                        onClick = onResetDemo,
+                        modifier = Modifier.testTag("reset_demo_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = "Επαναφορά Demo",
+                            tint = Color.White
+                        )
+                    }
+                }
                 IconButton(
                     onClick = onEditHotel,
                     modifier = Modifier.testTag("edit_hotel_button")
@@ -269,15 +595,15 @@ private fun HotelHeroCard(
             ) {
                 Column {
                     Text(
-                        text = profile.hotelName,
+                        text = title,
                         style = MaterialTheme.typography.headlineSmall,
                         color = Color.White,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    if (profile.hotelLocation.isNotBlank()) {
+                    if (location.isNotBlank()) {
                         Text(
-                            text = profile.hotelLocation,
+                            text = location,
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White.copy(alpha = 0.85f)
                         )
@@ -431,7 +757,7 @@ private fun KpiSummaryGrid(snapshot: HotelAnalyticsSnapshot) {
             KpiStatCard(
                 label = stringResource(R.string.kpi_avg_rating),
                 value = "${snapshot.formattedAverageRating}/10",
-                subtitle = "Σταθμισμένος Μ.Ο.",
+                subtitle = "Μέσος όρος περιόδου",
                 icon = Icons.Filled.Star,
                 accentColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f)
@@ -744,6 +1070,7 @@ private fun DepartmentTriageCard(
 @Composable
 private fun UrgentReviewCard(
     review: HotelReview,
+    propertyName: String,
     onClick: () -> Unit
 ) {
     Card(
@@ -765,11 +1092,18 @@ private fun UrgentReviewCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = "${review.guestName} • ${review.sourceEnum.labelEl}",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "${review.guestName} • ${review.sourceEnum.labelEl}",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = propertyName,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
                 Surface(
                     color = SentimentNegative.copy(alpha = 0.14f),
                     shape = CircleShape

@@ -25,6 +25,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.IosShare
@@ -88,6 +90,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ReportsStudioScreen(
     profile: HotelProfile,
+    selectedPropertyId: String,
     config: ReportFilterConfig,
     matchingCount: Int,
     bundleState: ReportBundleState,
@@ -97,11 +100,15 @@ fun ReportsStudioScreen(
     onClearDepartments: () -> Unit,
     onSetOnlyUnresolved: (Boolean) -> Unit,
     onSetIncludeAiSummary: (Boolean) -> Unit,
+    onSetIncludePatternsAndActions: (Boolean) -> Unit,
     onGeneratePreview: () -> Unit,
     onPostMessage: (String) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val activeProperty = remember(selectedPropertyId) { com.example.model.HotelProperty.byId(selectedPropertyId) }
+    val activeScopeLabel = activeProperty?.displayLabel
+        ?: "${profile.hotelName} · Όλα τα καταλύματα (${com.example.model.HotelProperty.CATALOG.size})"
 
     var showDateRangeDialog by remember { mutableStateOf(false) }
     var selectedPreviewTab by remember { mutableIntStateOf(0) } // 0 = PDF, 1 = Excel
@@ -152,6 +159,11 @@ fun ReportsStudioScreen(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
+                        text = "Εύρος εξαγωγής: $activeScopeLabel",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
                         text = stringResource(R.string.reports_subtitle),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -187,9 +199,19 @@ fun ReportsStudioScreen(
                                 label = { Text(stringResource(R.string.period_7_days)) }
                             )
                             FilterChip(
+                                selected = config.period == ReportPeriod.LAST_14_DAYS,
+                                onClick = { onSelectPeriod(ReportPeriod.LAST_14_DAYS, null, null) },
+                                label = { Text(stringResource(R.string.period_14_days)) }
+                            )
+                            FilterChip(
                                 selected = config.period == ReportPeriod.LAST_30_DAYS,
                                 onClick = { onSelectPeriod(ReportPeriod.LAST_30_DAYS, null, null) },
                                 label = { Text(stringResource(R.string.period_30_days)) }
+                            )
+                            FilterChip(
+                                selected = config.period == ReportPeriod.LAST_60_DAYS,
+                                onClick = { onSelectPeriod(ReportPeriod.LAST_60_DAYS, null, null) },
+                                label = { Text(stringResource(R.string.period_60_days)) }
                             )
                             FilterChip(
                                 selected = config.period == ReportPeriod.LAST_90_DAYS,
@@ -286,6 +308,23 @@ fun ReportsStudioScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
+                                text = stringResource(R.string.include_patterns_actions_label),
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Switch(
+                                checked = config.includePatternsAndActions,
+                                onCheckedChange = onSetIncludePatternsAndActions,
+                                modifier = Modifier.testTag("toggle_patterns_actions_switch")
+                            )
+                        }
+
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
                                 text = stringResource(R.string.include_ai_summary_label),
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = Modifier.weight(1f)
@@ -323,7 +362,7 @@ fun ReportsStudioScreen(
 
                         if (matchingCount == 0) {
                             Text(
-                                text = "Δεν βρέθηκαν κριτικές για τα τρέχοντα φίλτρα. Δοκιμάστε «Όλες οι Περίοδοι» ή προσθέστε κριτικές.",
+                                text = "Δεν βρέθηκαν κριτικές για τα τρέχοντα φίλτρα. Δοκιμάστε «Όλες οι Περίοδοι» ή «Όλα τα καταλύματα».",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -380,6 +419,13 @@ fun ReportsStudioScreen(
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
+                                    if (bundleState.patternsCount > 0 || bundleState.recommendationsCount > 0) {
+                                        Text(
+                                            text = "Περιλαμβάνει ${bundleState.patternsCount} μοτίβα & ${bundleState.recommendationsCount} προτάσεις ενεργειών",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
                                 }
                                 if (selectedPreviewTab == 0) {
                                     IconButton(onClick = { zoomedPdf = !zoomedPdf }) {
@@ -443,7 +489,8 @@ fun ReportsStudioScreen(
                             HorizontalDivider()
 
                             // Share & Save Buttons (PDF + Excel)
-                            val subject = "Αναφορά Απόδοσης ${profile.hotelName} (${bundleState.periodDescription})"
+                            val reportTargetName = activeProperty?.name ?: profile.hotelName
+                            val subject = "Αναφορά Απόδοσης $reportTargetName (${bundleState.periodDescription})"
 
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -579,6 +626,11 @@ private fun PdfPagesPreviewBox(
     pages: List<android.graphics.Bitmap>,
     zoomed: Boolean
 ) {
+    if (pages.isEmpty()) return
+    val imageBitmaps = remember(pages) { pages.map { it.asImageBitmap() } }
+    var currentPageIndex by remember(pages) { mutableIntStateOf(0) }
+    val safeIndex = currentPageIndex.coerceIn(0, imageBitmaps.lastIndex)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -587,35 +639,58 @@ private fun PdfPagesPreviewBox(
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        pages.forEachIndexed { index, bitmap ->
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = "Σελίδα ${index + 1} από ${pages.size}",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = { if (safeIndex > 0) currentPageIndex = safeIndex - 1 },
+                enabled = safeIndex > 0,
+                modifier = Modifier.testTag("pdf_prev_page_button")
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = "Προηγούμενη σελίδα"
                 )
-                Box(
-                    modifier = if (zoomed) {
-                        Modifier
-                            .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState())
-                    } else {
-                        Modifier.fillMaxWidth()
-                    }
-                ) {
-                    Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "Προεπισκόπηση σελίδας PDF ${index + 1}",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = (if (zoomed) Modifier.width(680.dp) else Modifier.fillMaxWidth())
-                            .clip(RoundedCornerShape(8.dp))
-                            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
-                            .background(Color.White)
-                    )
-                }
             }
+            Text(
+                text = "Σελίδα ${safeIndex + 1} από ${imageBitmaps.size}",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            IconButton(
+                onClick = { if (safeIndex < imageBitmaps.lastIndex) currentPageIndex = safeIndex + 1 },
+                enabled = safeIndex < imageBitmaps.lastIndex,
+                modifier = Modifier.testTag("pdf_next_page_button")
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "Επόμενη σελίδα"
+                )
+            }
+        }
+
+        Box(
+            modifier = if (zoomed) {
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+            } else {
+                Modifier.fillMaxWidth()
+            }
+        ) {
+            Image(
+                bitmap = imageBitmaps[safeIndex],
+                contentDescription = "Προεπισκόπηση σελίδας PDF ${safeIndex + 1}",
+                contentScale = ContentScale.FillWidth,
+                modifier = (if (zoomed) Modifier.width(680.dp) else Modifier.fillMaxWidth())
+                    .clip(RoundedCornerShape(8.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
+                    .background(Color.White)
+            )
         }
     }
 }
@@ -628,6 +703,9 @@ private fun ExcelSheetsPreviewBox(
 ) {
     if (sheets.isEmpty()) return
     val currentSheet = sheets[selectedSheetIndex]
+    val maxPreviewRows = 50
+    val visibleRows = remember(currentSheet) { currentSheet.rows.take(maxPreviewRows) }
+    val hiddenRowCount = (currentSheet.rows.size - visibleRows.size).coerceAtLeast(0)
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(
@@ -654,7 +732,7 @@ private fun ExcelSheetsPreviewBox(
                 .horizontalScroll(rememberScrollState())
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
-                currentSheet.rows.forEach { row ->
+                visibleRows.forEach { row ->
                     if (row.isEmpty()) {
                         Spacer(modifier = Modifier.height(8.dp))
                     } else {
@@ -698,6 +776,14 @@ private fun ExcelSheetsPreviewBox(
                             }
                         }
                     }
+                }
+                if (hiddenRowCount > 0) {
+                    Text(
+                        text = "… και $hiddenRowCount επιπλέον γραμμές (περιλαμβάνονται όλες στο αρχείο .xlsx)",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 8.dp, start = 4.dp)
+                    )
                 }
             }
         }

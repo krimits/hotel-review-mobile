@@ -4,21 +4,22 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontLoadingStrategy
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.R
 
 val ManropeFontFamily = FontFamily(
-    Font(R.font.manrope, FontWeight.Normal),
-    Font(R.font.manrope, FontWeight.Medium),
-    Font(R.font.manrope, FontWeight.SemiBold),
-    Font(R.font.manrope, FontWeight.Bold)
+    Font(R.font.manrope, FontWeight.Normal, loadingStrategy = FontLoadingStrategy.Async),
+    Font(R.font.manrope, FontWeight.Medium, loadingStrategy = FontLoadingStrategy.Async),
+    Font(R.font.manrope, FontWeight.SemiBold, loadingStrategy = FontLoadingStrategy.Async),
+    Font(R.font.manrope, FontWeight.Bold, loadingStrategy = FontLoadingStrategy.Async)
 )
 
 val IbmPlexSansFontFamily = FontFamily(
-    Font(R.font.ibm_plex_sans, FontWeight.Normal),
-    Font(R.font.ibm_plex_sans, FontWeight.Medium),
-    Font(R.font.ibm_plex_sans, FontWeight.SemiBold)
+    Font(R.font.ibm_plex_sans, FontWeight.Normal, loadingStrategy = FontLoadingStrategy.Async),
+    Font(R.font.ibm_plex_sans, FontWeight.Medium, loadingStrategy = FontLoadingStrategy.Async),
+    Font(R.font.ibm_plex_sans, FontWeight.SemiBold, loadingStrategy = FontLoadingStrategy.Async)
 )
 
 val Typography = Typography(

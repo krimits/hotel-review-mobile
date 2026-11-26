@@ -13,9 +13,14 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.core.content.res.ResourcesCompat
 import com.example.R
+import com.example.domain.HostPulseEngine
+import com.example.model.AssignedActionTask
 import com.example.model.HotelAnalyticsSnapshot
+import com.example.model.HotelProperty
 import com.example.model.HotelReview
+import com.example.model.RecommendedAction
 import com.example.model.SentimentType
+import com.example.model.TopicPatternSignal
 import com.example.model.TriagePriority
 import java.io.File
 import java.io.FileOutputStream
@@ -56,6 +61,8 @@ object PdfReportGenerator {
     private data class PreparedReviewRow(
         val index: Int,
         val review: HotelReview,
+        val propertyName: String,
+        val triageShortLabel: String,
         val dateStr: String,
         val textLayout: StaticLayout,
         val rowHeight: Float
@@ -67,10 +74,23 @@ object PdfReportGenerator {
         metadata: ReportMetadata,
         snapshot: HotelAnalyticsSnapshot,
         reviews: List<HotelReview>,
-        previewScale: Int = 2
+        patterns: List<TopicPatternSignal> = emptyList(),
+        recommendations: List<RecommendedAction> = emptyList(),
+        reviewPropertyMap: Map<String, String> = emptyMap(),
+        assignedTasks: List<AssignedActionTask> = emptyList(),
+        previewScale: Float = 1.5f
     ): GeneratedPdfBundle {
         outputFile.parentFile?.mkdirs()
-        val pageDrawers = buildPageDrawers(context, metadata, snapshot, reviews)
+        val pageDrawers = buildPageDrawers(
+            context = context,
+            metadata = metadata,
+            snapshot = snapshot,
+            reviews = reviews,
+            patterns = patterns,
+            recommendations = recommendations,
+            reviewPropertyMap = reviewPropertyMap,
+            assignedTasks = assignedTasks
+        )
 
         // 1. Write native vector multi-page A4 PDF
         val document = PdfDocument()
@@ -89,7 +109,7 @@ object PdfReportGenerator {
             document.close()
         }
 
-        // 2. Render crisp high-DPI page bitmaps for instant in-app preview
+        // 2. Render crisp low-footprint RGB_565 page bitmaps for fast in-app preview
         val bitmaps = renderPreviewBitmapsFromDrawers(pageDrawers, previewScale)
         return GeneratedPdfBundle(pdfFile = outputFile, previewBitmaps = bitmaps)
     }
@@ -99,26 +119,41 @@ object PdfReportGenerator {
         metadata: ReportMetadata,
         snapshot: HotelAnalyticsSnapshot,
         reviews: List<HotelReview>,
-        scale: Int = 2
+        patterns: List<TopicPatternSignal> = emptyList(),
+        recommendations: List<RecommendedAction> = emptyList(),
+        reviewPropertyMap: Map<String, String> = emptyMap(),
+        assignedTasks: List<AssignedActionTask> = emptyList(),
+        scale: Int = 1
     ): List<Bitmap> {
-        val pageDrawers = buildPageDrawers(context, metadata, snapshot, reviews)
-        return renderPreviewBitmapsFromDrawers(pageDrawers, scale)
+        val pageDrawers = buildPageDrawers(
+            context = context,
+            metadata = metadata,
+            snapshot = snapshot,
+            reviews = reviews,
+            patterns = patterns,
+            recommendations = recommendations,
+            reviewPropertyMap = reviewPropertyMap,
+            assignedTasks = assignedTasks
+        )
+        return renderPreviewBitmapsFromDrawers(pageDrawers, scale.toFloat())
     }
 
     private fun renderPreviewBitmapsFromDrawers(
         pageDrawers: List<(Canvas) -> Unit>,
-        scale: Int
+        scale: Float
     ): List<Bitmap> {
-        val safeScale = scale.coerceIn(1, 3)
+        val safeScale = scale.coerceIn(1.0f, 2.5f)
+        val widthPx = (PAGE_WIDTH * safeScale).toInt()
+        val heightPx = (PAGE_HEIGHT * safeScale).toInt()
         return pageDrawers.map { drawPage ->
             val bmp = Bitmap.createBitmap(
-                PAGE_WIDTH * safeScale,
-                PAGE_HEIGHT * safeScale,
-                Bitmap.Config.ARGB_8888
+                widthPx,
+                heightPx,
+                Bitmap.Config.RGB_565
             )
             val canvas = Canvas(bmp)
             canvas.save()
-            canvas.scale(safeScale.toFloat(), safeScale.toFloat())
+            canvas.scale(safeScale, safeScale)
             drawPage(canvas)
             canvas.restore()
             bmp
@@ -129,7 +164,11 @@ object PdfReportGenerator {
         context: Context,
         metadata: ReportMetadata,
         snapshot: HotelAnalyticsSnapshot,
-        reviews: List<HotelReview>
+        reviews: List<HotelReview>,
+        patterns: List<TopicPatternSignal>,
+        recommendations: List<RecommendedAction>,
+        reviewPropertyMap: Map<String, String>,
+        assignedTasks: List<AssignedActionTask>
     ): List<(Canvas) -> Unit> {
         val headingFace = runCatching {
             ResourcesCompat.getFont(context, R.font.manrope)
@@ -143,13 +182,15 @@ object PdfReportGenerator {
         val mediumHeading = Typeface.create(headingFace, Typeface.NORMAL)
         val regularBody = Typeface.create(bodyFace, Typeface.NORMAL)
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale("el", "GR"))
-        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale("el", "GR"))
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.forLanguageTag("el-GR"))
+        val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.forLanguageTag("el-GR"))
         val generatedDateText = dateTimeFormat.format(Date(metadata.generatedAtMillis))
+
+        val includePatternsActionsPage = patterns.isNotEmpty() || recommendations.isNotEmpty() || assignedTasks.isNotEmpty()
 
         // Paginate review rows ahead of time so total page count is exact
         val contentWidth = PAGE_WIDTH - 2 * MARGIN
-        val commentColWidth = (contentWidth * 0.48f).toInt()
+        val commentColWidth = (contentWidth * 0.46f).toInt()
         val reviewPages = mutableListOf<List<PreparedReviewRow>>()
 
         if (reviews.isNotEmpty()) {
@@ -159,23 +200,25 @@ object PdfReportGenerator {
             var runningY = headerStartY
 
             reviews.forEachIndexed { idx, review ->
+                val analysis = HostPulseEngine.analyzeReviewText(review.reviewText)
+                val propName = HotelProperty.displayName(reviewPropertyMap[review.id])
                 val reviewExcerpt = buildString {
                     if (review.summaryLine.isNotBlank()) {
                         append(review.summaryLine.trim())
                         append("\n")
                     }
                     append("«")
-                    append(review.reviewText.trim().take(280))
-                    if (review.reviewText.length > 280) append("…")
+                    append(review.reviewText.trim().take(260))
+                    if (review.reviewText.length > 260) append("…")
                     append("»")
                 }
                 val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
                     typeface = regularBody
-                    textSize = 8.5f
+                    textSize = 8.4f
                     color = colorTextPrimary
                 }
                 val textLayout = buildStaticLayout(reviewExcerpt, textPaint, commentColWidth - 12)
-                val rowHeight = maxOf(48f, textLayout.height + 16f)
+                val rowHeight = maxOf(52f, textLayout.height + 18f)
 
                 if (currentPageRows.isNotEmpty() && runningY + rowHeight > maxBottomY) {
                     reviewPages.add(currentPageRows)
@@ -187,6 +230,8 @@ object PdfReportGenerator {
                     PreparedReviewRow(
                         index = idx,
                         review = review,
+                        propertyName = propName,
+                        triageShortLabel = analysis.triageCategory.shortLabelEl,
                         dateStr = dateFormat.format(Date(review.stayDateMillis)),
                         textLayout = textLayout,
                         rowHeight = rowHeight
@@ -199,10 +244,10 @@ object PdfReportGenerator {
             }
         }
 
-        val totalPages = 1 + reviewPages.size
+        val totalPages = 1 + (if (includePatternsActionsPage) 1 else 0) + reviewPages.size
         val drawers = mutableListOf<(Canvas) -> Unit>()
 
-        // Page 1 drawer
+        // Page 1: KPIs, Executive Summary & Charts
         drawers.add { canvas ->
             drawFirstPage(
                 canvas = canvas,
@@ -216,9 +261,26 @@ object PdfReportGenerator {
             drawFooter(canvas, 1, totalPages, metadata.hotelName, regularBody)
         }
 
-        // Pages 2..N drawers
+        // Optional Page 2: Repeating Patterns & Prioritized Action Recommendations
+        if (includePatternsActionsPage) {
+            drawers.add { canvas ->
+                drawPatternsAndActionsPage(
+                    canvas = canvas,
+                    metadata = metadata,
+                    patterns = patterns,
+                    recommendations = recommendations,
+                    assignedTasks = assignedTasks,
+                    boldHeading = boldHeading,
+                    regularBody = regularBody
+                )
+                drawFooter(canvas, 2, totalPages, metadata.hotelName, regularBody)
+            }
+        }
+
+        // Detailed Reviews Pages
+        val reviewsStartPage = if (includePatternsActionsPage) 3 else 2
         reviewPages.forEachIndexed { rPageIdx, rowsOnPage ->
-            val pageNum = 2 + rPageIdx
+            val pageNum = reviewsStartPage + rPageIdx
             drawers.add { canvas ->
                 var y = drawReviewsPageHeader(
                     canvas = canvas,
@@ -234,6 +296,8 @@ object PdfReportGenerator {
                         rowHeight = row.rowHeight,
                         index = row.index,
                         review = row.review,
+                        propertyName = row.propertyName,
+                        triageShortLabel = row.triageShortLabel,
                         dateStr = row.dateStr,
                         textLayout = row.textLayout,
                         boldHeading = boldHeading,
@@ -246,6 +310,214 @@ object PdfReportGenerator {
         }
 
         return drawers
+    }
+
+    private fun drawPatternsAndActionsPage(
+        canvas: Canvas,
+        metadata: ReportMetadata,
+        patterns: List<TopicPatternSignal>,
+        recommendations: List<RecommendedAction>,
+        assignedTasks: List<AssignedActionTask>,
+        boldHeading: Typeface,
+        regularBody: Typeface
+    ) {
+        canvas.drawColor(Color.WHITE)
+        val contentWidth = PAGE_WIDTH - 2 * MARGIN
+        val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
+        val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = 0.9f
+            color = colorCardBorder
+        }
+        val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = boldHeading
+            textSize = 13.5f
+            color = colorAegean
+        }
+        val subPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = regularBody
+            textSize = 9f
+            color = colorTextSecondary
+        }
+        val sectionTitlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = boldHeading
+            textSize = 10.5f
+            color = colorTextPrimary
+        }
+        val headerTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = boldHeading
+            textSize = 8.2f
+            color = Color.WHITE
+        }
+        val cellBoldPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = boldHeading
+            textSize = 8.3f
+            color = colorTextPrimary
+        }
+        val cellBodyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = regularBody
+            textSize = 8.1f
+            color = colorTextSecondary
+        }
+
+        canvas.drawText(
+            "Επαναλαμβανόμενα Μοτίβα & Προτεραιοποιημένες Ενέργειες",
+            MARGIN,
+            40f,
+            titlePaint
+        )
+        canvas.drawText(
+            "${metadata.hotelName}  •  Περίοδος: ${metadata.periodLabel}",
+            MARGIN,
+            55f,
+            subPaint
+        )
+
+        var y = 76f
+
+        // 1. Repeating Patterns Table
+        canvas.drawText("1. Επαναλαμβανόμενα Αρνητικά Μοτίβα (Εντοπισμός Τάσεων)", MARGIN, y, sectionTitlePaint)
+        y += 10f
+
+        fillPaint.color = colorAegean
+        canvas.drawRoundRect(RectF(MARGIN, y, MARGIN + contentWidth, y + 22f), 4f, 4f, fillPaint)
+        canvas.drawText("Θέμα", MARGIN + 8f, y + 14f, headerTextPaint)
+        canvas.drawText("Αρνητικές / Σύνολο", MARGIN + contentWidth * 0.25f, y + 14f, headerTextPaint)
+        canvas.drawText("Καταλ.", MARGIN + contentWidth * 0.45f, y + 14f, headerTextPaint)
+        canvas.drawText("Μεταβολή", MARGIN + contentWidth * 0.55f, y + 14f, headerTextPaint)
+        canvas.drawText("Ενδεικτικό Απόσπασμα", MARGIN + contentWidth * 0.68f, y + 14f, headerTextPaint)
+        y += 22f
+
+        val shownPatterns = patterns.take(6)
+        if (shownPatterns.isEmpty()) {
+            canvas.drawText("Δεν εντοπίστηκαν επαναλαμβανόμενα αρνητικά θέματα.", MARGIN + 8f, y + 16f, cellBodyPaint)
+            y += 26f
+        } else {
+            shownPatterns.forEachIndexed { idx, p ->
+                val rowH = 26f
+                if (idx % 2 == 1) {
+                    fillPaint.color = colorAlabaster
+                    canvas.drawRect(MARGIN, y, MARGIN + contentWidth, y + rowH, fillPaint)
+                }
+                canvas.drawLine(MARGIN, y + rowH, MARGIN + contentWidth, y + rowH, strokePaint)
+
+                val deltaStr = when {
+                    p.rateChangePoints == null -> "Νέο"
+                    p.rateChangePoints > 0 -> "+${p.rateChangePoints} μ.π."
+                    else -> "${p.rateChangePoints} μ.π."
+                }
+                val excerpt = p.evidence.firstOrNull()?.quote?.take(34)?.let { "«$it…»" } ?: "—"
+                canvas.drawText(p.aspect.labelEl.take(20), MARGIN + 8f, y + 16f, cellBoldPaint)
+                canvas.drawText("${p.negativeCount} / ${p.totalMentions} (${p.negativeRatePercent}%)", MARGIN + contentWidth * 0.25f, y + 16f, cellBodyPaint)
+                canvas.drawText("${p.propertyCount}", MARGIN + contentWidth * 0.45f, y + 16f, cellBoldPaint)
+                canvas.drawText(deltaStr, MARGIN + contentWidth * 0.55f, y + 16f, cellBodyPaint)
+                canvas.drawText(excerpt, MARGIN + contentWidth * 0.68f, y + 16f, cellBodyPaint)
+                y += rowH
+            }
+            if (patterns.size > shownPatterns.size) {
+                canvas.drawText(
+                    "Εμφανίζονται τα ${shownPatterns.size} κορυφαία από ${patterns.size} μοτίβα (πλήρης λίστα στο Excel).",
+                    MARGIN + 8f,
+                    y + 13f,
+                    cellBodyPaint
+                )
+                y += 16f
+            }
+        }
+
+        y += 20f
+
+        // 2. Prioritized Action Recommendations Table
+        canvas.drawText("2. Προτεραιοποιημένες Προτάσεις Ενεργειών (Σοβαρότητα × Συχνότητα 30μ)", MARGIN, y, sectionTitlePaint)
+        y += 10f
+
+        fillPaint.color = colorTerracotta
+        canvas.drawRoundRect(RectF(MARGIN, y, MARGIN + contentWidth, y + 22f), 4f, 4f, fillPaint)
+        canvas.drawText("Σκορ", MARGIN + 8f, y + 14f, headerTextPaint)
+        canvas.drawText("Κατάλυμα & Τμήμα", MARGIN + contentWidth * 0.11f, y + 14f, headerTextPaint)
+        canvas.drawText("Προτεινόμενη Ενέργεια & Απόσπασμα", MARGIN + contentWidth * 0.38f, y + 14f, headerTextPaint)
+        canvas.drawText("Χρ./Κόστος", MARGIN + contentWidth * 0.85f, y + 14f, headerTextPaint)
+        y += 24f
+
+        val quotePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = regularBody
+            textSize = 7.9f
+            color = colorTextPrimary
+        }
+
+        val maxBottom = PAGE_HEIGHT - 120f
+        if (recommendations.isEmpty()) {
+            canvas.drawText("Δεν εκκρεμούν νέες προτάσεις ενεργειών.", MARGIN + 8f, y + 16f, cellBodyPaint)
+            y += 26f
+        } else {
+            val actionColW = (contentWidth * 0.45f).toInt()
+            var renderedRecs = 0
+            for ((idx, rec) in recommendations.take(8).withIndex()) {
+                val bodyText = "${rec.title}\n«${rec.quote.take(120)}${if (rec.quote.length > 120) "…" else ""}»"
+                val layout = buildStaticLayout(bodyText, quotePaint, actionColW - 8)
+                val rowH = maxOf(34f, layout.height + 12f)
+                if (y + rowH > maxBottom) break
+
+                if (idx % 2 == 1) {
+                    fillPaint.color = colorAlabaster
+                    canvas.drawRect(MARGIN, y, MARGIN + contentWidth, y + rowH, fillPaint)
+                }
+                canvas.drawLine(MARGIN, y + rowH, MARGIN + contentWidth, y + rowH, strokePaint)
+
+                val scorePaint = Paint(cellBoldPaint).apply {
+                    color = if (rec.severity == 3) colorNegative else colorAegean
+                }
+                canvas.drawText(String.format(Locale.US, "%.1f", rec.priorityScore), MARGIN + 8f, y + 15f, scorePaint)
+                canvas.drawText("×${rec.recurrence30d}", MARGIN + 8f, y + 26f, cellBodyPaint)
+
+                canvas.drawText(rec.propertyName.take(22), MARGIN + contentWidth * 0.11f, y + 15f, cellBoldPaint)
+                canvas.drawText("${rec.departmentNameEl} • ${rec.deadlineLabel}", MARGIN + contentWidth * 0.11f, y + 26f, cellBodyPaint)
+
+                canvas.save()
+                canvas.translate(MARGIN + contentWidth * 0.38f, y + 6f)
+                layout.draw(canvas)
+                canvas.restore()
+
+                canvas.drawText("${rec.effortMinutes} λ.", MARGIN + contentWidth * 0.85f, y + 15f, cellBoldPaint)
+                canvas.drawText("${rec.costEuros}€", MARGIN + contentWidth * 0.85f, y + 26f, cellBodyPaint)
+
+                y += rowH
+                renderedRecs++
+            }
+            if (recommendations.size > renderedRecs) {
+                canvas.drawText(
+                    "Εμφανίζονται οι $renderedRecs κορυφαίες από ${recommendations.size} προτάσεις (πλήρης λίστα στο Excel .xlsx).",
+                    MARGIN + 8f,
+                    y + 13f,
+                    cellBodyPaint
+                )
+                y += 16f
+            }
+        }
+
+        // 3. Assigned Team Tasks Summary Strip at bottom
+        if (assignedTasks.isNotEmpty() && y + 52f < PAGE_HEIGHT - 36f) {
+            y += 14f
+            val boxRect = RectF(MARGIN, y, MARGIN + contentWidth, y + 48f)
+            fillPaint.color = colorAegeanLight
+            canvas.drawRoundRect(boxRect, 6f, 6f, fillPaint)
+            val openCount = assignedTasks.count { it.status.name == "OPEN" }
+            val inProgCount = assignedTasks.count { it.status.name == "IN_PROGRESS" }
+            val doneCount = assignedTasks.count { it.status.name == "DONE" }
+            canvas.drawText(
+                "ΚΑΤΑΣΤΑΣΗ ΑΝΑΘΕΣΕΩΝ ΟΜΑΔΑΣ:  Ανατέθηκαν: $openCount  •  Σε εξέλιξη: $inProgCount  •  Ολοκληρώθηκαν: $doneCount",
+                boxRect.left + 12f,
+                boxRect.top + 19f,
+                cellBoldPaint
+            )
+            val firstTask = assignedTasks.first()
+            canvas.drawText(
+                "Ενεργό παράδειγμα: ${firstTask.propertyName} (${firstTask.departmentNameEl}) — ${firstTask.title.take(66)}",
+                boxRect.left + 12f,
+                boxRect.top + 35f,
+                cellBodyPaint
+            )
+        }
     }
 
     private fun drawFirstPage(
@@ -337,7 +609,7 @@ object PdfReportGenerator {
 
         y += cardHeight + 16f
 
-        // Optional AI Executive Summary Box
+        // Optional AI / Executive Summary Box
         val summaryText = metadata.executiveSummary?.trim().orEmpty()
         if (summaryText.isNotEmpty()) {
             val summaryTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -357,7 +629,7 @@ object PdfReportGenerator {
                 color = colorAegean
             }
             canvas.drawText(
-                "ΕΠΙΤΕΛΙΚΗ ΣΥΝΟΨΗ AI ΓΙΑ ΤΗ ΔΙΟΙΚΗΣΗ & ΤΑ ΤΜΗΜΑΤΑ",
+                "ΕΠΙΤΕΛΙΚΗ ΣΥΝΟΨΗ ΓΙΑ ΤΗ ΔΙΟΙΚΗΣΗ & ΤΑ ΤΜΗΜΑΤΑ",
                 MARGIN + 14f,
                 y + 18f,
                 boxTitlePaint
@@ -565,7 +837,7 @@ object PdfReportGenerator {
         }
 
         canvas.drawText(
-            "Αναλυτικός Πίνακας Κριτικών & Triage ($totalFiltered κριτικές)",
+            "Αναλυτικός Πίνακας Κριτικών & 4-Κατηγοριών Triage ($totalFiltered κριτικές)",
             MARGIN,
             40f,
             titlePaint
@@ -590,13 +862,13 @@ object PdfReportGenerator {
 
         val colHeaderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = boldHeading
-            textSize = 8.5f
+            textSize = 8.4f
             color = Color.WHITE
         }
-        canvas.drawText("Ημ/νία & Πελάτης", MARGIN + 8f, headerTop + 15f, colHeaderPaint)
-        canvas.drawText("Βαθμ.", MARGIN + contentWidth * 0.24f, headerTop + 15f, colHeaderPaint)
-        canvas.drawText("Συναίσθημα & Τμήματα", MARGIN + contentWidth * 0.33f, headerTop + 15f, colHeaderPaint)
-        canvas.drawText("Σύνοψη & Κριτική Πελάτη", MARGIN + contentWidth * 0.52f, headerTop + 15f, colHeaderPaint)
+        canvas.drawText("Πελάτης & Κατάλυμα", MARGIN + 8f, headerTop + 15f, colHeaderPaint)
+        canvas.drawText("Βαθμ.", MARGIN + contentWidth * 0.25f, headerTop + 15f, colHeaderPaint)
+        canvas.drawText("Διαλογή & Τμήματα", MARGIN + contentWidth * 0.34f, headerTop + 15f, colHeaderPaint)
+        canvas.drawText("Σύνοψη & Κριτική Πελάτη", MARGIN + contentWidth * 0.54f, headerTop + 15f, colHeaderPaint)
 
         return headerTop + headerHeight + 4f
     }
@@ -607,6 +879,8 @@ object PdfReportGenerator {
         rowHeight: Float,
         index: Int,
         review: HotelReview,
+        propertyName: String,
+        triageShortLabel: String,
         dateStr: String,
         textLayout: StaticLayout,
         boldHeading: Typeface,
@@ -627,25 +901,25 @@ object PdfReportGenerator {
 
         val boldCell = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = boldHeading
-            textSize = 8.5f
+            textSize = 8.4f
             color = colorTextPrimary
         }
         val smallCell = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = regularBody
-            textSize = 7.8f
+            textSize = 7.7f
             color = colorTextSecondary
         }
 
-        canvas.drawText(review.guestName.take(18), MARGIN + 6f, y + 15f, boldCell)
-        canvas.drawText(dateStr, MARGIN + 6f, y + 27f, smallCell)
-        canvas.drawText(review.sourceEnum.labelEl.take(16), MARGIN + 6f, y + 38f, smallCell)
+        canvas.drawText(review.guestName.take(18), MARGIN + 6f, y + 14f, boldCell)
+        canvas.drawText(propertyName.take(20), MARGIN + 6f, y + 25f, smallCell)
+        canvas.drawText("$dateStr • ${review.sourceEnum.labelEl.take(10)}", MARGIN + 6f, y + 36f, smallCell)
 
         val ratingStr = String.format(Locale.US, "%.1f", review.rating)
-        canvas.drawText("$ratingStr/10", MARGIN + contentWidth * 0.24f, y + 16f, boldCell)
+        canvas.drawText("$ratingStr/10", MARGIN + contentWidth * 0.25f, y + 15f, boldCell)
         canvas.drawText(
             if (review.resolved) "Τακτοπ." else "Εκκρεμεί",
-            MARGIN + contentWidth * 0.24f,
-            y + 28f,
+            MARGIN + contentWidth * 0.25f,
+            y + 27f,
             smallCell
         )
 
@@ -655,24 +929,24 @@ object PdfReportGenerator {
             SentimentType.NEGATIVE -> colorNegative
         }
         val sentPaint = Paint(boldCell).apply { color = sentColor }
-        val prioSuffix = if (review.priorityEnum == TriagePriority.HIGH) " (Επείγον)" else ""
+        val prioSuffix = if (review.priorityEnum == TriagePriority.HIGH) "!" else ""
         canvas.drawText(
-            "${review.sentimentEnum.labelEl}$prioSuffix",
-            MARGIN + contentWidth * 0.33f,
+            "${review.sentimentEnum.labelEl}$prioSuffix • $triageShortLabel",
+            MARGIN + contentWidth * 0.34f,
             y + 15f,
             sentPaint
         )
         val deptLine1 = review.departmentEnums.take(2).joinToString(", ") { it.shortLabelEl }
         val deptLine2 = review.departmentEnums.drop(2).take(2).joinToString(", ") { it.shortLabelEl }
         if (deptLine1.isNotBlank()) {
-            canvas.drawText(deptLine1.take(22), MARGIN + contentWidth * 0.33f, y + 27f, smallCell)
+            canvas.drawText(deptLine1.take(22), MARGIN + contentWidth * 0.34f, y + 27f, smallCell)
         }
         if (deptLine2.isNotBlank()) {
-            canvas.drawText(deptLine2.take(22), MARGIN + contentWidth * 0.33f, y + 38f, smallCell)
+            canvas.drawText(deptLine2.take(22), MARGIN + contentWidth * 0.34f, y + 38f, smallCell)
         }
 
         canvas.save()
-        canvas.translate(MARGIN + contentWidth * 0.52f, y + 7f)
+        canvas.translate(MARGIN + contentWidth * 0.54f, y + 7f)
         textLayout.draw(canvas)
         canvas.restore()
     }

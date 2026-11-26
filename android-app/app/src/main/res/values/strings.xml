@@ -2,25 +2,29 @@
     <string name="app_name">Hotel Pulse</string>
 
     <!-- Authentication -->
-    <string name="auth_headline">Έξυπνη Διαχείριση Κριτικών &amp; Αναφορών Ξενοδοχείου</string>
-    <string name="auth_subtitle">Αναλύστε ελληνικές και αγγλικές κριτικές με AI, οργανώστε παράπονα ανά τμήμα και μοιραστείτε αναφορές PDF &amp; Excel με την ομάδα σας.</string>
-    <string name="auth_google_button">Σύνδεση με Google</string>
-    <string name="auth_feature_sentiment">Ανάλυση συναισθήματος &amp; προτεινόμενες απαντήσεις</string>
-    <string name="auth_feature_triage">Αυτόματο triage παραπόνων ανά τμήμα ξενοδοχείου</string>
+    <string name="auth_headline">Έξυπνη Διαχείριση Κριτικών &amp; Ενεργειών Καταλυμάτων</string>
+    <string name="auth_subtitle">Αναλύστε ελληνικές και αγγλικές κριτικές με διαλογή 4 κατηγοριών, προτεραιοποιήστε παρεμβάσεις, εντοπίστε μοτίβα και εξάγετε αναφορές PDF &amp; Excel.</string>
+    <string name="auth_google_button">Σύνδεση με Google (Cloud &amp; AI)</string>
+    <string name="auth_demo_button">Δοκιμή Demo (Χωρίς Σύνδεση)</string>
+    <string name="auth_demo_hint">Η λειτουργία Demo περιλαμβάνει 10 ελληνικά καταλύματα, 24 ρεαλιστικές κριτικές, προτεινόμενες ενέργειες, μοτίβα και πλήρη εξαγωγή PDF/Excel.</string>
+    <string name="auth_feature_sentiment">Διαλογή 4 κατηγοριών: Εκκρεμή, Λυμένα, Επιθυμίες &amp; Θετικά</string>
+    <string name="auth_feature_triage">Action Recommender (Σοβαρότητα × Συχνότητα) &amp; Μοτίβα 7–60 ημερών</string>
     <string name="auth_feature_reports">Εξαγωγή &amp; προεπισκόπηση αναφορών PDF και Excel (.xlsx)</string>
     <string name="sign_out">Αποσύνδεση</string>
 
-    <!-- Navigation -->
-    <string name="nav_dashboard">Επισκόπηση</string>
-    <string name="nav_reviews">Κριτικές &amp; AI</string>
+    <!-- Navigation (5 concise tabs) -->
+    <string name="nav_dashboard">Σήμερα</string>
+    <string name="nav_reviews">Κριτικές</string>
+    <string name="nav_actions">Ενέργειες</string>
+    <string name="nav_patterns">Μοτίβα</string>
     <string name="nav_reports">Αναφορές</string>
 
     <!-- Dashboard -->
     <string name="dashboard_export_cta">Εξαγωγή Αναφοράς</string>
     <string name="dashboard_add_review">Νέα Κριτική</string>
-    <string name="dashboard_seed_demo">Φόρτωση Δείγματος Κριτικών</string>
+    <string name="dashboard_seed_demo">Φόρτωση Δείγματος (10 Καταλύματα)</string>
     <string name="dashboard_empty_title">Δεν υπάρχουν καταχωρημένες κριτικές</string>
-    <string name="dashboard_empty_body">Προσθέστε μια νέα κριτική πελάτη για ανάλυση με AI ή φορτώστε ένα ρεαλιστικό δείγμα δίγλωσσων κριτικών ξενοδοχείου στο Cloud για να δοκιμάσετε τα γραφήματα και την εξαγωγή PDF/Excel.</string>
+    <string name="dashboard_empty_body">Προσθέστε μια νέα κριτική πελάτη για ανάλυση ή φορτώστε το δείγμα 24 δίγλωσσων κριτικών σε 10 ελληνικά καταλύματα για να δοκιμάσετε ενέργειες, μοτίβα και εξαγωγή PDF/Excel.</string>
     <string name="kpi_avg_rating">Μέση Βαθμολογία</string>
     <string name="kpi_total_reviews">Σύνολο Κριτικών</string>
     <string name="kpi_positive_rate">Θετικό Κλίμα</string>
@@ -28,26 +32,36 @@
     <string name="section_sentiment_split">Κατανομή Συναισθήματος</string>
     <string name="section_department_triage">Triage Παραπόνων &amp; Αναφορών ανά Τμήμα</string>
     <string name="section_recent_urgent">Κριτικές που Χρειάζονται Προσοχή</string>
-    <string name="hotel_settings_title">Στοιχεία Ξενοδοχείου</string>
-    <string name="hotel_name_label">Όνομα Ξενοδοχείου</string>
+    <string name="hotel_settings_title">Στοιχεία Ομίλου / Ξενοδοχείου</string>
+    <string name="hotel_name_label">Όνομα Ξενοδοχείου / Ομίλου</string>
     <string name="hotel_location_label">Τοποθεσία</string>
     <string name="save_action">Αποθήκευση</string>
     <string name="cancel_action">Ακύρωση</string>
 
-    <!-- Reviews & AI Triage -->
-    <string name="reviews_search_hint">Αναζήτηση πελάτη, σχολίου ή σημείου…</string>
+    <!-- Actions (Action Recommender) -->
+    <string name="actions_title">Προτεινόμενες Ενέργειες</string>
+    <string name="actions_subtitle">Προτεραιοποίηση εκκρεμών προβλημάτων (Σοβαρότητα × Συχνότητα 30 ημερών), ημερήσιο πλάνο έως 3 παρεμβάσεων και ανάθεση στην ομάδα.</string>
+    <string name="confirm_analysis_button">Επιβεβαίωση ανάλυσης</string>
+    <string name="approve_assign_button">Έγκριση &amp; Ανάθεση</string>
+
+    <!-- Patterns -->
+    <string name="patterns_title">Επαναλαμβανόμενα Μοτίβα</string>
+    <string name="patterns_subtitle">Εντοπισμός επαναλαμβανόμενων αρνητικών θεμάτων σε παράθυρα 7–60 ημερών με άμεση πρόσβαση στα αποσπάσματα.</string>
+
+    <!-- Reviews & 4-Category Triage -->
+    <string name="reviews_search_hint">Αναζήτηση πελάτη, καταλύματος, κειμένου…</string>
     <string name="filter_all">Όλες</string>
     <string name="filter_positive">Θετικές</string>
     <string name="filter_neutral">Ουδέτερες</string>
     <string name="filter_negative">Αρνητικές</string>
-    <string name="filter_unresolved">Εκκρεμείς</string>
-    <string name="new_review_sheet_title">Ανάλυση Νέας Κριτικής με AI</string>
+    <string name="filter_unresolved">Εκκρεμή προβλήματα</string>
+    <string name="new_review_sheet_title">Νέα Κριτική &amp; Διαλογή 4 Κατηγοριών</string>
     <string name="guest_name_label">Όνομα Πελάτη</string>
     <string name="review_text_label">Κείμενο Κριτικής (Ελληνικά ή Αγγλικά)</string>
     <string name="rating_label">Βαθμολογία Πελάτη (1–10)</string>
     <string name="source_label">Πηγή Κριτικής</string>
-    <string name="analyze_and_save_button">Ανάλυση AI &amp; Αποθήκευση</string>
-    <string name="analyzing_with_ai">Ανάλυση συναισθήματος &amp; triage με AI…</string>
+    <string name="analyze_and_save_button">Ανάλυση &amp; Αποθήκευση</string>
+    <string name="analyzing_with_ai">Ανάλυση συναισθήματος &amp; διαλογής…</string>
     <string name="suggested_reply_title">Προτεινόμενη Απάντηση προς τον Πελάτη</string>
     <string name="copy_reply_button">Αντιγραφή Απάντησης</string>
     <string name="regenerate_reply_warm">Ζεστό Ύφος</string>
@@ -59,15 +73,18 @@
 
     <!-- Reports Studio (PDF & Excel) -->
     <string name="reports_title">Εξαγωγή Αναφορών Απόδοσης</string>
-    <string name="reports_subtitle">Δημιουργήστε αναφορές PDF με γραφήματα ή αρχεία Excel (.xlsx) πολλαπλών φύλλων για την ομάδα του ξενοδοχείου.</string>
+    <string name="reports_subtitle">Δημιουργήστε αναφορές PDF με γραφήματα, μοτίβα &amp; ενέργειες ή αρχεία Excel (.xlsx) 3 φύλλων για την ομάδα σας.</string>
     <string name="period_7_days">7 Ημέρες</string>
+    <string name="period_14_days">14 Ημέρες</string>
     <string name="period_30_days">30 Ημέρες</string>
+    <string name="period_60_days">60 Ημέρες</string>
     <string name="period_90_days">90 Ημέρες</string>
     <string name="period_all_time">Όλες οι Περίοδοι</string>
     <string name="period_custom">Επιλογή Ημερομηνιών</string>
-    <string name="include_ai_summary_label">Συμπερίληψη Επιτελικής Σύνοψης AI για τη Διοίκηση</string>
+    <string name="include_ai_summary_label">Συμπερίληψη Επιτελικής Σύνοψης για τη Διοίκηση</string>
+    <string name="include_patterns_actions_label">Συμπερίληψη Μοτίβων &amp; Προτεραιοποιημένων Ενεργειών (PDF Σελ. 2 &amp; Excel Φύλλο 2)</string>
     <string name="generate_preview_button">Δημιουργία &amp; Προεπισκόπηση Αναφοράς</string>
-    <string name="generating_reports_status">Σύνθεση γραφημάτων PDF, πινάκων Excel &amp; σύνοψης…</string>
+    <string name="generating_reports_status">Σύνθεση γραφημάτων PDF, μοτίβων, ενεργειών &amp; φύλλων Excel…</string>
     <string name="preview_tab_pdf">Προεπισκόπηση PDF</string>
     <string name="preview_tab_excel">Φύλλα Excel (.xlsx)</string>
     <string name="share_pdf_button">Διαμοιρασμός PDF</string>

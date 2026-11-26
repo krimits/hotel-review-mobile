@@ -1368,6 +1368,179 @@
         background: var(--bg);
         border-radius: 12px;
       }
+      .alert-bell-btn {
+        position: relative;
+        border: 1px solid #d6dfd2;
+        background: #fff;
+        color: var(--brand);
+        min-width: 36px;
+        min-height: 36px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 7px;
+        flex-shrink: 0;
+      }
+      @media (max-width: 380px) {
+        .app-top {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+        .brand-small {
+          font-size: 19px;
+          gap: 5px;
+        }
+      }
+      .alert-bell-btn.has-alerts {
+        border-color: #e4b7ae;
+        background: var(--redbg);
+        color: var(--red);
+      }
+      .alert-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 99px;
+        background: var(--red);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 18px;
+        text-align: center;
+      }
+      .alert-strip {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        margin: 12px 0 0;
+        border-radius: 16px;
+        border: 1px solid #e6c2b8;
+        background: var(--redbg);
+        color: var(--ink);
+      }
+      .alert-strip-copy {
+        min-width: 0;
+        flex: 1;
+      }
+      .alert-strip-title {
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--red);
+      }
+      .alert-strip-sub {
+        font-size: 11px;
+        color: #5b3b34;
+        margin-top: 2px;
+        line-height: 1.45;
+      }
+      .alert-strip-btn {
+        border: 0;
+        background: var(--red);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 8px 11px;
+        border-radius: 10px;
+        min-height: 36px;
+        flex-shrink: 0;
+      }
+      .task-notes {
+        margin-top: 12px;
+        padding: 11px 12px;
+        border-radius: 14px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+      }
+      .task-notes-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .task-notes-title {
+        font-size: 11px;
+        font-weight: 750;
+        color: var(--ink);
+      }
+      .task-note-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .task-note-item {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        padding: 8px 10px;
+      }
+      .task-note-route {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: 10px;
+        font-weight: 750;
+        color: var(--brand);
+        margin-bottom: 3px;
+        flex-wrap: wrap;
+      }
+      .task-note-route time {
+        font-weight: 500;
+        color: var(--muted);
+      }
+      .task-note-text {
+        font-size: 11.5px;
+        line-height: 1.5;
+        color: var(--ink);
+        word-break: break-word;
+      }
+      .note-form {
+        margin-top: 9px;
+        padding-top: 9px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .note-route-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .note-input-row {
+        display: flex;
+        gap: 6px;
+        align-items: stretch;
+      }
+      .note-input-row input {
+        flex: 1;
+        min-width: 0;
+        min-height: 40px;
+        border: 1px solid #d6dfd2;
+        border-radius: 10px;
+        background: #fff;
+        padding: 8px 10px;
+        font-size: 12px;
+        color: var(--ink);
+      }
+      .note-submit-btn {
+        border: 0;
+        background: var(--brand);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 0 12px;
+        border-radius: 10px;
+        min-height: 40px;
+        flex-shrink: 0;
+      }
       #print-report-root {
         display: none;
       }
@@ -1452,6 +1625,29 @@
                 >HostPulse<span style="color: #91a67c">.</span>
               </div>
               <div class="topline-actions">
+                <button
+                  class="alert-bell-btn"
+                  id="alerts-btn"
+                  type="button"
+                  data-action="alerts-open"
+                  aria-label="Ειδοποιήσεις κρίσιμων περιστατικών"
+                  title="Ειδοποιήσεις"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M18 8a6 6 0 0 0-12 0c0 8-3 8-3 10h18c0-2-3-2-3-10M10 22h4" />
+                  </svg>
+                  <span class="alert-badge" id="alerts-badge" hidden>0</span>
+                </button>
                 <button
                   class="demo-chip"
                   type="button"
@@ -1774,7 +1970,7 @@
             date: "2026-09-25",
             stars: 2,
             reply: false,
-            text: "Το πρωινό λιγοστά και το δωμάτιο άβολο. Αργό check-in με καθυστέρηση μία ώρα.",
+            text: "Το πρωινό λιγοστό και το δωμάτιο άβολο. Αργό check-in με καθυστέρηση μία ώρα.",
           },
           {
             id: 13,
@@ -2011,7 +2207,7 @@
             .replace(/ς/g, "σ")
             .replace(/[’']/g, "'")
             .replace(
-              /\b(?:wasn't|isn't|aren't|weren't|doesn't|didn't|don't|can't)\b/g,
+              /\b(?:wasn't|isn't|aren't|weren't|doesn't|didn't|don't|can't|won't|couldn't|wouldn't|shouldn't|haven't|hasn't|hadn't)\b/g,
               " not ",
             );
         const escapeHTML = (value) =>
@@ -2336,6 +2532,27 @@
           extremely: 1.6,
         };
         const TOKEN_PATTERN = /[a-zα-ω]+/g;
+        const EXACT_LEXICON_EXCLUSIONS = new Set(["παλι", "ακριβωσ"]);
+        const PREFIX_LEXICON_EXCLUSIONS = [
+          "αργοτερ",
+          "αργι",
+          "αργολιδ",
+          "κρυμμεν",
+          "κρυφ",
+        ];
+        function isExcludedFromStem(word, stem) {
+          if (
+            EXACT_LEXICON_EXCLUSIONS.has(word) &&
+            (stem === "παλι" || stem === "ακριβ")
+          )
+            return true;
+          if (
+            (stem === "αργ" || stem === "κρυ") &&
+            PREFIX_LEXICON_EXCLUSIONS.some((p) => word.startsWith(p))
+          )
+            return true;
+          return false;
+        }
         function findCategories(text) {
           const t = norm(text),
             words = t.match(TOKEN_PATTERN) || [];
@@ -2343,7 +2560,9 @@
             CATEGORIES[key].keys.some((k) =>
               /[ -]/.test(k)
                 ? t.includes(k)
-                : words.some((w) => w.startsWith(k)),
+                : words.some(
+                    (w) => w.startsWith(k) && !isExcludedFromStem(w, k),
+                  ),
             ),
           );
         }
@@ -2353,8 +2572,10 @@
           for (let i = 0; i < words.length; i++) {
             const word = words[i],
               entry =
-                NEG.find(([stem]) => word.startsWith(stem)) ||
-                POS.find(([stem]) => word.startsWith(stem));
+                NEG.find(
+                  ([stem]) =>
+                    word.startsWith(stem) && !isExcludedFromStem(word, stem),
+                ) || POS.find(([stem]) => word.startsWith(stem));
             if (!entry) continue;
             const previous = words.slice(Math.max(0, i - 3), i);
             const negated = previous.some((w) => NEGATORS.has(w));
@@ -2694,6 +2915,7 @@
             id: "task-" + action.key,
             status: "open",
             createdAt: DEMO_DATE,
+            notes: [],
           });
           return true;
         }
@@ -2708,6 +2930,170 @@
             return false;
           task.status = status;
           return true;
+        }
+        const ALL_DEPARTMENTS_TARGET = "Όλα τα τμήματα";
+        const DEFAULT_ALERT_RULES = Object.freeze({
+          lowRatingMax: 2,
+          overdueHours: 48,
+        });
+        function normalizeAlertRules(rules) {
+          const rawLow = Number(rules?.lowRatingMax);
+          const rawHours = Number(rules?.overdueHours);
+          return {
+            lowRatingMax:
+              Number.isInteger(rawLow) && rawLow >= 1 && rawLow <= 3
+                ? rawLow
+                : DEFAULT_ALERT_RULES.lowRatingMax,
+            overdueHours: [12, 24, 48, 72].includes(rawHours)
+              ? rawHours
+              : DEFAULT_ALERT_RULES.overdueHours,
+          };
+        }
+        function taskPendingHours(task) {
+          if (!task || !task.createdAt) return 0;
+          return Math.max(0, dayDifference(task.createdAt) * 24);
+        }
+        function isTaskOverdue(task, rules = DEFAULT_ALERT_RULES) {
+          if (!task || task.status === "done") return false;
+          const cfg = normalizeAlertRules(rules);
+          return taskPendingHours(task) >= cfg.overdueHours;
+        }
+        function addTaskNote(data, taskId, { fromDept, toDept, text } = {}) {
+          const task = data.tasks.find((t) => t.id === taskId);
+          if (!task) return null;
+          const cleanText = String(text || "").trim().slice(0, 500);
+          if (!cleanText) return null;
+          const validFrom = DEPARTMENTS.includes(fromDept)
+            ? fromDept
+            : task.department;
+          const validTo =
+            toDept === ALL_DEPARTMENTS_TARGET || DEPARTMENTS.includes(toDept)
+              ? toDept
+              : validFrom === "Υποδοχή"
+                ? "Συντήρηση"
+                : "Υποδοχή";
+          if (!Array.isArray(task.notes)) task.notes = [];
+          if (task.notes.length >= 30) return null;
+          const note = {
+            id: `note-${task.id}-${task.notes.length + 1}`,
+            fromDept: validFrom,
+            toDept: validTo,
+            text: cleanText,
+            createdAt: DEMO_DATE,
+          };
+          task.notes.push(note);
+          return note;
+        }
+        function dismissAlert(data, alertId) {
+          if (!alertId || typeof alertId !== "string") return false;
+          if (!Array.isArray(data.dismissedAlerts)) data.dismissedAlerts = [];
+          if (data.dismissedAlerts.includes(alertId)) return false;
+          data.dismissedAlerts.push(alertId);
+          return true;
+        }
+        function restoreDismissedAlerts(data) {
+          data.dismissedAlerts = [];
+        }
+        function computeAlerts(data, property = "all", rules = data.alertRules) {
+          const cfg = normalizeAlertRules(rules);
+          const dismissed = new Set(
+            Array.isArray(data.dismissedAlerts) ? data.dismissedAlerts : [],
+          );
+          const alerts = [];
+
+          // 1. Overdue pending assigned tasks
+          const scopedTasks = data.tasks.filter(
+            (t) => property === "all" || t.property === property,
+          );
+          for (const task of scopedTasks) {
+            if (!isTaskOverdue(task, cfg)) continue;
+            const id = "overdue:" + task.id;
+            if (dismissed.has(id)) continue;
+            const hours = taskPendingHours(task);
+            alerts.push({
+              id,
+              kind: "overdue_task",
+              severity: 3,
+              property: task.property,
+              taskId: task.id,
+              reviewId: task.reviewId,
+              department: task.department,
+              date: task.createdAt || DEMO_DATE,
+              hoursPending: hours,
+              title: `Εκπρόθεσμη εργασία (${hours}ω σε εκκρεμότητα)`,
+              detail: `${task.department} · ${task.title} (όριο SLA: ${cfg.overdueHours}ω)`,
+            });
+          }
+
+          // 2. Critical low ratings (unresolved) + 3. Urgent unassigned incidents
+          const scopedReviews = filteredReviews(data, property);
+          for (const review of scopedReviews) {
+            const status = reviewStatus(data, review);
+            if (status === "done") continue;
+            const analysis = analyze(review.text);
+
+            if (review.stars <= cfg.lowRatingMax) {
+              const id = "low_rating:" + review.id;
+              if (!dismissed.has(id)) {
+                alerts.push({
+                  id,
+                  kind: "low_rating",
+                  severity: review.stars <= 1 ? 3 : 2,
+                  property: review.p,
+                  reviewId: review.id,
+                  taskId: null,
+                  department:
+                    analysis.pending[0] &&
+                    CATEGORIES[analysis.pending[0].category]?.department,
+                  date: review.date,
+                  stars: review.stars,
+                  title: `Κρίσιμη χαμηλή βαθμολογία (${review.stars}/5)`,
+                  detail: `${review.guest} · «${review.text.slice(0, 110)}${review.text.length > 110 ? "…" : ""}»`,
+                });
+              }
+              continue;
+            }
+
+            const unassignedUrgent = analysis.pending.find(
+              (issue) =>
+                issue.severity === 3 &&
+                !data.tasks.some(
+                  (t) => t.key === actionKey(review.id, issue.category),
+                ),
+            );
+            if (unassignedUrgent) {
+              const id = "urgent:" + review.id;
+              if (!dismissed.has(id)) {
+                const dept =
+                  CATEGORIES[unassignedUrgent.category]?.department || "Υποδοχή";
+                alerts.push({
+                  id,
+                  kind: "urgent_unassigned",
+                  severity: 3,
+                  property: review.p,
+                  reviewId: review.id,
+                  taskId: null,
+                  department: dept,
+                  date: review.date,
+                  title: `Επείγον περιστατικό χωρίς ανάθεση (${dept})`,
+                  detail: `${review.guest} · «${unassignedUrgent.quote}»`,
+                });
+              }
+            }
+          }
+
+          const kindRank = {
+            overdue_task: 0,
+            low_rating: 1,
+            urgent_unassigned: 2,
+          };
+          return alerts.sort(
+            (a, b) =>
+              kindRank[a.kind] - kindRank[b.kind] ||
+              b.severity - a.severity ||
+              b.date.localeCompare(a.date) ||
+              a.id.localeCompare(b.id),
+          );
         }
         const EXTRA_REVIEWS = [
           {
@@ -2750,6 +3136,8 @@
             checked: { 3: true, 6: true },
             tasks: [],
             replies: {},
+            alertRules: { ...DEFAULT_ALERT_RULES },
+            dismissedAlerts: [],
             settings: { newReview: true, ratingDrop: true, weekly: false },
           };
           data.reviews.forEach((r) => {
@@ -2767,7 +3155,31 @@
               );
             if (issue) approveAction(data, recommendationFor(review, issue));
           }
-          if (data.tasks[0]) data.tasks[0].status = "in_progress";
+          if (data.tasks[0]) {
+            data.tasks[0].status = "in_progress";
+            data.tasks[0].createdAt = "2026-10-19";
+            data.tasks[0].notes = [
+              {
+                id: "note-seed-1",
+                fromDept: "Συντήρηση",
+                toDept: "Υποδοχή",
+                text: "Έγινε έλεγχος της μονάδας A/C και παραγγέλθηκε ανταλλακτικό. Τοποθετήθηκε προσωρινά φορητό κλιματιστικό — παρακαλούμε ενημερώστε τον επισκέπτη.",
+                createdAt: "2026-10-20",
+              },
+            ];
+          }
+          if (data.tasks[1]) {
+            data.tasks[1].createdAt = "2026-10-20";
+            data.tasks[1].notes = [
+              {
+                id: "note-seed-2",
+                fromDept: "Υποδοχή",
+                toDept: "Καθαριότητα",
+                text: "Προτεραιότητα πριν το επόμενο check-in στις 15:00 — απαιτείται βαθύς καθαρισμός μπάνιου και αλλαγή λευκών ειδών.",
+                createdAt: "2026-10-21",
+              },
+            ];
+          }
           return data;
         }
         function validStoredState(value) {
@@ -2828,8 +3240,38 @@
                 Number.isFinite(t.effort) &&
                 t.effort >= 0 &&
                 Number.isFinite(t.cost) &&
-                t.cost >= 0,
+                t.cost >= 0 &&
+                (t.notes === undefined ||
+                  (Array.isArray(t.notes) &&
+                    t.notes.length <= 30 &&
+                    t.notes.every(
+                      (n) =>
+                        n &&
+                        typeof n.id === "string" &&
+                        typeof n.fromDept === "string" &&
+                        typeof n.toDept === "string" &&
+                        typeof n.text === "string" &&
+                        n.text.length <= 500 &&
+                        typeof n.createdAt === "string",
+                    ))),
             )
+          )
+            return false;
+          if (
+            value.dismissedAlerts !== undefined &&
+            (!Array.isArray(value.dismissedAlerts) ||
+              value.dismissedAlerts.length > 200 ||
+              !value.dismissedAlerts.every((id) => typeof id === "string"))
+          )
+            return false;
+          if (
+            value.alertRules !== undefined &&
+            (!value.alertRules ||
+              typeof value.alertRules !== "object" ||
+              !Number.isInteger(value.alertRules.lowRatingMax) ||
+              value.alertRules.lowRatingMax < 1 ||
+              value.alertRules.lowRatingMax > 3 ||
+              ![12, 24, 48, 72].includes(value.alertRules.overdueHours))
           )
             return false;
           if (
@@ -3300,6 +3742,7 @@
               sentiment,
               onlyPending,
               includeRecommendations,
+              signalWindow,
               generatedDate: DEMO_DATE,
             },
             kpis: {
@@ -3435,7 +3878,7 @@
 
           const actionRows = [
             [
-              { v: "ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΑ ΜΟΤΙΒΑ ΠΑΡΑΠΟΝΩΝ", s: 1 },
+              { v: `ΕΠΑΝΑΛΑΜΒΑΝΟΜΕΝΑ ΜΟΤΙΒΑ ΠΑΡΑΠΟΝΩΝ (${meta.signalWindow || 60} ημ.)`, s: 1 },
               { v: "", s: 1 },
               { v: "", s: 1 },
               { v: "", s: 1 },
@@ -3464,6 +3907,7 @@
             [],
             [
               { v: "ΠΡΟΤΕΡΑΙΟΠΟΙΗΜΕΝΕΣ ΠΡΟΤΑΣΕΙΣ ΕΝΕΡΓΕΙΩΝ (ΣΟΒΑΡΟΤΗΤΑ × ΣΥΧΝΟΤΗΤΑ)", s: 1 },
+              { v: "", s: 1 },
               { v: "", s: 1 },
               { v: "", s: 1 },
               { v: "", s: 1 },
@@ -3684,7 +4128,7 @@
               : "") +
             `</div>` +
             (signals.length
-              ? `<div class="print-block"><h3 class="small-title">Επαναλαμβανόμενα μοτίβα παραπόνων</h3><div class="report-table-wrap"><table class="report-table"><thead><tr><th>Θέμα</th><th>Αρνητικές</th><th>Σύνολο</th><th>Ποσοστό</th><th>Καταλύματα</th></tr></thead><tbody>${signals
+              ? `<div class="print-block"><h3 class="small-title">Επαναλαμβανόμενα μοτίβα παραπόνων (τελευταίες ${meta.signalWindow || 60} μέρες)</h3><div class="report-table-wrap"><table class="report-table"><thead><tr><th>Θέμα</th><th>Αρνητικές</th><th>Σύνολο</th><th>Ποσοστό</th><th>Καταλύματα</th></tr></thead><tbody>${signals
                   .map(
                     (s) =>
                       `<tr><td><b>${esc(s.label)}</b></td><td>${s.negativeCount}</td><td>${s.totalMentions}</td><td>${Math.round(s.negativeRate * 100)}%</td><td>${s.hotelCount}</td></tr>`,
@@ -3698,7 +4142,7 @@
                     const pName = PROPS.find((p) => p.id === r.property)?.name || r.property;
                     return `<tr><td><b>${r.score}</b></td><td>${esc(pName)}</td><td>${esc(r.department)}</td><td>${esc(r.title)}</td><td>${r.effort} λ. / ${r.cost}€</td></tr>`;
                   })
-                  .join("")}</tbody></table></div></div>`
+                  .join("")}</tbody></table></div>${recs.length > 8 ? `<p class="hint" style="margin-top:4px">Εμφανίζονται οι 8 κορυφαίες από ${recs.length} προτάσεις — η πλήρης λίστα περιλαμβάνεται στο αρχείο Excel (.xlsx).</p>` : ""}</div>`
               : "") +
             `<div class="print-block"><h3 class="small-title">Αναλυτικός πίνακας κριτικών (${rows.length})</h3><div class="report-table-wrap"><table class="report-table"><thead><tr><th>Ημ/νία & Κατάλυμα</th><th>Επισκέπτης / Πηγή</th><th>Βαθμ.</th><th>Κατάσταση</th><th>Κείμενο κριτικής</th></tr></thead><tbody>${rows
               .map(
@@ -3724,6 +4168,13 @@
           reviewStatus,
           approveAction,
           transitionTask,
+          addTaskNote,
+          computeAlerts,
+          dismissAlert,
+          restoreDismissedAlerts,
+          isTaskOverdue,
+          taskPendingHours,
+          DEFAULT_ALERT_RULES,
           seedState,
           validStoredState,
           PROPS,
@@ -3835,6 +4286,11 @@
         data.checked ||= Object.fromEntries(
           data.tasks.map((t) => [t.reviewId, true]),
         );
+        data.alertRules = normalizeAlertRules(data.alertRules);
+        if (!Array.isArray(data.dismissedAlerts)) data.dismissedAlerts = [];
+        data.tasks.forEach((t) => {
+          if (!Array.isArray(t.notes)) t.notes = [];
+        });
         const ui = {
           view: "home",
           property: "all",
@@ -3848,6 +4304,9 @@
           status: "all",
           taskTab: "suggested",
           taskStatus: "active",
+          alertFilter: "all",
+          alertsOpen: false,
+          openNoteTaskId: null,
           weights: { severity: 4, recurrence: 3 },
           limits: { minutes: 120, budget: 150 },
           labText: "",
@@ -4149,12 +4608,56 @@
           action,
           { suggested = true, compact = false, selected = false } = {},
         ) {
+          const overdue = !suggested && isTaskOverdue(action, data.alertRules);
+          const pendingHours = !suggested ? taskPendingHours(action) : 0;
+          const notes = !suggested && Array.isArray(action.notes) ? action.notes : [];
+          const defaultToDept =
+            action.department === "Υποδοχή" ? "Συντήρηση" : "Υποδοχή";
+          const noteComposerOpen = !suggested && ui.openNoteTaskId === action.id;
+          const deptOpts = (selectedVal, includeAll = false) =>
+            [
+              ...DEPARTMENTS,
+              ...(includeAll ? [ALL_DEPARTMENTS_TARGET] : []),
+            ]
+              .map(
+                (d) =>
+                  `<option value="${e(d)}"${d === selectedVal ? " selected" : ""}>${e(d)}</option>`,
+              )
+              .join("");
+
+          const notesHtml =
+            !suggested && !compact
+              ? `<section class="task-notes" aria-label="Εσωτερικές σημειώσεις τμημάτων"><div class="task-notes-head"><span class="task-notes-title">Σημειώσεις τμημάτων (${notes.length})</span>${
+                  action.status !== "done"
+                    ? `<button type="button" class="text-btn" style="min-height:28px;padding:2px 0" data-action="toggle-note-form" data-id="${e(action.id)}">${
+                        noteComposerOpen ? "Κλείσιμο" : "+ Προσθήκη σημείωσης"
+                      }</button>`
+                    : ""
+                }</div>` +
+                (notes.length
+                  ? `<div class="task-note-list">${notes
+                      .map(
+                        (n) =>
+                          `<div class="task-note-item"><div class="task-note-route"><span>${e(n.fromDept)} → ${e(n.toDept)}</span><time>${e(dateLabel(n.createdAt))}</time></div><p class="task-note-text">${e(n.text)}</p></div>`,
+                      )
+                      .join("")}</div>`
+                  : `<p class="hint" style="margin:0">Δεν υπάρχουν ακόμα εσωτερικές σημειώσεις μεταξύ τμημάτων.</p>`) +
+                (noteComposerOpen && action.status !== "done"
+                  ? `<form class="note-form" data-task-note-form="${e(action.id)}"><div class="note-route-grid"><div><label class="field-label" for="note-from-${e(action.id)}">Από τμήμα</label><select class="select" id="note-from-${e(action.id)}" name="fromDept">${deptOpts(action.department)}</select></div><div><label class="field-label" for="note-to-${e(action.id)}">Προς τμήμα</label><select class="select" id="note-to-${e(action.id)}" name="toDept">${deptOpts(defaultToDept, true)}</select></div></div><div class="note-input-row"><label class="sr-only" for="note-text-${e(action.id)}">Σημείωση προόδου</label><input id="note-text-${e(action.id)}" name="text" type="text" maxlength="500" placeholder="π.χ. Έγινε έλεγχος, αναμένεται ανταλλακτικό…" required><button type="submit" class="note-submit-btn">Αποστολή</button></div></form>`
+                  : "") +
+                `</section>`
+              : !suggested && compact && notes.length
+                ? `<p class="hint" style="margin-top:8px"><b>Τελευταία σημείωση (${e(notes[notes.length - 1].fromDept)} → ${e(notes[notes.length - 1].toDept)}):</b> ${e(notes[notes.length - 1].text)}</p>`
+                : "";
+
           return (
             '<article class="card" data-task-key="' +
             e(action.key) +
             '"><div class="task-top"><span class="category">' +
             e(CATEGORIES[action.category].label.toUpperCase()) +
             "</span>" +
+            `<div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end">` +
+            (overdue ? chip(`Εκπρόθεσμη · ${pendingHours}ω`, "red") : "") +
             chip(
               suggested
                 ? action.severity === 3
@@ -4167,7 +4670,7 @@
                   : "amber"
                 : tone(action.status),
             ) +
-            "</div>" +
+            "</div></div>" +
             '<h3 class="task-title">' +
             e(action.title) +
             '</h3><div class="card-meta" style="margin-top:5px">' +
@@ -4202,6 +4705,7 @@
                 (selected ? " <b>Χωρά στο πλάνο σου.</b>" : "") +
                 "</p>"
               : "") +
+            notesHtml +
             '<div class="button-row">' +
             (suggested
               ? '<button class="primary" data-action="approve" data-key="' +
@@ -4530,12 +5034,29 @@
             "Επαναφορά δείγματος</button></div>"
           );
         }
+        function updateAlertBadge() {
+          const badge = $("alerts-badge");
+          const btn = $("alerts-btn");
+          if (!badge || !btn) return;
+          const activeAlerts = computeAlerts(data, ui.property, data.alertRules);
+          const count = activeAlerts.length;
+          badge.textContent = count > 99 ? "99+" : String(count);
+          badge.hidden = count === 0;
+          btn.classList.toggle("has-alerts", count > 0);
+          btn.setAttribute(
+            "aria-label",
+            count
+              ? `Ειδοποιήσεις: ${count} ενεργές κρίσιμες ειδοποιήσεις`
+              : "Ειδοποιήσεις κρίσιμων περιστατικών",
+          );
+        }
         function render() {
           $("main").innerHTML =
             '<div class="view-enter">' +
             { home, reviews: inbox, insights, tasks, lab, profile }[ui.view]() +
             "</div>";
           renderNav();
+          updateAlertBadge();
           if (ui.view === "reviews") inboxList();
           if (ui.view === "tasks") renderTaskResults();
           if (ui.view === "lab") labResult();
@@ -4645,8 +5166,14 @@
         }
         function home() {
           const stats = portfolioStats(data, ui.property);
+          const activeAlerts = computeAlerts(data, ui.property, data.alertRules);
+          const overdueCnt = activeAlerts.filter((a) => a.kind === "overdue_task").length;
+          const lowCnt = activeAlerts.filter((a) => a.kind === "low_rating").length;
+          const alertStrip = activeAlerts.length
+            ? `<div class="alert-strip" id="home-alert-strip" role="region" aria-label="Κρίσιμες ειδοποιήσεις"><div class="alert-strip-copy"><div class="alert-strip-title">${activeAlerts.length} ${activeAlerts.length === 1 ? "κρίσιμη ειδοποίηση" : "κρίσιμες ειδοποιήσεις"}</div><div class="alert-strip-sub">${overdueCnt ? `${overdueCnt} εκπρόθεσμες εργασίες` : ""}${overdueCnt && lowCnt ? " · " : ""}${lowCnt ? `${lowCnt} χαμηλές βαθμολογίες` : ""}${!overdueCnt && !lowCnt ? "Επείγοντα περιστατικά χωρίς ανάθεση" : ""}</div></div><button type="button" class="alert-strip-btn" data-action="alerts-open">Ειδοποιήσεις</button></div>`
+            : "";
           const reportCard = `<div class="section-row"><h2>Αναφορά για την ομάδα (V2)</h2><button class="text-btn" data-action="report-open">Εξαγωγή →</button></div><div class="card"><p class="small-title">Εξαγωγή στατιστικών & κριτικών σε PDF ή Excel</p><p class="body-text">Δημιούργησε έτοιμη αναφορά απόδοσης (${stats.total} κριτικές, μοτίβα και προτεινόμενες ενέργειες) για παρακολούθηση και διαμοιρασμό με την ομάδα σου.</p><button class="secondary full" style="margin-top:13px" data-action="report-open">${icon("report", 16)}Άνοιγμα εξαγωγής PDF / Excel</button></div>`;
-          return legacyHome() + reportCard + sourceOverview() + patternSummary();
+          return alertStrip + legacyHome() + reportCard + sourceOverview() + patternSummary();
         }
         function inbox() {
           const options = (items, selected) =>
@@ -5036,6 +5563,91 @@
           }
           toast("Η σύνοψη ετοιμάστηκε παρακάτω για αντιγραφή και αποστολή.");
         }
+        function openAlertsDialog(preserveScroll = false) {
+          const dialog = $("detail-dialog");
+          const previousScroll =
+            dialog.querySelector(".sheet-body")?.scrollTop || 0;
+          ui.detailId = null;
+          ui.welcome = false;
+          ui.report.open = false;
+          ui.alertsOpen = true;
+          const allAlerts = computeAlerts(data, ui.property, data.alertRules);
+          const filtered =
+            ui.alertFilter === "all"
+              ? allAlerts
+              : allAlerts.filter((a) => a.kind === ui.alertFilter);
+          const rules = normalizeAlertRules(data.alertRules);
+          const dismissedCount = Array.isArray(data.dismissedAlerts)
+            ? data.dismissedAlerts.length
+            : 0;
+          const kindBadge = (a) =>
+            a.kind === "overdue_task"
+              ? chip("Εκπρόθεσμη εργασία", "red")
+              : a.kind === "low_rating"
+                ? chip(`Χαμηλή βαθμολογία (${a.stars}/5)`, "red")
+                : chip("Επείγον χωρίς ανάθεση", "amber");
+
+          dialog.innerHTML =
+            `<div class="sheet"><header class="sheet-head"><div><div class="eyebrow">HostPulse · Κέντρο Ειδοποιήσεων</div><h2 id="dialog-title">Κρίσιμες Ειδοποιήσεις (${allAlerts.length})</h2></div><button class="close-btn" data-action="close-dialog" aria-label="Κλείσιμο ειδοποιήσεων">${icon("close", 19)}</button></header><div class="sheet-body">` +
+            `<p class="body-text">Αυτόματες ειδοποιήσεις για χαμηλές βαθμολογίες, εκπρόθεσμες ανατεθειμένες εργασίες και επείγοντα περιστατικά.</p>` +
+            `<div class="filter-grid" style="margin:12px 0"><div><label for="alert-rating-max" class="field-label">Όριο χαμηλής βαθμολογίας</label><select id="alert-rating-max" class="select">${[
+              [1, "≤ 1 αστέρι"],
+              [2, "≤ 2 αστέρια"],
+              [3, "≤ 3 αστέρια"],
+            ]
+              .map(
+                ([v, lbl]) =>
+                  `<option value="${v}"${rules.lowRatingMax === v ? " selected" : ""}>${lbl}</option>`,
+              )
+              .join("")}</select></div><div><label for="alert-overdue-hours" class="field-label">Όριο καθυστέρησης (SLA)</label><select id="alert-overdue-hours" class="select">${[
+              [24, "24 ώρες (1 ημέρα)"],
+              [48, "48 ώρες (2 ημέρες)"],
+              [72, "72 ώρες (3 ημέρες)"],
+            ]
+              .map(
+                ([v, lbl]) =>
+                  `<option value="${v}"${rules.overdueHours === v ? " selected" : ""}>${lbl}</option>`,
+              )
+              .join("")}</select></div></div>` +
+            `<div class="filter-row" aria-label="Φίλτρο ειδοποιήσεων">${[
+              ["all", `Όλες (${allAlerts.length})`],
+              [
+                "overdue_task",
+                `Εκπρόθεσμες (${allAlerts.filter((a) => a.kind === "overdue_task").length})`,
+              ],
+              [
+                "low_rating",
+                `Χαμηλές βαθμ. (${allAlerts.filter((a) => a.kind === "low_rating").length})`,
+              ],
+              [
+                "urgent_unassigned",
+                `Επείγοντα (${allAlerts.filter((a) => a.kind === "urgent_unassigned").length})`,
+              ],
+            ]
+              .map(
+                ([v, lbl]) =>
+                  `<button type="button" class="filter-btn ${ui.alertFilter === v ? "active" : ""}" data-action="alert-filter" data-value="${v}" aria-pressed="${ui.alertFilter === v}">${e(lbl)}</button>`,
+              )
+              .join("")}</div>` +
+            (filtered.length
+              ? filtered
+                  .map(
+                    (a) =>
+                      `<article class="card" data-alert-id="${e(a.id)}"><div class="task-top">${kindBadge(a)}<span class="card-meta">${e(dateLabel(a.date))}</span></div><h3 class="task-title" style="margin-top:6px">${e(a.title)}</h3><div class="card-meta">${e(propName(a.property))}${a.department ? " · " + e(a.department) : ""}</div><p class="body-text" style="margin-top:6px">${e(a.detail)}</p><div class="button-row"><button type="button" class="primary" data-action="alert-open-target" data-kind="${e(a.kind)}" data-review-id="${a.reviewId || ""}" data-task-id="${e(a.taskId || "")}">${a.kind === "overdue_task" ? "Άνοιγμα ανάθεσης" : "Άνοιγμα κριτικής"}</button><button type="button" class="secondary" data-action="alert-dismiss" data-id="${e(a.id)}">Σίγαση</button></div></article>`,
+                  )
+                  .join("")
+              : empty(
+                  "Δεν υπάρχουν ενεργές ειδοποιήσεις",
+                  "Όλα τα περιστατικά βρίσκονται εντός των επιλεγμένων ορίων.",
+                )) +
+            (dismissedCount
+              ? `<button type="button" class="secondary full" style="margin-top:8px" data-action="alerts-restore">Επαναφορά σιγασμένων ειδοποιήσεων (${dismissedCount})</button>`
+              : "") +
+            `</div></div>`;
+          if (!dialog.open) dialog.showModal();
+          if (preserveScroll)
+            dialog.querySelector(".sheet-body").scrollTop = previousScroll;
+        }
         function reviewCheckHTML(review) {
           return `<div class="card" id="analysis-check"><div class="card-meta">${e(SOURCES[sourceOf(review)])} · ${e(externalIdOf(review))} · ${languageOf(review).toUpperCase()}</div><h3 class="small-title">Έλεγχος από τον υπεύθυνο</h3><p class="body-text">Επιβεβαίωσε ότι το απόσπασμα, το θέμα και η προτεινόμενη ενέργεια ανταποκρίνονται στην κριτική. Οι ενδείξεις δεν δημιουργούν αυτόματες αναθέσεις.</p>${data.checked[review.id] ? '<p class="feedback">✓ Η ανάλυση ελέγχθηκε στο demo.</p>' : `<button class="secondary full" style="margin-top:12px" data-action="confirm-analysis" data-id="${review.id}">Επιβεβαίωση ανάλυσης</button>`}</div>`;
         }
@@ -5050,8 +5662,48 @@
           if (action === "welcome-open") openWelcome();
           if (action === "welcome-step") openWelcome(Number(value));
           if (action === "welcome-close") closeWelcome(target.dataset.view);
+          if (action === "alerts-open") openAlertsDialog();
+          if (action === "alert-filter") {
+            ui.alertFilter = value || "all";
+            openAlertsDialog(true);
+          }
+          if (action === "alert-dismiss") {
+            if (dismissAlert(data, id)) {
+              save();
+              render();
+              openAlertsDialog(true);
+              toast("Η ειδοποίηση σημειώθηκε ως αναγνωσμένη.");
+            }
+          }
+          if (action === "alerts-restore") {
+            restoreDismissedAlerts(data);
+            save();
+            render();
+            openAlertsDialog(true);
+            toast("Επαναφέρθηκαν οι σιγασμένες ειδοποιήσεις.");
+          }
+          if (action === "alert-open-target") {
+            ui.alertsOpen = false;
+            $("detail-dialog").close();
+            if (target.dataset.kind === "overdue_task") {
+              ui.taskTab = "mine";
+              ui.taskStatus = "active";
+              if (target.dataset.taskId) ui.openNoteTaskId = target.dataset.taskId;
+              navigate("tasks");
+            } else if (target.dataset.reviewId) {
+              openReview(Number(target.dataset.reviewId));
+            }
+          }
+          if (action === "toggle-note-form") {
+            ui.openNoteTaskId = ui.openNoteTaskId === id ? null : id;
+            renderTaskResults();
+          }
           if (action === "report-open") {
             ui.report.property = ui.property;
+            ui.report.days = "all";
+            ui.report.source = "all";
+            ui.report.sentiment = "all";
+            ui.report.onlyPending = false;
             if (target.dataset.from === "reviews") {
               ui.report.source = ui.source;
               ui.report.sentiment = ui.sentiment;
@@ -5201,9 +5853,17 @@
             data.reviews.push(review);
             ui.labAddedId = review.id;
             save();
+            updateAlertBadge();
             labResult();
+            const rules = normalizeAlertRules(data.alertRules);
+            const addedAnalysis = analyze(review.text);
+            const isCritical =
+              review.stars <= rules.lowRatingMax ||
+              addedAnalysis.pending.some((i) => i.severity === 3);
             toast(
-              "Προστέθηκε κριτική δείγματος στο " + propName(property) + ".",
+              isCritical
+                ? `Κρίσιμη ειδοποίηση (${review.stars}/5) στο ${propName(property)}!`
+                : "Προστέθηκε κριτική δείγματος στο " + propName(property) + ".",
             );
             openReview(review.id);
           }
@@ -5326,6 +5986,24 @@
             ui.report.includeRecs = target.checked;
             openReportDialog(true);
           }
+          if (target.id === "alert-rating-max") {
+            data.alertRules = normalizeAlertRules({
+              ...data.alertRules,
+              lowRatingMax: Number(target.value),
+            });
+            save();
+            render();
+            openAlertsDialog(true);
+          }
+          if (target.id === "alert-overdue-hours") {
+            data.alertRules = normalizeAlertRules({
+              ...data.alertRules,
+              overdueHours: Number(target.value),
+            });
+            save();
+            render();
+            openAlertsDialog(true);
+          }
           if (target.id === "plan-budget") {
             ui.limits.budget = Number(target.value);
             renderTaskResults();
@@ -5354,6 +6032,24 @@
               behavior: "smooth",
             });
           }
+          if (event.target.dataset && event.target.dataset.taskNoteForm) {
+            event.preventDefault();
+            const taskId = event.target.dataset.taskNoteForm;
+            const els = event.target.elements;
+            const created = addTaskNote(data, taskId, {
+              fromDept: String(els.fromDept?.value || ""),
+              toDept: String(els.toDept?.value || ""),
+              text: String(els.text?.value || ""),
+            });
+            if (created) {
+              ui.openNoteTaskId = null;
+              save();
+              renderTaskResults();
+              toast(
+                `Προστέθηκε σημείωση (${created.fromDept} → ${created.toDept}).`,
+              );
+            }
+          }
           if (event.target.id === "reply-form") {
             event.preventDefault();
             const text = $("reply-input").value.trim();
@@ -5373,6 +6069,7 @@
         });
         $("detail-dialog").addEventListener("close", () => {
           ui.report.open = false;
+          ui.alertsOpen = false;
           ui.detailId = null;
           if (ui.welcome) {
             // Esc or a click outside also counts as having seen the guide.

@@ -19,4 +19,5 @@ debug.keystore
 *-debug.log
 
 .aistudio/
+public/
 app/google-services.json

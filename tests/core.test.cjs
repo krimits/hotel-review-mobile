@@ -223,7 +223,72 @@ test("v2 printable PDF HTML and team summary text include core KPIs and actions"
   const htmlDoc = core.buildPrintableReportHTML(report);
   assert.ok(htmlDoc.includes("ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ"));
   assert.ok(htmlDoc.includes("Προτεραιοποιημένες προτάσεις ενεργειών"));
+  assert.ok(htmlDoc.includes("τελευταίες 30 μέρες"));
+  if (report.recommendations.length > 8) {
+    assert.ok(htmlDoc.includes(`Εμφανίζονται οι 8 κορυφαίες από ${report.recommendations.length}`));
+  }
   const summary = core.buildReportSummaryText(report);
   assert.ok(summary.includes("ΑΝΑΦΟΡΑ ΑΠΟΔΟΣΗΣ HOSTPULSE"));
   assert.ok(summary.includes("ΠΡΟΤΕΡΑΙΟΠΟΙΗΜΕΝΕΣ ΠΡΟΤΑΣΕΙΣ ΕΝΕΡΓΕΙΩΝ"));
+});
+
+test("Greek prefix false-positive guards prevent praise words from creating complaints", () => {
+  const res = core.analyze(
+    "Όπως ακριβώς στις φωτογραφίες! Υπέροχο δωμάτιο, κρυμμένος παράδεισος, θα έρθουμε πάλι αργότερα!",
+  );
+  assert.equal(res.triage, "positive_comment");
+  assert.equal(res.pending.length, 0);
+  assert.ok(!res.aspects.some((a) => a.key === "value"));
+});
+
+test("v2 xlsx Sheet 2 recommendations banner matches the 9-column header width", () => {
+  const data = core.seedState();
+  const report = core.buildReportData(data, { property: "all", days: "all" });
+  const sheets = core.buildXlsxSheets(report);
+  const sheet2 = sheets[1];
+  const recsBannerIdx = sheet2.rows.findIndex(
+    (row) => row[0] && String(row[0].v).startsWith("ΠΡΟΤΕΡΑΙΟΠΟΙΗΜΕΝΕΣ ΠΡΟΤΑΣΕΙΣ ΕΝΕΡΓΕΙΩΝ"),
+  );
+  assert.ok(recsBannerIdx >= 0);
+  assert.equal(sheet2.rows[recsBannerIdx].length, sheet2.rows[recsBannerIdx + 1].length);
+  assert.equal(sheet2.rows[recsBannerIdx].length, 9);
+});
+
+test("critical alerts detect low ratings, overdue assigned tasks, threshold changes and dismissal", () => {
+  const data = core.seedState();
+  const alerts48 = core.computeAlerts(data, "all", { lowRatingMax: 2, overdueHours: 48 });
+  assert.ok(alerts48.some((a) => a.kind === "overdue_task"));
+  assert.ok(alerts48.some((a) => a.kind === "low_rating"));
+  const overdue48 = alerts48.filter((a) => a.kind === "overdue_task");
+  assert.equal(overdue48.length, 2);
+
+  // Raising SLA overdue threshold to 72h leaves only the 72h-old task overdue
+  const alerts72 = core.computeAlerts(data, "all", { lowRatingMax: 2, overdueHours: 72 });
+  assert.equal(alerts72.filter((a) => a.kind === "overdue_task").length, 1);
+
+  // Dismissing & restoring an alert works cleanly
+  const firstId = alerts48[0].id;
+  assert.equal(core.dismissAlert(data, firstId), true);
+  assert.ok(!core.computeAlerts(data, "all", { lowRatingMax: 2, overdueHours: 48 }).some((a) => a.id === firstId));
+  core.restoreDismissedAlerts(data);
+  assert.ok(core.computeAlerts(data, "all", { lowRatingMax: 2, overdueHours: 48 }).some((a) => a.id === firstId));
+});
+
+test("assigned tasks support inter-department internal notes with schema validation", () => {
+  const data = core.seedState();
+  const task = data.tasks[0];
+  assert.ok(Array.isArray(task.notes) && task.notes.length >= 1);
+  const beforeCount = task.notes.length;
+
+  const added = core.addTaskNote(data, task.id, {
+    fromDept: "Συντήρηση",
+    toDept: "Υποδοχή",
+    text: "Παραδόθηκε το ανταλλακτικό, ολοκλήρωση επισκευής σήμερα στις 14:00.",
+  });
+  assert.ok(added);
+  assert.equal(added.fromDept, "Συντήρηση");
+  assert.equal(added.toDept, "Υποδοχή");
+  assert.equal(task.notes.length, beforeCount + 1);
+  assert.equal(core.addTaskNote(data, task.id, { fromDept: "Συντήρηση", toDept: "Υποδοχή", text: "   " }), null);
+  assert.equal(core.validStoredState(clone(data)), true);
 });

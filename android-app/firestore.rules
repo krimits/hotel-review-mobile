@@ -37,6 +37,23 @@ service cloud.firestore {
              data.updatedAt is timestamp && data.updatedAt <= request.time;
     }
 
+    function isValidHighlightAt(items, idx) {
+      return idx >= items.size() || (items[idx] is string && items[idx].size() <= 160);
+    }
+
+    function isValidHighlightsList(items) {
+      return items is list &&
+             items.size() <= 8 &&
+             isValidHighlightAt(items, 0) &&
+             isValidHighlightAt(items, 1) &&
+             isValidHighlightAt(items, 2) &&
+             isValidHighlightAt(items, 3) &&
+             isValidHighlightAt(items, 4) &&
+             isValidHighlightAt(items, 5) &&
+             isValidHighlightAt(items, 6) &&
+             isValidHighlightAt(items, 7);
+    }
+
     function isValidReview(data) {
       return data.userId is string &&
              data.userId == request.auth.uid &&
@@ -59,8 +76,7 @@ service cloud.firestore {
                'FACILITIES_WIFI',
                'VALUE_FOR_MONEY'
              ]) &&
-             data.keyHighlights is list && data.keyHighlights.size() <= 8 &&
-             (data.keyHighlights.size() == 0 || (data.keyHighlights[0] is string && data.keyHighlights[0].size() <= 160)) &&
+             isValidHighlightsList(data.keyHighlights) &&
              data.summaryLine is string && data.summaryLine.size() <= 500 &&
              data.suggestedReply is string && data.suggestedReply.size() <= 3000 &&
              data.resolved is bool &&
